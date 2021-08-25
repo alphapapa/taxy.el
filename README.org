@@ -4,9 +4,16 @@
 
 # Note: This readme works with the org-make-toc <https://github.com/alphapapa/org-make-toc> package, which automatically updates the table of contents.
 
+#+HTML: <img src="images/mascot.png" align="right">
+
 # [[https://melpa.org/#/package-name][file:https://melpa.org/packages/taxy-badge.svg]] [[https://stable.melpa.org/#/package-name][file:https://stable.melpa.org/packages/taxy-badge.svg]]
 
 This library provides a programmable way to classify arbitrary objects into a hierarchical taxonomy.  (That's a lot of fancy words to say that this lets you put things in nested groups.)
+
+Helpful features include:
+
++  Dynamic taxonomies :: Objects may be classified into hierarchies determined at runtime based on their attributes.
++  Reusable taxonomies :: Taxonomy definitions may be stored in variables and reused in other taxonomies' descendant groups.
 
 * Example
 
