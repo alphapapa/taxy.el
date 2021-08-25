@@ -158,7 +158,7 @@ The ~:then~ function determines what happens to an object after being taken in: 
 
 After defining a taxy, call ~taxy-fill~ with it and a list of objects to fill the taxy's hierarchy.  *Note:* ~taxy-fill~ modifies the taxy given to it (filling its ~:objects~ and those of its ~:taxys~), so when using a statically defined taxy (e.g. one defined with ~defvar~), you should pass ~taxy-fill~ a taxy copied with ~taxy-copy~, which recursively copies a taxy without ~:objects~.
 
-To return a taxy in a more human-readable format (with only relevant fields included), use ~taxy-plain~.  You may also use ~taxy-apply~ to replace objects in a taxy with, e.g. a more useful representation.
+To return a taxy in a more human-readable format (with only relevant fields included), use ~taxy-plain~.  You may also use ~taxy-map~ to replace objects in a taxy with, e.g. a more useful representation.
 
 ** Dynamic taxys
 
@@ -262,14 +262,14 @@ Since taxys are structs, they may be stored in variables and used in other struc
 
 Note how the taxys defined in the first three variables are used in subsequent taxys.  As well, the ~ement-roomy-opened~ taxy has an "anonymous" taxy, which collects any rooms that aren't collected by its sibling taxy (otherwise those objects would be collected into the parent, "Opened" taxy, which may not always be the most useful way to present the objects).
 
-Using those defined taxys, we then fill the ~ement-roomy~ taxy with all of the rooms in the user's session, and then use ~taxy-apply~ to replace the room structs with useful representations for display:
+Using those defined taxys, we then fill the ~ement-roomy~ taxy with all of the rooms in the user's session, and then use ~taxy-map~ to replace the room structs with useful representations for display:
 
 #+BEGIN_SRC elisp
   (let ((ement-session (alist-get "@USER:HOST" ement-sessions nil nil #'equal)))
     (taxy-plain
-     (taxy-apply (lambda (room)
-                   (setf room (list (ement-room--room-display-name room)
-                                    (ement-room-id room))))
+     (taxy-map (lambda (room)
+                   (list (ement-room--room-display-name room)
+                         (ement-room-id room)))
        (taxy-fill (ement-session-rooms ement-session)
                   (taxy-copy ement-roomy)))))
 #+END_SRC
