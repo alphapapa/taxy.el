@@ -179,6 +179,7 @@ That's better:
 - [[#usage][Usage]]
   - [[#dynamic-taxys][Dynamic taxys]]
   - [[#reusable-taxys][Reusable taxys]]
+  - [[#threading-macros][Threading macros]]
 - [[#changelog][Changelog]]
 - [[#development][Development]]
 - [[#license][License]]
@@ -213,6 +214,7 @@ That's better:
 :CONTENTS:
 - [[#dynamic-taxys][Dynamic taxys]]
 - [[#reusable-taxys][Reusable taxys]]
+- [[#threading-macros][Threading macros]]
 :END:
 
 A taxy is defined with the ~make-taxy~ constructor, like:
@@ -338,13 +340,12 @@ Note how the taxys defined in the first three variables are used in subsequent t
 Using those defined taxys, we then fill the ~ement-roomy~ taxy with all of the rooms in the user's session, and then use ~taxy-map~ to replace the room structs with useful representations for display:
 
 #+BEGIN_SRC elisp
-  (let ((ement-session (alist-get "@USER:HOST" ement-sessions nil nil #'equal)))
-    (taxy-plain
-     (taxy-map (lambda (room)
-                   (list (ement-room--room-display-name room)
-                         (ement-room-id room)))
-       (taxy-fill (ement-session-rooms ement-session)
-                  (taxy-copy ement-roomy)))))
+  (taxy-plain
+   (taxy-map (lambda (room)
+               (list (ement-room--room-display-name room)
+                     (ement-room-id room)))
+     (taxy-fill (ement-session-rooms ement-session)
+                (taxy-copy ement-roomy))))
 #+END_SRC
 
 This produces:
@@ -377,6 +378,20 @@ This produces:
         ("#lisp" "!czLxhhEegTEGNKUBgo:libera.chat")
         ("Emacs" "!gLamGIXTWBaDFfhEeO:matrix.org")
         ("#matrix-dev:matrix.org" "!jxlRxnrZCsjpjDubDX:matrix.org")))))))
+#+END_SRC
+
+** Threading macros
+
+If you happen to like macros, ~taxy~ works well with threading (i.e. ~thread-last~ or ~->>~):
+
+#+BEGIN_SRC elisp
+  (thread-last ement-roomy
+    taxy-copy
+    (taxy-fill (ement-session-rooms ement-session))
+    (taxy-map (lambda (room)
+                (list (ement-room--room-display-name room)
+                      (ement-room-id room))))
+    taxy-plain)
 #+END_SRC
 
 * Changelog
