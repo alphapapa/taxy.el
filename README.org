@@ -15,9 +15,9 @@ Helpful features include:
 +  Dynamic taxonomies :: Objects may be classified into hierarchies automatically defined at runtime based on their attributes.
 +  Reusable taxonomies :: Taxonomy definitions may be stored in variables and reused in other taxonomies' descendant groups.
 
-* Example
+* Examples
 
-This is a silly taxonomy of numbers below 100:
+Let's make a silly taxonomy of numbers below 100:
 
 #+BEGIN_SRC elisp
   ("Numbery" "A silly taxonomy of numbers."
@@ -104,6 +104,72 @@ You might think about how to produce that by writing some imperative code, but =
 #+END_SRC
 
 The ~taxy-fill~ function applies the numbers in a "cascade" down the hierarchy of "taxys", and the ~taxy-plain~ function returns a meaningful subset of the taxys' slots, suitable for display.
+
+You can also add more objects after the hierarchy has been filled:
+
+#+BEGIN_SRC elisp
+  (defvar lettery
+    (make-taxy :name "Lettery"
+               :description "A comprehensive taxonomy of letters."
+               :taxys (list (make-taxy :name "Vowels"
+                                       :description "You know what those are."
+                                       :predicate (lambda (l)
+                                                    (member-ignore-case l '("a" "e" "i" "o" "u"))))
+                            (make-taxy :name "Consonants"
+                                       :description "Well, if they aren't a vowel..."))))
+
+  (taxy-plain
+   (taxy-fill (reverse
+               (cl-loop for l from ?a to ?n
+                        collect (upcase (char-to-string l))))
+              lettery))
+#+END_SRC
+
+#+BEGIN_SRC elisp
+  ("Lettery" "A comprehensive taxonomy of letters."
+   (("Vowels" "You know what those are."
+     ("A" "E" "I"))
+    ("Consonants" "Well, if they aren't a vowel..."
+     ("B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N"))))
+#+END_SRC
+
+Oops, we forgot the letters after N!  Let's add them, too:
+
+#+BEGIN_SRC elisp
+  (taxy-plain
+   (taxy-fill (reverse
+               (cl-loop for l from ?n to ?z
+                        collect (upcase (char-to-string l))))
+              lettery))
+#+END_SRC
+
+#+BEGIN_SRC elisp
+  ("Lettery" "A comprehensive taxonomy of letters."
+   (("Vowels" "You know what those are."
+     ("O" "U" "A" "E" "I"))
+    ("Consonants" "Well, if they aren't a vowel..."
+     ("N" "P" "Q" "R" "S" "T" "V" "W" "X" "Y" "Z" "B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N"))))
+#+END_SRC
+
+Oh, they're out of order, now.  That won't do.  Let's fix that:
+
+#+BEGIN_SRC elisp
+  (cl-loop for taxy in-ref (taxy-taxys lettery)
+           do (setf (taxy-objects taxy) (cl-sort (taxy-objects taxy) #'<
+                                                 :key #'string-to-char)))
+
+  (taxy-plain lettery)
+#+END_SRC
+
+That's better:
+
+#+BEGIN_SRC elisp
+  ("Lettery" "A comprehensive taxonomy of letters."
+   (("Vowels" "You know what those are."
+     ("A" "E" "I" "O" "U"))
+    ("Consonants" "Well, if they aren't a vowel..."
+     ("B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N" "N" "P" "Q" "R" "S" "T" "V" "W" "X" "Y" "Z"))))
+#+END_SRC
 
 * Contents                                                         :noexport:
 :PROPERTIES:
