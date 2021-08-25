@@ -15,12 +15,18 @@ This is a silly taxonomy of numbers below 100:
 #+BEGIN_SRC elisp
   ("Numbery" "A silly taxonomy of numbers."
    (("< 10" "Numbers below 10"
+     ;; These numbers are leftovers from the sub-taxys below.
      (0 2 4 6 8)
+     ;; These sub-taxys further classify the numbers below 10 into odd
+     ;; and even.  The odd taxy "consumes" numbers, while the even one
+     ;; doesn't, leaving them to reappear in the parent taxy's objects.
      (("Odd (consuming)"
        (1 3 5 7 9))
       ("Even (non-consuming)"
        (0 2 4 6 8))))
     (">= 10" "Numbers above 9"
+     ;; Like in the "< 10" taxy, these numbers are leftovers from this
+     ;; taxy's sub-taxys, three of which are non-consuming.
      (10 11 13 14 17 19 22 23 25 26 29 31 34 35 37 38 41 43 46 47 49 50 53 55 58
          59 61 62 65 67 70 71 73 74 77 79 82 83 85 86 89 91 94 95 97 98)
      (("Divisible by 3 (non-consuming)"
@@ -29,6 +35,9 @@ This is a silly taxonomy of numbers below 100:
       ("Divisible by 4 (non-consuming)"
        (12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96))
       ("Divisible by 3 or 4 (consuming)"
+       ;; This taxy consumes numbers it takes in, but since these
+       ;; numbers have already been taken in (without being consumed) by
+       ;; the previous two sibling taxys, they may also appear in them.
        (12 15 16 18 20 21 24 27 28 30 32 33 36 39 40 42 44 45 48 51 52 54 56 57 60
            63 64 66 68 69 72 75 76 78 80 81 84 87 88 90 92 93 96 99))
       ("Divisible by 5 (non-consuming)"
@@ -48,27 +57,41 @@ You might think about how to produce that by writing some imperative code, but =
                         :name "< 10"
                         :description "Numbers below 10 (consuming)"
                         :predicate (lambda (n) (< n 10))
-                        :taxys (list (make-taxy :name "Odd (consuming)"
-                                                :predicate #'oddp)
-                                     (make-taxy :name "Even (non-consuming)"
-                                                :predicate #'evenp
-                                                :then #'identity)))
+                        :taxys (list
+                                ;; These sub-taxys further classify the numbers below 10 into odd
+                                ;; and even.  The odd taxy "consumes" numbers, while the even one
+                                ;; doesn't, leaving them to reappear in the parent taxy's objects.
+                                (make-taxy :name "Odd (consuming)"
+                                           :predicate #'oddp)
+                                (make-taxy :name "Even (non-consuming)"
+                                           :predicate #'evenp
+                                           :then #'identity)))
                        (make-taxy
                         :name ">= 10"
                         :description "Numbers above 9 (consuming)"
                         :predicate (lambda (n) (>= n 10))
-                        :taxys (list (make-taxy :name "Divisible by 3 (non-consuming)"
-                                                :predicate (lambda (n) (zerop (mod n 3)))
-                                                :then #'identity)
-                                     (make-taxy :name "Divisible by 4 (non-consuming)"
-                                                :predicate (lambda (n) (zerop (mod n 4)))
-                                                :then #'identity)
-                                     (make-taxy :name "Divisible by 3 or 4 (consuming)"
-                                                :predicate (lambda (n) (or (zerop (mod n 3))
-                                                                           (zerop (mod n 4)))))
-                                     (make-taxy :name "Divisible by 5 (non-consuming)"
-                                                :predicate (lambda (n) (zerop (mod n 5)))
-                                                :then #'identity))))))
+                        :taxys (list
+                                ;; Like in the "< 10" taxy, these sub-taxys further classify
+                                ;; the numbers, but only one of them consumes numbers it
+                                ;; takes in, leaving the rest to reappear in the parent taxy.
+                                (make-taxy :name "Divisible by 3 (non-consuming)"
+                                           :predicate (lambda (n) (zerop (mod n 3)))
+                                           :then #'identity)
+                                (make-taxy :name "Divisible by 4 (non-consuming)"
+                                           :predicate (lambda (n) (zerop (mod n 4)))
+                                           :then #'identity)
+                                (make-taxy :name "Divisible by 3 or 4 (consuming)"
+                                           ;; Since this taxy's `:then' function is unset,
+                                           ;; it defaults to `ignore', which causes it to
+                                           ;; consume numbers it takes in.  Since these
+                                           ;; numbers have already been taken in (without
+                                           ;; being consumed) by the previous two sibling
+                                           ;; taxys, they also appear in them.
+                                           :predicate (lambda (n) (or (zerop (mod n 3))
+                                                                      (zerop (mod n 4)))))
+                                (make-taxy :name "Divisible by 5 (non-consuming)"
+                                           :predicate (lambda (n) (zerop (mod n 5)))
+                                           :then #'identity))))))
         (numbers (cl-loop for i below 100 collect i)))
     (taxy-simple (taxy-fill (reverse numbers) numbery)))
 #+END_SRC
