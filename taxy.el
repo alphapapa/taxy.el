@@ -31,8 +31,9 @@
 ;;;; Structs
 
 (cl-defstruct taxy
-  name description objects
-  predicate then taxys)
+  name description key objects taxys dynamic
+  (predicate #'identity) (then #'ignore)
+  take)
 
 ;;;; Variables
 
@@ -47,14 +48,23 @@
 
 (defun taxy-apply (taxy objects)
   (cl-labels ((apply-object (taxy object)
-                            (cl-loop for taxy in (taxy-taxys taxy)
-                                     while object
+                            (cl-loop with taken
+                                     for taxy in (taxy-taxys taxy)
                                      when (funcall (taxy-predicate taxy) object)
-                                     do (setf object
-                                              (if-let* ((taxys (taxy-taxys taxy)))
-                                                  (apply-object taxy object)
-                                                (push object (taxy-objects taxy))
-                                                (funcall (taxy-then taxy) object))))))
+                                     do (setf taken t
+                                              object (if (taxy-take taxy)
+                                                         (progn
+                                                           (funcall (taxy-take taxy) object taxy)
+                                                           (funcall (taxy-then taxy) object))
+                                                       (if (taxy-taxys taxy)
+                                                           (progn
+                                                             (or (apply-object taxy object)
+                                                                 (push object (taxy-objects taxy)))
+                                                             (funcall (taxy-then taxy) object))
+                                                         (push object (taxy-objects taxy))
+                                                         (funcall (taxy-then taxy) object))))
+                                     unless object return t
+                                     finally return nil)))
     (dolist (object objects taxy)
       (apply-object taxy object))))
 
@@ -63,7 +73,7 @@
         (list (taxy-name taxy)
               (taxy-description taxy)
               (taxy-objects taxy)
-              (mapcar #'taxy-print (taxy-taxys taxy)))))
+              (mapcar #'taxy-simple (taxy-taxys taxy)))))
 
 ;;;; Footer
 

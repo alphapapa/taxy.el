@@ -15,22 +15,24 @@ This is a silly taxonomy of numbers below 100:
 #+BEGIN_SRC elisp
   ("Numbery" "A silly taxonomy of numbers."
    (("< 10" "Numbers below 10"
-     (("Odd"
+     (0 2 4 6 8)
+     (("Odd (consuming)"
        (1 3 5 7 9))
-      ("Even"
+      ("Even (non-consuming)"
        (0 2 4 6 8))))
-    ("> 10" "Numbers above 9"
-     (("Divisible by 3"
+    (">= 10" "Numbers above 9"
+     (10 11 13 14 17 19 22 23 25 26 29 31 34 35 37 38 41 43 46 47 49 50 53 55 58
+         59 61 62 65 67 70 71 73 74 77 79 82 83 85 86 89 91 94 95 97 98)
+     (("Divisible by 3 (non-consuming)"
        (12 15 18 21 24 27 30 33 36 39 42 45 48 51 54 57 60 63 66 69 72 75 78 81 84
            87 90 93 96 99))
-      ("Divisible by 4"
+      ("Divisible by 4 (non-consuming)"
        (12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96))
-      ("Divisible by 3 or 4"
+      ("Divisible by 3 or 4 (consuming)"
        (12 15 16 18 20 21 24 27 28 30 32 33 36 39 40 42 44 45 48 51 52 54 56 57 60
            63 64 66 68 69 72 75 76 78 80 81 84 87 88 90 92 93 96 99))
-      ("Not divisible by 3 or 4"
-       (10 11 13 14 17 19 22 23 25 26 29 31 34 35 37 38 41 43 46 47 49 50 53 55 58
-           59 61 62 65 67 70 71 73 74 77 79 82 83 85 86 89 91 94 95 97 98))))))
+      ("Divisible by 5 (non-consuming)"
+       (10 25 35 50 55 65 70 85 95))))))
 #+END_SRC
 
 You might think about how to produce that by writing some imperative code, but =taxy= allows you to do so in a more declarative and functional manner:
@@ -39,37 +41,39 @@ You might think about how to produce that by writing some imperative code, but =
   (require 'taxy)
 
   (let ((numbery
-         (make-taxy :name "Numbery"
-                    :description "A silly taxonomy of numbers."
-                    :predicate #'numberp
-                    :then #'ignore
-                    :taxys (list (make-taxy :name "< 10"
-                                            :description "Numbers below 10"
-                                            :predicate (lambda (n) (< n 10))
-                                            :then #'ignore
-                                            :taxys (list (make-taxy :name "Odd"
-                                                                    :predicate #'oddp
-                                                                    :then #'ignore)
-                                                         (make-taxy :name "Even"
-                                                                    :predicate #'evenp
-                                                                    :then #'ignore)))
-                                 (make-taxy :name "> 10"
-                                            :description "Numbers above 9"
-                                            :predicate (lambda (n) (>= n 10))
-                                            :then #'ignore
-                                            :taxys (list (make-taxy :name "Divisible by 3"
-                                                                    :predicate (lambda (n) (zerop (mod n 3)))
-                                                                    :then #'identity)
-                                                         (make-taxy :name "Divisible by 4"
-                                                                    :predicate (lambda (n) (zerop (mod n 4)))
-                                                                    :then #'identity)
-                                                         (make-taxy :name "Divisible by 3 or 4"
-                                                                    :predicate (lambda (n) (or (zerop (mod n 3))
-                                                                                               (zerop (mod n 4))))
-                                                                    :then #'ignore)
-                                                         (make-taxy :name "Not divisible by 3 or 4"
-                                                                    :predicate #'identity
-                                                                    :then #'ignore))))))
+         (make-taxy
+          :name "Numbery"
+          :description "A silly taxonomy of numbers."
+          :predicate #'numberp
+          :then #'ignore
+          :taxys (list (make-taxy
+                        :name "< 10"
+                        :description "Numbers below 10"
+                        :predicate (lambda (n) (< n 10))
+                        :then #'ignore
+                        :taxys (list (make-taxy :name "Odd (consuming)"
+                                                :predicate #'oddp
+                                                :then #'ignore)
+                                     (make-taxy :name "Even (non-consuming)"
+                                                :predicate #'evenp
+                                                :then #'identity)))
+                       (make-taxy
+                        :name ">= 10"
+                        :description "Numbers above 9"
+                        :predicate (lambda (n) (>= n 10))
+                        :then #'ignore
+                        :taxys (list (make-taxy :name "Divisible by 3 (non-consuming)"
+                                                :predicate (lambda (n) (zerop (mod n 3)))
+                                                :then #'identity)
+                                     (make-taxy :name "Divisible by 4 (non-consuming)"
+                                                :predicate (lambda (n) (zerop (mod n 4)))
+                                                :then #'identity)
+                                     (make-taxy :name "Divisible by 3 or 4 (consuming)"
+                                                :predicate (lambda (n) (or (zerop (mod n 3))
+                                                                           (zerop (mod n 4)))))
+                                     (make-taxy :name "Divisible by 5 (non-consuming)"
+                                                :predicate (lambda (n) (zerop (mod n 5)))
+                                                :then #'identity))))))
         (numbers (cl-loop for i below 100 collect i)))
     (taxy-simple (taxy-apply numbery (reverse numbers))))
 #+END_SRC
@@ -133,6 +137,67 @@ The ~:then~ function determines what happens to an object after being applied: i
 After defining a taxy, call ~taxy-apply~ with it and a list of objects to fill the taxy's hierarchy.
 
 To return a taxy in a more human-readable format (with only relevant fields included), use ~taxy-simple~.
+
+** Dynamic taxys
+
+You may not always know in advance what taxonomy a set of objects fits into, so =taxy= lets you add taxys dynamically by using the ~:take~ function to add a taxy when an object is "taken into" a parent taxy.  For example, you could dynamically classify buffers by their major mode like so:
+
+#+BEGIN_SRC elisp :exports code
+  (let* ((key-fn (lambda (buffer)
+                   (buffer-local-value 'major-mode buffer)))
+         (buffery
+          (make-taxy
+           :name "Buffers"
+           :taxys (list
+                   (make-taxy
+                    :name "Modes"
+                    :take (lambda (buffer taxy)
+                            (let* ((key (funcall key-fn buffer))
+                                   (key-taxy
+                                    (or (cl-find-if (lambda (taxy-key)
+                                                      (equal key taxy-key))
+                                                    (taxy-taxys taxy)
+                                                    :key #'taxy-key)
+                                        (car
+                                         (push (make-taxy
+                                                :name key :key key
+                                                :predicate (lambda (buffer)
+                                                             (equal key (funcall key-fn buffer))))
+                                               (taxy-taxys taxy))))))
+                              (push buffer (taxy-objects key-taxy)))))))))
+    (taxy-simple (taxy-apply buffery (buffer-list))))
+#+END_SRC
+
+Which produces this taxonomy of buffers:
+
+#+BEGIN_SRC elisp
+  ("Buffers"
+   (("Modes"
+     ((magit-process-mode
+       (#<buffer magit-process: taxy.el> #<buffer magit-process: > #<buffer magit-process: notes>))
+      (messages-buffer-mode
+       (#<buffer *Messages*>))
+      (special-mode
+       (#<buffer *Warnings*> #<buffer *elfeed-log*>))
+      (dired-mode
+       (#<buffer ement.el<emacs>>))
+      (Custom-mode
+       (#<buffer *Customize Apropos*>))
+      (fundamental-mode
+       (#<buffer  *helm candidates:Bookmarks*> #<buffer *Backtrace*>))
+      (magit-diff-mode
+       (#<buffer magit-diff: taxy.el> #<buffer magit-diff: notes> #<buffer magit-diff: ement.el>))
+      (compilation-mode
+       (#<buffer *compilation*> #<buffer *Compile-Log*>))
+      (Info-mode
+       (#<buffer  *helm info temp buffer*> #<buffer *info*>))
+      (help-mode
+       (#<buffer *Help*>))
+      (emacs-lisp-mode
+       (#<buffer ement.el<ement.el>> #<buffer ement-room-list.el> #<buffer *scratch*>
+                 #<buffer ement-room.el> #<buffer init.el> #<buffer bufler.el>
+                 #<buffer dash.el> #<buffer *Pp Eval Output*> #<buffer taxy.el> #<buffer scratch.el>))))))
+#+END_SRC
 
 # ** Tips
 # 
