@@ -48,11 +48,9 @@
 
 (defun taxy-fill (taxy objects)
   (cl-labels ((apply-object (taxy object)
-                            (cl-loop with taken
-                                     for taxy in (taxy-taxys taxy)
+                            (cl-loop for taxy in (taxy-taxys taxy)
                                      when (funcall (taxy-predicate taxy) object)
-                                     do (setf taken t
-                                              object (if (taxy-take taxy)
+                                     do (setf object (if (taxy-take taxy)
                                                          (progn
                                                            (funcall (taxy-take taxy) object taxy)
                                                            (funcall (taxy-then taxy) object))
