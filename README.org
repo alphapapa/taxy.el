@@ -70,10 +70,10 @@ You might think about how to produce that by writing some imperative code, but =
                                                 :predicate (lambda (n) (zerop (mod n 5)))
                                                 :then #'identity))))))
         (numbers (cl-loop for i below 100 collect i)))
-    (taxy-simple (taxy-apply numbery (reverse numbers))))
+    (taxy-simple (taxy-fill numbery (reverse numbers))))
 #+END_SRC
 
-The ~taxy-apply~ function applies the numbers in a "cascade" down the hierarchy of "taxys", and the ~taxy-simple~ function returns a meaningful subset of the taxys' slots, suitable for display.
+The ~taxy-fill~ function applies the numbers in a "cascade" down the hierarchy of "taxys", and the ~taxy-simple~ function returns a meaningful subset of the taxys' slots, suitable for display.
 
 * Contents                                                         :noexport:
 :PROPERTIES:
@@ -125,11 +125,11 @@ A taxy is defined with the ~make-taxy~ constructor, like:
              :taxys (list ...))
 #+END_SRC
 
-The ~:predicate~ function determines whether an object fits into that taxy.  If it does, ~taxy-apply~ adds the object to that taxy's descendant ~:taxys~, if present, or to its own ~objects~.  The function defaults to ~identity~, so a taxy "takes in" any object by default (i.e. if you only apply objects you want to classify, there's no need to test them at the top-level taxy).
+The ~:predicate~ function determines whether an object fits into that taxy.  If it does, ~taxy-fill~ adds the object to that taxy's descendant ~:taxys~, if present, or to its own ~objects~.  The function defaults to ~identity~, so a taxy "takes in" any object by default (i.e. if you only apply objects you want to classify, there's no need to test them at the top-level taxy).
 
 The ~:then~ function determines what happens to an object after being taken in: if the function, called with the object, returns a non-nil value, that value is applied to other taxys at the same level until one of their ~:then~ functions returns nil or no more taxys remain.  The function defaults to ~ignore~, which makes a taxy "consume" its objects by default.  Setting the function to, e.g. ~identity~, makes it not consume them, leaving them eligible to also be taken into subsequent taxys, or to appear in the parent taxy's objects.
 
-After defining a taxy, call ~taxy-apply~ with it and a list of objects to fill the taxy's hierarchy.
+After defining a taxy, call ~taxy-fill~ with it and a list of objects to fill the taxy's hierarchy.
 
 To return a taxy in a more human-readable format (with only relevant fields included), use ~taxy-simple~.
 
@@ -160,7 +160,7 @@ You may not always know in advance what taxonomy a set of objects fits into, so 
                                                              (equal key (funcall key-fn buffer))))
                                                (taxy-taxys taxy))))))
                               (push buffer (taxy-objects key-taxy)))))))))
-    (taxy-simple (taxy-apply buffery (buffer-list))))
+    (taxy-simple (taxy-fill buffery (buffer-list))))
 #+END_SRC
 
 Which produces this taxonomy of buffers:
