@@ -48,21 +48,21 @@
 
 (defun taxy-fill (objects taxy)
   "Fill TAXY with OBJECTS according to its definition."
-  (cl-labels ((apply-object (taxy object)
+  (cl-labels ((apply-object (object taxy)
                             (cl-loop for taxy in (taxy-taxys taxy)
                                      when (funcall (taxy-predicate taxy) object)
                                      do (progn
                                           (if (taxy-take taxy)
                                               (funcall (taxy-take taxy) object taxy)
                                             (if (taxy-taxys taxy)
-                                                (or (apply-object taxy object)
+                                                (or (apply-object object taxy)
                                                     (push object (taxy-objects taxy)))
                                               (push object (taxy-objects taxy))))
                                           (setf object (funcall (taxy-then taxy) object)))
                                      unless object return t
                                      finally return nil)))
     (dolist (object objects taxy)
-      (apply-object taxy object))))
+      (apply-object object taxy))))
 
 (defun taxy-plain (taxy)
   "Return a list of the human-readable parts of TAXY."
