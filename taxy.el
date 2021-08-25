@@ -51,17 +51,14 @@
   (cl-labels ((apply-object (taxy object)
                             (cl-loop for taxy in (taxy-taxys taxy)
                                      when (funcall (taxy-predicate taxy) object)
-                                     do (setf object (if (taxy-take taxy)
-                                                         (progn
-                                                           (funcall (taxy-take taxy) object taxy)
-                                                           (funcall (taxy-then taxy) object))
-                                                       (if (taxy-taxys taxy)
-                                                           (progn
-                                                             (or (apply-object taxy object)
-                                                                 (push object (taxy-objects taxy)))
-                                                             (funcall (taxy-then taxy) object))
-                                                         (push object (taxy-objects taxy))
-                                                         (funcall (taxy-then taxy) object))))
+                                     do (progn
+                                          (if (taxy-take taxy)
+                                              (funcall (taxy-take taxy) object taxy)
+                                            (if (taxy-taxys taxy)
+                                                (or (apply-object taxy object)
+                                                    (push object (taxy-objects taxy)))
+                                              (push object (taxy-objects taxy))))
+                                          (setf object (funcall (taxy-then taxy) object)))
                                      unless object return t
                                      finally return nil)))
     (dolist (object objects taxy)
