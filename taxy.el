@@ -95,6 +95,25 @@ useful form after classification."
                                    collect (taxy-apply fn taxy)))
   taxy)
 
+(cl-defun taxy-take-keyed (key-fn object taxy &key (key-name-fn #'identity))
+  "Take OBJECT into TAXY, adding new taxys dynamically.
+Places OBJECT into a taxy in TAXY for the value returned by
+KEY-FN called with OBJECT.  The new taxy's name is that returned
+by KEY-NAME-FN called with OBJECT."
+  (let* ((key (funcall key-fn object))
+         (key-taxy
+          (or (cl-find-if (lambda (taxy-key)
+                            (equal key taxy-key))
+                          (taxy-taxys taxy)
+                          :key #'taxy-key)
+              (car
+               (push (make-taxy
+                      :name (funcall key-name-fn key) :key key
+                      :predicate (lambda (object)
+                                   (equal key (funcall key-fn object))))
+                     (taxy-taxys taxy))))))
+    (push object (taxy-objects key-taxy))))
+
 ;;;; Footer
 
 (provide 'taxy)

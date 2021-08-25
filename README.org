@@ -151,20 +151,7 @@ You may not always know in advance what taxonomy a set of objects fits into, so 
      :taxys (list
              (make-taxy
               :name "Modes"
-              :take (lambda (buffer taxy)
-                      (let* ((key (buffery-major-mode buffer))
-                             (key-taxy
-                              (or (cl-find-if (lambda (taxy-key)
-                                                (equal key taxy-key))
-                                              (taxy-taxys taxy)
-                                              :key #'taxy-key)
-                                  (car
-                                   (push (make-taxy
-                                          :name key :key key
-                                          :predicate (lambda (buffer)
-                                                       (equal key (buffery-major-mode buffer))))
-                                         (taxy-taxys taxy))))))
-                        (push buffer (taxy-objects key-taxy))))))))
+              :take (apply-partially #'taxy-take-keyed #'buffery-major-mode)))))
 
   ;; Note the use of `taxy-copy' to avoid mutating the original taxy definition.
   (taxy-simple
@@ -172,7 +159,7 @@ You may not always know in advance what taxonomy a set of objects fits into, so 
               (taxy-copy buffery)))
 #+END_SRC
 
-Which produces this taxonomy of buffers:
+The taxy's ~:take~ function is set to the ~taxy-take-keyed~ function, partially applied with the ~buffery-major-mode~ function as its ~key-fn~ (~taxy-fill~ supplies the buffer and the taxy as arguments), and it produces this taxonomy of buffers:
 
 #+BEGIN_SRC elisp
   ("Buffers"
