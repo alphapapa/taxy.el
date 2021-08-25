@@ -93,10 +93,10 @@ You might think about how to produce that by writing some imperative code, but =
                                            :predicate (lambda (n) (zerop (mod n 5)))
                                            :then #'identity))))))
         (numbers (cl-loop for i below 100 collect i)))
-    (taxy-simple (taxy-fill (reverse numbers) numbery)))
+    (taxy-plain (taxy-fill (reverse numbers) numbery)))
 #+END_SRC
 
-The ~taxy-fill~ function applies the numbers in a "cascade" down the hierarchy of "taxys", and the ~taxy-simple~ function returns a meaningful subset of the taxys' slots, suitable for display.
+The ~taxy-fill~ function applies the numbers in a "cascade" down the hierarchy of "taxys", and the ~taxy-plain~ function returns a meaningful subset of the taxys' slots, suitable for display.
 
 * Contents                                                         :noexport:
 :PROPERTIES:
@@ -158,7 +158,7 @@ The ~:then~ function determines what happens to an object after being taken in: 
 
 After defining a taxy, call ~taxy-fill~ with it and a list of objects to fill the taxy's hierarchy.  *Note:* ~taxy-fill~ modifies the taxy given to it (filling its ~:objects~ and those of its ~:taxys~), so when using a statically defined taxy (e.g. one defined with ~defvar~), you should pass ~taxy-fill~ a taxy copied with ~taxy-copy~, which recursively copies a taxy without ~:objects~.
 
-To return a taxy in a more human-readable format (with only relevant fields included), use ~taxy-simple~.  You may also use ~taxy-apply~ to replace objects in a taxy with, e.g. a more useful representation.
+To return a taxy in a more human-readable format (with only relevant fields included), use ~taxy-plain~.  You may also use ~taxy-apply~ to replace objects in a taxy with, e.g. a more useful representation.
 
 ** Dynamic taxys
 
@@ -177,7 +177,7 @@ You may not always know in advance what taxonomy a set of objects fits into, so 
               :take (apply-partially #'taxy-take-keyed #'buffery-major-mode)))))
 
   ;; Note the use of `taxy-copy' to avoid mutating the original taxy definition.
-  (taxy-simple
+  (taxy-plain
    (taxy-fill (buffer-list)
               (taxy-copy buffery)))
 #+END_SRC
@@ -266,7 +266,7 @@ Using those defined taxys, we then fill the ~ement-roomy~ taxy with all of the r
 
 #+BEGIN_SRC elisp
   (let ((ement-session (alist-get "@USER:HOST" ement-sessions nil nil #'equal)))
-    (taxy-simple
+    (taxy-plain
      (taxy-apply (lambda (room)
                    (setf room (list (ement-room--room-display-name room)
                                     (ement-room-id room))))

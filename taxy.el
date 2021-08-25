@@ -67,13 +67,13 @@
     (dolist (object objects taxy)
       (apply-object taxy object))))
 
-(defun taxy-simple (taxy)
+(defun taxy-plain (taxy)
   "Return a list of the human-readable parts of TAXY."
   (delq nil
         (list (taxy-name taxy)
               (taxy-description taxy)
               (taxy-objects taxy)
-              (mapcar #'taxy-simple (taxy-taxys taxy)))))
+              (mapcar #'taxy-plain (taxy-taxys taxy)))))
 
 (defun taxy-copy (taxy)
   "Return a copy of TAXY without objects.
