@@ -70,7 +70,7 @@ You might think about how to produce that by writing some imperative code, but =
                                                 :predicate (lambda (n) (zerop (mod n 5)))
                                                 :then #'identity))))))
         (numbers (cl-loop for i below 100 collect i)))
-    (taxy-simple (taxy-fill numbery (reverse numbers))))
+    (taxy-simple (taxy-fill (reverse numbers) numbery)))
 #+END_SRC
 
 The ~taxy-fill~ function applies the numbers in a "cascade" down the hierarchy of "taxys", and the ~taxy-simple~ function returns a meaningful subset of the taxys' slots, suitable for display.
@@ -125,11 +125,11 @@ A taxy is defined with the ~make-taxy~ constructor, like:
              :taxys (list ...))
 #+END_SRC
 
-The ~:predicate~ function determines whether an object fits into that taxy.  If it does, ~taxy-fill~ adds the object to that taxy's descendant ~:taxys~, if present, or to its own ~objects~.  The function defaults to ~identity~, so a taxy "takes in" any object by default (i.e. if you only apply objects you want to classify, there's no need to test them at the top-level taxy).
+The ~:predicate~ function determines whether an object fits into that taxy.  If it does, ~taxy-fill~ adds the object to that taxy's descendant ~:taxys~, if present, or to its own ~:objects~.  The function defaults to ~identity~, so a taxy "takes in" any object by default (i.e. if you only apply objects you want to classify, there's no need to test them at the top-level taxy).
 
 The ~:then~ function determines what happens to an object after being taken in: if the function, called with the object, returns a non-nil value, that value is applied to other taxys at the same level until one of their ~:then~ functions returns nil or no more taxys remain.  The function defaults to ~ignore~, which makes a taxy "consume" its objects by default.  Setting the function to, e.g. ~identity~, makes it not consume them, leaving them eligible to also be taken into subsequent taxys, or to appear in the parent taxy's objects.
 
-After defining a taxy, call ~taxy-fill~ with it and a list of objects to fill the taxy's hierarchy.
+After defining a taxy, call ~taxy-fill~ with it and a list of objects to fill the taxy's hierarchy.  *Note:* ~taxy-fill~ modifies the taxy given to it (filling its ~:objects~ and those of its ~:taxys~), so when using a statically defined taxy (e.g. one defined with ~defvar~), you should pass ~taxy-fill~ a taxy copied with ~taxy-copy~, which recursively copies a taxy without ~:objects~.
 
 To return a taxy in a more human-readable format (with only relevant fields included), use ~taxy-simple~.
 
@@ -138,29 +138,34 @@ To return a taxy in a more human-readable format (with only relevant fields incl
 You may not always know in advance what taxonomy a set of objects fits into, so =taxy= lets you add taxys dynamically by using the ~:take~ function to add a taxy when an object is "taken into" a parent taxy.  For example, you could dynamically classify buffers by their major mode like so:
 
 #+BEGIN_SRC elisp :exports code
-  (let* ((key-fn (lambda (buffer)
-                   (buffer-local-value 'major-mode buffer)))
-         (buffery
-          (make-taxy
-           :name "Buffers"
-           :taxys (list
-                   (make-taxy
-                    :name "Modes"
-                    :take (lambda (buffer taxy)
-                            (let* ((key (funcall key-fn buffer))
-                                   (key-taxy
-                                    (or (cl-find-if (lambda (taxy-key)
-                                                      (equal key taxy-key))
-                                                    (taxy-taxys taxy)
-                                                    :key #'taxy-key)
-                                        (car
-                                         (push (make-taxy
-                                                :name key :key key
-                                                :predicate (lambda (buffer)
-                                                             (equal key (funcall key-fn buffer))))
-                                               (taxy-taxys taxy))))))
-                              (push buffer (taxy-objects key-taxy)))))))))
-    (taxy-simple (taxy-fill buffery (buffer-list))))
+  (defun buffery-major-mode (buffer)
+    (buffer-local-value 'major-mode buffer))
+
+  (defvar buffery
+    (make-taxy
+     :name "Buffers"
+     :taxys (list
+             (make-taxy
+              :name "Modes"
+              :take (lambda (buffer taxy)
+                      (let* ((key (buffery-major-mode buffer))
+                             (key-taxy
+                              (or (cl-find-if (lambda (taxy-key)
+                                                (equal key taxy-key))
+                                              (taxy-taxys taxy)
+                                              :key #'taxy-key)
+                                  (car
+                                   (push (make-taxy
+                                          :name key :key key
+                                          :predicate (lambda (buffer)
+                                                       (equal key (buffery-major-mode buffer))))
+                                         (taxy-taxys taxy))))))
+                        (push buffer (taxy-objects key-taxy))))))))
+
+  ;; Note the use of `taxy-copy' to avoid mutating the original taxy definition.
+  (taxy-simple
+   (taxy-fill (buffer-list)
+              (taxy-copy buffery)))
 #+END_SRC
 
 Which produces this taxonomy of buffers:

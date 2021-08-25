@@ -46,7 +46,8 @@
 
 ;;;; Functions
 
-(defun taxy-fill (taxy objects)
+(defun taxy-fill (objects taxy)
+  "Fill TAXY with OBJECTS according to its definition."
   (cl-labels ((apply-object (taxy object)
                             (cl-loop for taxy in (taxy-taxys taxy)
                                      when (funcall (taxy-predicate taxy) object)
@@ -67,11 +68,20 @@
       (apply-object taxy object))))
 
 (defun taxy-simple (taxy)
+  "Return a list of the human-readable parts of TAXY."
   (delq nil
         (list (taxy-name taxy)
               (taxy-description taxy)
               (taxy-objects taxy)
               (mapcar #'taxy-simple (taxy-taxys taxy)))))
+
+(defun taxy-copy (taxy)
+  "Return a copy of TAXY without objects.
+Clears TAXY's objects and those of its descendant taxys."
+  (setf taxy (copy-taxy taxy)
+        (taxy-objects taxy) nil
+        (taxy-taxys taxy) (mapcar #'taxy-copy (taxy-taxys taxy)))
+  taxy)
 
 ;;;; Footer
 
