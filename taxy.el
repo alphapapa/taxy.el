@@ -3,7 +3,7 @@
 ;; Copyright (C) 2021  Adam Porter
 
 ;; Author: Adam Porter <adam@alphapapa.net>
-;; Keywords:
+;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -20,7 +20,25 @@
 
 ;;; Commentary:
 
-;;
+;; This library provides a programmable way to classify arbitrary
+;; objects into a hierarchical taxonomy.  (That's a lot of fancy words
+;; to say that this lets you put things in nested groups.)
+
+;; Helpful features include:
+
+;; + Dynamic taxonomies: Objects may be classified into hierarchies
+;; automatically defined at runtime based on their attributes.
+
+;; + Reusable taxonomies: Taxonomy definitions may be stored in
+;; variables and reused in other taxonomies' descendant groups.
+
+;; Basic usage:
+
+;; 1.  Make a taxy with `make-taxy'.
+;; 2.  Fill the taxy with objects using `taxy-fill'.
+;; 3.  For a simple display of a taxy's objects, use `taxy-plain'.
+
+;; For more details, please see the README.org file.
 
 ;;; Code:
 
