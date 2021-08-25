@@ -8,7 +8,7 @@
 
 This library provides a way to programmably categorize arbitrary objects into a hierarchical taxonomy.  (That's a lot of fancy words to say that this lets you put things in groups.)
 
-* Examples
+* Example
 
 This is a silly taxonomy of numbers below 100:
 
@@ -80,12 +80,12 @@ The ~taxy-fill~ function applies the numbers in a "cascade" down the hierarchy o
 :TOC:      :include siblings
 :END:
 :CONTENTS:
-  -  [[#installation][Installation]]
-  -  [[#usage][Usage]]
-  -  [[#changelog][Changelog]]
-  -  [[#credits][Credits]]
-  -  [[#development][Development]]
-  -  [[#license][License]]
+- [[#usage][Usage]]
+  - [[#dynamic-taxys][Dynamic taxys]]
+  - [[#reusable-taxys][Reusable taxys]]
+- [[#changelog][Changelog]]
+- [[#development][Development]]
+- [[#license][License]]
 :END:
 
 # * Installation
@@ -112,7 +112,11 @@ The ~taxy-fill~ function applies the numbers in a "cascade" down the hierarchy o
 
 * Usage
 :PROPERTIES:
-:TOC:      :depth 0
+:TOC:      :include descendants :depth 1
+:END:
+:CONTENTS:
+- [[#dynamic-taxys][Dynamic taxys]]
+- [[#reusable-taxys][Reusable taxys]]
 :END:
 
 A taxy is defined with the ~make-taxy~ constructor, like:
@@ -202,6 +206,95 @@ Which produces this taxonomy of buffers:
 # ** Tips
 # 
 # + You can customize settings in the =taxy= group.
+
+** Reusable taxys
+
+Since taxys are structs, they may be stored in variables and used in other structs (being sure to copy the root taxy with ~taxy-copy~ before filling).  For example, this shows using =taxy= to classify Matrix rooms in [[https://github.com/alphapapa/ement.el][Ement.el]]:
+
+#+BEGIN_SRC elisp
+  (defun ement-roomy-buffer (room)
+    (alist-get 'buffer (ement-room-local room)))
+
+  (defvar ement-roomy-unread
+    (make-taxy :name "Unread"
+               :predicate (lambda (room)
+                            (buffer-modified-p (ement-roomy-buffer room)))))
+
+  (defvar ement-roomy-opened
+    (make-taxy :name "Opened"
+               :description "Rooms with buffers"
+               :predicate #'ement-roomy-buffer
+               :taxys (list ement-roomy-unread
+                            (make-taxy))))
+
+  (defvar ement-roomy-closed
+    (make-taxy :name "Closed"
+               :description "Rooms without buffers"
+               :predicate (lambda (room)
+                            (not (ement-roomy-buffer room)))))
+
+  (defvar ement-roomy
+    (make-taxy
+     :name "Ement Rooms"
+     :taxys (list (make-taxy
+                   :name "Direct"
+                   :description "Direct messaging rooms"
+                   :predicate (lambda (room)
+                                (ement-room--direct-p room ement-session))
+                   :taxys (list ement-roomy-opened
+                                ement-roomy-closed))
+                  (make-taxy
+                   :name "Non-direct"
+                   :description "Group chat rooms"
+                   :taxys (list ement-roomy-opened
+                                ement-roomy-closed)))))
+#+END_SRC
+
+Note how the taxys defined in the first three variables are used in subsequent taxys.  As well, the ~ement-roomy-opened~ taxy has an "anonymous" taxy, which collects any rooms that aren't collected by its sibling taxy (otherwise those objects would be collected into the parent, "Opened" taxy, which may not always be the most useful way to present the objects).
+
+Using those defined taxys, we then fill the ~ement-roomy~ taxy with all of the rooms in the user's session, and then use ~taxy-apply~ to replace the room structs with useful representations for display:
+
+#+BEGIN_SRC elisp
+  (let ((ement-session (alist-get "@USER:HOST" ement-sessions nil nil #'equal)))
+    (taxy-simple
+     (taxy-apply (lambda (room)
+                   (setf room (list (ement-room--room-display-name room)
+                                    (ement-room-id room))))
+       (taxy-fill (ement-session-rooms ement-session)
+                  (taxy-copy ement-roomy)))))
+#+END_SRC
+
+This produces:
+
+#+BEGIN_SRC elisp
+  ("Ement Rooms"
+   (("Direct" "Direct messaging rooms"
+     (("Opened" "Rooms with buffers"
+       (("Unread"
+         (("Lars Ingebrigtsen" "!nope:gnus.org")))))
+      ("Closed" "Rooms without buffers"
+       (("John Wiegley" "!not-really:newartisans.com")
+        ("Eli Zaretskii" "!im-afraid-not:gnu.org")))))
+    ("Non-direct" "Group chat rooms"
+     (("Opened" "Rooms with buffers"
+       (("Unread"
+         (("Emacs" "!WfZsmtnxbxTdoYPkaT:greyface.org")
+          ("#emacs" "!KuaCUVGoCiunYyKEpm:libera.chat")))
+        ;; The non-unread buffers in the "anonymous" taxy.
+        ((("magit/magit" "!HZYimOcmEAsAxOcgpE:gitter.im")
+          ("Ement.el" "!NicAJNwJawmHrEhqZs:matrix.org")
+          ("#emacsconf" "!UjTTDnYmSAslLTtMCF:libera.chat")
+          ("Emacs Matrix Client" "!ZrZoyXEyFrzcBZKNis:matrix.org")
+          ("org-mode" "!rUhEinythPhVTdddsb:matrix.org")
+          ("This Week in Matrix (TWIM)" "!xYvNcQPhnkrdUmYczI:matrix.org")))))
+      ("Closed" "Rooms without buffers"
+       (("#matrix-spec" "!NasysSDfxKxZBzJJoE:matrix.org")
+        ("#commonlisp" "!IiGsrmKRHzpupHRaKS:libera.chat")
+        ("Matrix HQ" "!OGEhHVWSdvArJzumhm:matrix.org")
+        ("#lisp" "!czLxhhEegTEGNKUBgo:libera.chat")
+        ("Emacs" "!gLamGIXTWBaDFfhEeO:matrix.org")
+        ("#matrix-dev:matrix.org" "!jxlRxnrZCsjpjDubDX:matrix.org")))))))
+#+END_SRC
 
 * Changelog
 :PROPERTIES:
