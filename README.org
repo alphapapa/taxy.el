@@ -8,6 +8,8 @@
 
 # [[https://melpa.org/#/package-name][file:https://melpa.org/packages/taxy-badge.svg]] [[https://stable.melpa.org/#/package-name][file:https://stable.melpa.org/packages/taxy-badge.svg]]
 
+/Now, where did I put that.../
+
 This library provides a programmable way to classify arbitrary objects into a hierarchical taxonomy.  (That's a lot of fancy words to say that this lets you put things in nested groups.)
 
 Helpful features include:
@@ -15,9 +17,45 @@ Helpful features include:
 +  Dynamic taxonomies :: Objects may be classified into hierarchies automatically defined at runtime based on their attributes.
 +  Reusable taxonomies :: Taxonomy definitions may be stored in variables and reused in other taxonomies' descendant groups.
 
+* Contents                                                         :noexport:
+:PROPERTIES:
+:TOC:      :include siblings
+:END:
+:CONTENTS:
+- [[#examples][Examples]]
+- [[#usage][Usage]]
+  - [[#dynamic-taxys][Dynamic taxys]]
+  - [[#reusable-taxys][Reusable taxys]]
+  - [[#threading-macros][Threading macros]]
+- [[#changelog][Changelog]]
+- [[#development][Development]]
+:END:
+
+# * Installation
+# :PROPERTIES:
+# :TOC:      :depth 0
+# :END:
+# 
+# ** MELPA
+# 
+# If you installed from MELPA, you're done.  Just run one of the commands below.
+# 
+# ** Manual
+# 
+#   Install these required packages:
+# 
+#   + =foo=
+#   + =bar=
+# 
+#   Then put this file in your load-path, and put this in your init file:
+# 
+#   #+BEGIN_SRC elisp
+# (require 'taxy)
+#   #+END_SRC
+
 * Examples
 
-Let's make a silly taxonomy of numbers below 100:
+Let's imagine a silly taxonomy of numbers below 100:
 
 #+BEGIN_SRC elisp
   ("Numbery" "A silly taxonomy of numbers."
@@ -170,42 +208,6 @@ That's better:
     ("Consonants" "Well, if they aren't a vowel..."
      ("B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N" "N" "P" "Q" "R" "S" "T" "V" "W" "X" "Y" "Z"))))
 #+END_SRC
-
-* Contents                                                         :noexport:
-:PROPERTIES:
-:TOC:      :include siblings
-:END:
-:CONTENTS:
-- [[#usage][Usage]]
-  - [[#dynamic-taxys][Dynamic taxys]]
-  - [[#reusable-taxys][Reusable taxys]]
-  - [[#threading-macros][Threading macros]]
-- [[#changelog][Changelog]]
-- [[#development][Development]]
-- [[#license][License]]
-:END:
-
-# * Installation
-# :PROPERTIES:
-# :TOC:      :depth 0
-# :END:
-# 
-# ** MELPA
-# 
-# If you installed from MELPA, you're done.  Just run one of the commands below.
-# 
-# ** Manual
-# 
-#   Install these required packages:
-# 
-#   + =foo=
-#   + =bar=
-# 
-#   Then put this file in your load-path, and put this in your init file:
-# 
-#   #+BEGIN_SRC elisp
-# (require 'taxy)
-#   #+END_SRC
 
 * Usage
 :PROPERTIES:
@@ -410,6 +412,9 @@ Not yet tagged.
 Bug reports, feature requests, suggestions — /oh my/!
 
 * License
+:PROPERTIES:
+:TOC:      :ignore (this)
+:END:
 
 GPLv3
 
