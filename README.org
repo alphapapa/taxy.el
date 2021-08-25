@@ -233,7 +233,7 @@ The ~:predicate~ function determines whether an object fits into that taxy.  If 
 
 The ~:then~ function determines what happens to an object after being taken in: if the function, called with the object, returns a non-nil value, that value is applied to other taxys at the same level until one of their ~:then~ functions returns nil or no more taxys remain.  The function defaults to ~ignore~, which makes a taxy "consume" its objects by default.  Setting the function to, e.g. ~identity~, makes it not consume them, leaving them eligible to also be taken into subsequent taxys, or to appear in the parent taxy's objects.
 
-After defining a taxy, call ~taxy-fill~ with it and a list of objects to fill the taxy's hierarchy.  *Note:* ~taxy-fill~ modifies the taxy given to it (filling its ~:objects~ and those of its ~:taxys~), so when using a statically defined taxy (e.g. one defined with ~defvar~), you should pass ~taxy-fill~ a taxy copied with ~taxy-copy~, which recursively copies a taxy without ~:objects~.
+After defining a taxy, call ~taxy-fill~ with it and a list of objects to fill the taxy's hierarchy.  *Note:* ~taxy-fill~ modifies the taxy given to it (filling its ~:objects~ and those of its ~:taxys~), so when using a statically defined taxy (e.g. one defined with ~defvar~), you should pass ~taxy-fill~ a taxy copied with ~taxy-emptied~, which recursively copies a taxy without ~:objects~.
 
 To return a taxy in a more human-readable format (with only relevant fields included), use ~taxy-plain~.  You may also use ~taxy-map~ to replace objects in a taxy with, e.g. a more useful representation.
 
@@ -253,10 +253,10 @@ You may not always know in advance what taxonomy a set of objects fits into, so 
               :name "Modes"
               :take (apply-partially #'taxy-take-keyed #'buffery-major-mode)))))
 
-  ;; Note the use of `taxy-copy' to avoid mutating the original taxy definition.
+  ;; Note the use of `taxy-emptied' to avoid mutating the original taxy definition.
   (taxy-plain
    (taxy-fill (buffer-list)
-              (taxy-copy buffery)))
+              (taxy-emptied buffery)))
 #+END_SRC
 
 The taxy's ~:take~ function is set to the ~taxy-take-keyed~ function, partially applied with the ~buffery-major-mode~ function as its ~key-fn~ (~taxy-fill~ supplies the buffer and the taxy as arguments), and it produces this taxonomy of buffers:
@@ -296,7 +296,7 @@ The taxy's ~:take~ function is set to the ~taxy-take-keyed~ function, partially 
 
 ** Reusable taxys
 
-Since taxys are structs, they may be stored in variables and used in other structs (being sure to copy the root taxy with ~taxy-copy~ before filling).  For example, this shows using =taxy= to classify Matrix rooms in [[https://github.com/alphapapa/ement.el][Ement.el]]:
+Since taxys are structs, they may be stored in variables and used in other structs (being sure to copy the root taxy with ~taxy-emptied~ before filling).  For example, this shows using =taxy= to classify Matrix rooms in [[https://github.com/alphapapa/ement.el][Ement.el]]:
 
 #+BEGIN_SRC elisp
   (defun ement-roomy-buffer (room)
@@ -347,7 +347,7 @@ Using those defined taxys, we then fill the ~ement-roomy~ taxy with all of the r
                (list (ement-room--room-display-name room)
                      (ement-room-id room)))
      (taxy-fill (ement-session-rooms ement-session)
-                (taxy-copy ement-roomy))))
+                (taxy-emptied ement-roomy))))
 #+END_SRC
 
 This produces:
@@ -388,7 +388,7 @@ If you happen to like macros, ~taxy~ works well with threading (i.e. ~thread-las
 
 #+BEGIN_SRC elisp
   (thread-last ement-roomy
-    taxy-copy
+    taxy-emptied
     (taxy-fill (ement-session-rooms ement-session))
     (taxy-map (lambda (room)
                 (list (ement-room--room-display-name room)

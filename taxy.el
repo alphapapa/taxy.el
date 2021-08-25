@@ -72,12 +72,13 @@
               (taxy-objects taxy)
               (mapcar #'taxy-plain (taxy-taxys taxy)))))
 
-(defun taxy-copy (taxy)
+(defun taxy-emptied (taxy)
   "Return a copy of TAXY without objects.
-Clears TAXY's objects and those of its descendant taxys."
+Omits TAXY's objects and those of its descendant taxys.  Useful
+when reusing taxy definitions."
   (setf taxy (copy-taxy taxy)
         (taxy-objects taxy) nil
-        (taxy-taxys taxy) (mapcar #'taxy-copy (taxy-taxys taxy)))
+        (taxy-taxys taxy) (mapcar #'taxy-emptied (taxy-taxys taxy)))
   taxy)
 
 (defun taxy-map (fn taxy)
