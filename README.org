@@ -44,24 +44,19 @@ You might think about how to produce that by writing some imperative code, but =
          (make-taxy
           :name "Numbery"
           :description "A silly taxonomy of numbers."
-          :predicate #'numberp
-          :then #'ignore
           :taxys (list (make-taxy
                         :name "< 10"
-                        :description "Numbers below 10"
+                        :description "Numbers below 10 (consuming)"
                         :predicate (lambda (n) (< n 10))
-                        :then #'ignore
                         :taxys (list (make-taxy :name "Odd (consuming)"
-                                                :predicate #'oddp
-                                                :then #'ignore)
+                                                :predicate #'oddp)
                                      (make-taxy :name "Even (non-consuming)"
                                                 :predicate #'evenp
                                                 :then #'identity)))
                        (make-taxy
                         :name ">= 10"
-                        :description "Numbers above 9"
+                        :description "Numbers above 9 (consuming)"
                         :predicate (lambda (n) (>= n 10))
-                        :then #'ignore
                         :taxys (list (make-taxy :name "Divisible by 3 (non-consuming)"
                                                 :predicate (lambda (n) (zerop (mod n 3)))
                                                 :then #'identity)
@@ -130,9 +125,9 @@ A taxy is defined with the ~make-taxy~ constructor, like:
              :taxys (list ...))
 #+END_SRC
 
-The ~:predicate~ function determines whether an object fits into that taxy.  If it does, ~taxy-apply~ adds the object to that taxy's descendant ~:taxys~, if present, or to its own ~objects~.
+The ~:predicate~ function determines whether an object fits into that taxy.  If it does, ~taxy-apply~ adds the object to that taxy's descendant ~:taxys~, if present, or to its own ~objects~.  The function defaults to ~identity~, so a taxy "takes in" any object by default (i.e. if you only apply objects you want to classify, there's no need to test them at the top-level taxy).
 
-The ~:then~ function determines what happens to an object after being applied: if the function, called with the object, returns a non-nil value, that value is applied to other taxys at the same level until one of them returns nil or no more taxys remain.
+The ~:then~ function determines what happens to an object after being taken in: if the function, called with the object, returns a non-nil value, that value is applied to other taxys at the same level until one of their ~:then~ functions returns nil or no more taxys remain.  The function defaults to ~ignore~, which makes a taxy "consume" its objects by default.  Setting the function to, e.g. ~identity~, makes it not consume them, leaving them eligible to also be taken into subsequent taxys, or to appear in the parent taxy's objects.
 
 After defining a taxy, call ~taxy-apply~ with it and a list of objects to fill the taxy's hierarchy.
 
