@@ -131,7 +131,7 @@ The ~:then~ function determines what happens to an object after being taken in: 
 
 After defining a taxy, call ~taxy-fill~ with it and a list of objects to fill the taxy's hierarchy.  *Note:* ~taxy-fill~ modifies the taxy given to it (filling its ~:objects~ and those of its ~:taxys~), so when using a statically defined taxy (e.g. one defined with ~defvar~), you should pass ~taxy-fill~ a taxy copied with ~taxy-copy~, which recursively copies a taxy without ~:objects~.
 
-To return a taxy in a more human-readable format (with only relevant fields included), use ~taxy-simple~.
+To return a taxy in a more human-readable format (with only relevant fields included), use ~taxy-simple~.  You may also use ~taxy-apply~ to replace objects in a taxy with, e.g. a more useful representation.
 
 ** Dynamic taxys
 

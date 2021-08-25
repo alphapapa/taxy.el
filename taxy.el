@@ -83,6 +83,17 @@ Clears TAXY's objects and those of its descendant taxys."
         (taxy-taxys taxy) (mapcar #'taxy-copy (taxy-taxys taxy)))
   taxy)
 
+(defun taxy-apply (fn taxy)
+  "Return TAXY, having applied FN to each object in it, including descendants.
+Used to apply side effects, e.g. to transform objects into a more
+useful form after classification."
+  ;; I can't seem to find a way to do this without consing new lists.
+  ;; Even using `cl-loop' with `in-ref' didn't work.
+  (setf (taxy-objects taxy) (mapcar fn (taxy-objects taxy))
+        (taxy-taxys taxy) (cl-loop for taxy in (taxy-taxys taxy)
+                                   collect (taxy-apply fn taxy)))
+  taxy)
+
 ;;;; Footer
 
 (provide 'taxy)
