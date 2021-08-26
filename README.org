@@ -426,6 +426,8 @@ That shows a buffer like this:
 
 [[images/magit-section-numbery.png]]
 
+Note that =taxy-magit-section.el= is not installed with the =taxy= package by default.
+
 * Changelog
 :PROPERTIES:
 :TOC:      :depth 0
@@ -448,10 +450,32 @@ Bug reports, feature requests, suggestions — /oh my/!
 
 GPLv3
 
-# Local Variables:
-# eval: (require 'org-make-toc)
-# before-save-hook: org-make-toc
-# org-export-with-properties: ()
-# org-export-with-title: t
-# End:
+* COMMENT Export setup                                             :noexport:
+:PROPERTIES:
+:TOC:      :ignore (this descendants)
+:END:
 
+# Copied from org-super-agenda's readme, in which much was borrowed from Org's =org-manual.org=.
+
+#+OPTIONS: broken-links:t *:t
+
+** Info export options
+
+#+TEXINFO_DIR_CATEGORY: Emacs
+#+TEXINFO_DIR_TITLE: Taxy: (taxy)
+#+TEXINFO_DIR_DESC: Programmable taxonomical grouping for arbitrary objects
+
+# NOTE: We could use these, but that causes a pointless error, "org-compile-file: File "..README.info" wasn't produced...", so we just rename the files in the after-save-hook instead.
+# #+TEXINFO_FILENAME: taxy.info
+# #+EXPORT_FILE_NAME: taxy.texi
+
+** File-local variables
+
+# NOTE: Setting org-comment-string buffer-locally is a nasty hack to work around GitHub's org-ruby's HTML rendering, which does not respect noexport tags.  The only way to hide this tree from its output is to use the COMMENT keyword, but that prevents Org from processing the export options declared in it.  So since these file-local variables don't affect org-ruby, wet set org-comment-string to an unused keyword, which prevents Org from deleting this tree from the export buffer, which allows it to find the export options in it.  And since org-export does respect the noexport tag, the tree is excluded from the info page.
+
+# Local Variables:
+# before-save-hook: org-make-toc
+# after-save-hook: (lambda nil (when (and (require 'ox-texinfo nil t) (org-texinfo-export-to-info)) (delete-file "README.texi") (rename-file "README.info" "taxy.info" t)))
+# org-export-initial-scope: buffer
+# org-comment-string: "NOTCOMMENT"
+# End:

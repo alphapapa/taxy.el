@@ -1,0 +1,508 @@
+This is README.info, produced by makeinfo version 5.2 from README.texi.
+
+INFO-DIR-SECTION Emacs
+START-INFO-DIR-ENTRY
+* Taxy: (taxy).         Programmable taxonomical grouping for arbitrary objects.
+END-INFO-DIR-ENTRY
+
+
+File: README.info,  Node: Top,  Next: Examples,  Up: (dir)
+
+taxy.el
+*******
+
+* Menu:
+
+* Examples::
+* Usage::
+* Changelog::
+* Development::
+* License::
+
+— The Detailed Node Listing —
+
+
+Usage
+
+* Dynamic taxys::
+* Reusable taxys::
+* Threading macros::
+* Magit section::
+
+
+
+Changelog
+
+* 0.1-pre: 01-pre. 
+
+_Now, where did I put that…_
+
+   This library provides a programmable way to classify arbitrary
+objects into a hierarchical taxonomy.  (That’s a lot of fancy words to
+say that this lets you put things in nested groups.)
+
+   Helpful features include:
+
+‘Dynamic taxonomies’
+     Objects may be classified into hierarchies automatically defined at
+     runtime based on their attributes.
+‘Reusable taxonomies’
+     Taxonomy definitions may be stored in variables and reused in other
+     taxonomies’ descendant groups.
+
+
+File: README.info,  Node: Examples,  Next: Usage,  Prev: Top,  Up: Top
+
+1 Examples
+**********
+
+Let’s imagine a silly taxonomy of numbers below 100:
+
+     ("Numbery" "A silly taxonomy of numbers."
+      (("< 10" "Numbers below 10"
+        ;; These numbers are leftovers from the sub-taxys below.
+        (0 2 4 6 8)
+        ;; These sub-taxys further classify the numbers below 10 into odd
+        ;; and even.  The odd taxy "consumes" numbers, while the even one
+        ;; doesn't, leaving them to reappear in the parent taxy's objects.
+        (("Odd" "(consuming)"
+          (1 3 5 7 9))
+         ("Even" "(non-consuming)"
+          (0 2 4 6 8))))
+       (">= 10" "Numbers above 9"
+        ;; Like in the "< 10" taxy, these numbers are leftovers from this
+        ;; taxy's sub-taxys, three of which are non-consuming.
+        (10 11 13 14 17 19 22 23 25 26 29 31 34 35 37 38 41 43 46 47 49 50 53 55 58
+            59 61 62 65 67 70 71 73 74 77 79 82 83 85 86 89 91 94 95 97 98)
+        (("Divisible by 3" "(non-consuming)"
+          (12 15 18 21 24 27 30 33 36 39 42 45 48 51 54 57 60 63 66 69 72 75 78 81 84
+              87 90 93 96 99))
+         ("Divisible by 4" "(non-consuming)"
+          (12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96))
+         ("Divisible by 3 or 4" "(consuming)"
+          ;; This taxy consumes numbers it takes in, but since these
+          ;; numbers have already been taken in (without being consumed) by
+          ;; the previous two sibling taxys, they may also appear in them.
+          (12 15 16 18 20 21 24 27 28 30 32 33 36 39 40 42 44 45 48 51 52 54 56 57 60
+              63 64 66 68 69 72 75 76 78 80 81 84 87 88 90 92 93 96 99))
+         ("Divisible by 5" "(non-consuming)"
+          (10 25 35 50 55 65 70 85 95))))))
+
+   You might think about how to produce that by writing some imperative
+code, but taxy allows you to do so in a more declarative and functional
+manner:
+
+     (require 'taxy)
+
+     (defvar numbery
+       (make-taxy
+        :name "Numbery"
+        :description "A silly taxonomy of numbers."
+        :taxys (list (make-taxy
+                      :name "< 10"
+                      :description "Numbers below 10 (consuming)"
+                      :predicate (lambda (n) (< n 10))
+                      :taxys (list
+                              ;; These sub-taxys further classify the numbers below 10 into odd
+                              ;; and even.  The odd taxy "consumes" numbers, while the even one
+                              ;; doesn't, leaving them to reappear in the parent taxy's objects.
+                              (make-taxy :name "Odd"
+                                         :description "(consuming)"
+                                         :predicate #'oddp)
+                              (make-taxy :name "Even"
+                                         :description "(non-consuming)"
+                                         :predicate #'evenp
+                                         :then #'identity)))
+                     (make-taxy
+                      :name ">= 10"
+                      :description "Numbers above 9 (consuming)"
+                      :predicate (lambda (n) (>= n 10))
+                      :taxys (list
+                              ;; Like in the "< 10" taxy, these sub-taxys further classify
+                              ;; the numbers, but only one of them consumes numbers it
+                              ;; takes in, leaving the rest to reappear in the parent taxy.
+                              (make-taxy :name "Divisible by 3"
+                                         :description "(non-consuming)"
+                                         :predicate (lambda (n) (zerop (mod n 3)))
+                                         :then #'identity)
+                              (make-taxy :name "Divisible by 4"
+                                         :description "(non-consuming)"
+                                         :predicate (lambda (n) (zerop (mod n 4)))
+                                         :then #'identity)
+                              (make-taxy :name "Divisible by 3 or 4"
+                                         :description "(consuming)"
+                                         ;; Since this taxy's `:then' function is unset,
+                                         ;; it defaults to `ignore', which causes it to
+                                         ;; consume numbers it takes in.  Since these
+                                         ;; numbers have already been taken in (without
+                                         ;; being consumed) by the previous two sibling
+                                         ;; taxys, they also appear in them.
+                                         :predicate (lambda (n) (or (zerop (mod n 3))
+                                                                    (zerop (mod n 4)))))
+                              (make-taxy :name "Divisible by 5"
+                                         :description "(non-consuming)"
+                                         :predicate (lambda (n) (zerop (mod n 5)))
+                                         :then #'identity))))))
+
+     (let ((numbers (cl-loop for i below 100 collect i))
+           ;; Since `numbery' is stored in a variable, we use an emptied
+           ;; copy of it to avoid mutating the original taxy.
+           (taxy (taxy-emptied numbery)))
+       (taxy-plain (taxy-fill (reverse numbers) taxy)))
+
+   The ‘taxy-fill’ function applies the numbers in a "cascade" down the
+hierarchy of "taxys", and the ‘taxy-plain’ function returns a meaningful
+subset of the taxys’ slots, suitable for display.
+
+   You can also add more objects after the hierarchy has been filled:
+
+     (defvar lettery
+       (make-taxy :name "Lettery"
+                  :description "A comprehensive taxonomy of letters."
+                  :taxys (list (make-taxy :name "Vowels"
+                                          :description "You know what those are."
+                                          :predicate (lambda (l)
+                                                       (member-ignore-case l '("a" "e" "i" "o" "u"))))
+                               (make-taxy :name "Consonants"
+                                          :description "Well, if they aren't a vowel..."))))
+
+     (taxy-plain
+      (taxy-fill (reverse
+                  (cl-loop for l from ?a to ?n
+                           collect (upcase (char-to-string l))))
+                 lettery))
+
+     ("Lettery" "A comprehensive taxonomy of letters."
+      (("Vowels" "You know what those are."
+        ("A" "E" "I"))
+       ("Consonants" "Well, if they aren't a vowel..."
+        ("B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N"))))
+
+   Oops, we forgot the letters after N! Let’s add them, too:
+
+     (taxy-plain
+      (taxy-fill (reverse
+                  (cl-loop for l from ?n to ?z
+                           collect (upcase (char-to-string l))))
+                 lettery))
+
+     ("Lettery" "A comprehensive taxonomy of letters."
+      (("Vowels" "You know what those are."
+        ("O" "U" "A" "E" "I"))
+       ("Consonants" "Well, if they aren't a vowel..."
+        ("N" "P" "Q" "R" "S" "T" "V" "W" "X" "Y" "Z" "B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N"))))
+
+   Oh, they’re out of order, now.  That won’t do.  Let’s fix that:
+
+     (cl-loop for taxy in-ref (taxy-taxys lettery)
+              do (setf (taxy-objects taxy) (cl-sort (taxy-objects taxy) #'<
+                                                    :key #'string-to-char)))
+
+     (taxy-plain lettery)
+
+   That’s better:
+
+     ("Lettery" "A comprehensive taxonomy of letters."
+      (("Vowels" "You know what those are."
+        ("A" "E" "I" "O" "U"))
+       ("Consonants" "Well, if they aren't a vowel..."
+        ("B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N" "N" "P" "Q" "R" "S" "T" "V" "W" "X" "Y" "Z"))))
+
+
+File: README.info,  Node: Usage,  Next: Changelog,  Prev: Examples,  Up: Top
+
+2 Usage
+*******
+
+   • • • • 
+   A taxy is defined with the ‘make-taxy’ constructor, like:
+
+     (make-taxy :name "Numbery"
+                :description "A silly taxonomy of numbers."
+                :predicate #'numberp
+                :then #'ignore
+                :taxys (list ...))
+
+   The ‘:predicate’ function determines whether an object fits into that
+taxy.  If it does, ‘taxy-fill’ adds the object to that taxy’s descendant
+‘:taxys’, if present, or to its own ‘:objects’.  The function defaults
+to ‘identity’, so a taxy "takes in" any object by default (i.e.  if you
+only apply objects you want to classify, there’s no need to test them at
+the top-level taxy).
+
+   The ‘:then’ function determines what happens to an object after being
+taken in: if the function, called with the object, returns a non-nil
+value, that value is applied to other taxys at the same level until one
+of their ‘:then’ functions returns nil or no more taxys remain.  The
+function defaults to ‘ignore’, which makes a taxy "consume" its objects
+by default.  Setting the function to, e.g.  ‘identity’, makes it not
+consume them, leaving them eligible to also be taken into subsequent
+taxys, or to appear in the parent taxy’s objects.
+
+   After defining a taxy, call ‘taxy-fill’ with it and a list of objects
+to fill the taxy’s hierarchy.  *Note:* ‘taxy-fill’ modifies the taxy
+given to it (filling its ‘:objects’ and those of its ‘:taxys’), so when
+using a statically defined taxy (e.g.  one defined with ‘defvar’), you
+should pass ‘taxy-fill’ a taxy copied with ‘taxy-emptied’, which
+recursively copies a taxy without ‘:objects’.
+
+   To return a taxy in a more human-readable format (with only relevant
+fields included), use ‘taxy-plain’.  You may also use ‘taxy-map’ to
+replace objects in a taxy with, e.g.  a more useful representation.
+
+* Menu:
+
+* Dynamic taxys::
+* Reusable taxys::
+* Threading macros::
+* Magit section::
+
+
+File: README.info,  Node: Dynamic taxys,  Next: Reusable taxys,  Up: Usage
+
+2.1 Dynamic taxys
+=================
+
+You may not always know in advance what taxonomy a set of objects fits
+into, so taxy lets you add taxys dynamically by using the ‘:take’
+function to add a taxy when an object is "taken into" a parent taxy.
+For example, you could dynamically classify buffers by their major mode
+like so:
+
+     (defun buffery-major-mode (buffer)
+       (buffer-local-value 'major-mode buffer))
+
+     (defvar buffery
+       (make-taxy
+        :name "Buffers"
+        :taxys (list
+                (make-taxy
+                 :name "Modes"
+                 :take (apply-partially #'taxy-take-keyed #'buffery-major-mode)))))
+
+     ;; Note the use of `taxy-emptied' to avoid mutating the original taxy definition.
+     (taxy-plain
+      (taxy-fill (buffer-list)
+                 (taxy-emptied buffery)))
+
+   The taxy’s ‘:take’ function is set to the ‘taxy-take-keyed’ function,
+partially applied with the ‘buffery-major-mode’ function as its ‘key-fn’
+(‘taxy-fill’ supplies the buffer and the taxy as arguments), and it
+produces this taxonomy of buffers:
+
+     ("Buffers"
+      (("Modes"
+        ((magit-process-mode
+          (#<buffer magit-process: taxy.el> #<buffer magit-process: > #<buffer magit-process: notes>))
+         (messages-buffer-mode
+          (#<buffer *Messages*>))
+         (special-mode
+          (#<buffer *Warnings*> #<buffer *elfeed-log*>))
+         (dired-mode
+          (#<buffer ement.el<emacs>>))
+         (Custom-mode
+          (#<buffer *Customize Apropos*>))
+         (fundamental-mode
+          (#<buffer  *helm candidates:Bookmarks*> #<buffer *Backtrace*>))
+         (magit-diff-mode
+          (#<buffer magit-diff: taxy.el> #<buffer magit-diff: notes> #<buffer magit-diff: ement.el>))
+         (compilation-mode
+          (#<buffer *compilation*> #<buffer *Compile-Log*>))
+         (Info-mode
+          (#<buffer  *helm info temp buffer*> #<buffer *info*>))
+         (help-mode
+          (#<buffer *Help*>))
+         (emacs-lisp-mode
+          (#<buffer ement.el<ement.el>> #<buffer ement-room-list.el> #<buffer *scratch*>
+                    #<buffer ement-room.el> #<buffer init.el> #<buffer bufler.el>
+                    #<buffer dash.el> #<buffer *Pp Eval Output*> #<buffer taxy.el> #<buffer scratch.el>))))))
+
+
+File: README.info,  Node: Reusable taxys,  Next: Threading macros,  Prev: Dynamic taxys,  Up: Usage
+
+2.2 Reusable taxys
+==================
+
+Since taxys are structs, they may be stored in variables and used in
+other structs (being sure to copy the root taxy with ‘taxy-emptied’
+before filling).  For example, this shows using taxy to classify Matrix
+rooms in Ement.el (https://github.com/alphapapa/ement.el):
+
+     (defun ement-roomy-buffer (room)
+       (alist-get 'buffer (ement-room-local room)))
+
+     (defvar ement-roomy-unread
+       (make-taxy :name "Unread"
+                  :predicate (lambda (room)
+                               (buffer-modified-p (ement-roomy-buffer room)))))
+
+     (defvar ement-roomy-opened
+       (make-taxy :name "Opened"
+                  :description "Rooms with buffers"
+                  :predicate #'ement-roomy-buffer
+                  :taxys (list ement-roomy-unread
+                               (make-taxy))))
+
+     (defvar ement-roomy-closed
+       (make-taxy :name "Closed"
+                  :description "Rooms without buffers"
+                  :predicate (lambda (room)
+                               (not (ement-roomy-buffer room)))))
+
+     (defvar ement-roomy
+       (make-taxy
+        :name "Ement Rooms"
+        :taxys (list (make-taxy
+                      :name "Direct"
+                      :description "Direct messaging rooms"
+                      :predicate (lambda (room)
+                                   (ement-room--direct-p room ement-session))
+                      :taxys (list ement-roomy-opened
+                                   ement-roomy-closed))
+                     (make-taxy
+                      :name "Non-direct"
+                      :description "Group chat rooms"
+                      :taxys (list ement-roomy-opened
+                                   ement-roomy-closed)))))
+
+   Note how the taxys defined in the first three variables are used in
+subsequent taxys.  As well, the ‘ement-roomy-opened’ taxy has an
+"anonymous" taxy, which collects any rooms that aren’t collected by its
+sibling taxy (otherwise those objects would be collected into the
+parent, "Opened" taxy, which may not always be the most useful way to
+present the objects).
+
+   Using those defined taxys, we then fill the ‘ement-roomy’ taxy with
+all of the rooms in the user’s session, and then use ‘taxy-map’ to
+replace the room structs with useful representations for display:
+
+     (taxy-plain
+      (taxy-map (lambda (room)
+                  (list (ement-room--room-display-name room)
+                        (ement-room-id room)))
+        (taxy-fill (ement-session-rooms ement-session)
+                   (taxy-emptied ement-roomy))))
+
+   This produces:
+
+     ("Ement Rooms"
+      (("Direct" "Direct messaging rooms"
+        (("Opened" "Rooms with buffers"
+          (("Unread"
+            (("Lars Ingebrigtsen" "!nope:gnus.org")))))
+         ("Closed" "Rooms without buffers"
+          (("John Wiegley" "!not-really:newartisans.com")
+           ("Eli Zaretskii" "!im-afraid-not:gnu.org")))))
+       ("Non-direct" "Group chat rooms"
+        (("Opened" "Rooms with buffers"
+          (("Unread"
+            (("Emacs" "!WfZsmtnxbxTdoYPkaT:greyface.org")
+             ("#emacs" "!KuaCUVGoCiunYyKEpm:libera.chat")))
+           ;; The non-unread buffers in the "anonymous" taxy.
+           ((("magit/magit" "!HZYimOcmEAsAxOcgpE:gitter.im")
+             ("Ement.el" "!NicAJNwJawmHrEhqZs:matrix.org")
+             ("#emacsconf" "!UjTTDnYmSAslLTtMCF:libera.chat")
+             ("Emacs Matrix Client" "!ZrZoyXEyFrzcBZKNis:matrix.org")
+             ("org-mode" "!rUhEinythPhVTdddsb:matrix.org")
+             ("This Week in Matrix (TWIM)" "!xYvNcQPhnkrdUmYczI:matrix.org")))))
+         ("Closed" "Rooms without buffers"
+          (("#matrix-spec" "!NasysSDfxKxZBzJJoE:matrix.org")
+           ("#commonlisp" "!IiGsrmKRHzpupHRaKS:libera.chat")
+           ("Matrix HQ" "!OGEhHVWSdvArJzumhm:matrix.org")
+           ("#lisp" "!czLxhhEegTEGNKUBgo:libera.chat")
+           ("Emacs" "!gLamGIXTWBaDFfhEeO:matrix.org")
+           ("#matrix-dev:matrix.org" "!jxlRxnrZCsjpjDubDX:matrix.org")))))))
+
+
+File: README.info,  Node: Threading macros,  Next: Magit section,  Prev: Reusable taxys,  Up: Usage
+
+2.3 Threading macros
+====================
+
+If you happen to like macros, ‘taxy’ works well with threading (i.e.
+‘thread-last’ or ‘->>’):
+
+     (thread-last ement-roomy
+       taxy-emptied
+       (taxy-fill (ement-session-rooms ement-session))
+       (taxy-map (lambda (room)
+                   (list (ement-room--room-display-name room)
+                         (ement-room-id room))))
+       taxy-plain)
+
+
+File: README.info,  Node: Magit section,  Prev: Threading macros,  Up: Usage
+
+2.4 Magit section
+=================
+
+Showing a taxy with magit-section is very easy:
+
+     (require 'taxy-magit-section)
+
+     ;; Using the `numbery' taxy defined in earlier examples:
+     (thread-last numbery
+       taxy-emptied ;; Get an empty copy of the taxy, since it's defined in a variable.
+       (taxy-fill (reverse (cl-loop for i below 30 collect i)))
+       taxy-magit-section-pp)
+
+   That shows a buffer like this:
+
+   Note that taxy-magit-section.el is not installed with the taxy
+package by default.
+
+
+File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
+
+3 Changelog
+***********
+
+* Menu:
+
+* 0.1-pre: 01-pre. 
+
+
+File: README.info,  Node: 01-pre,  Up: Changelog
+
+3.1 0.1-pre
+===========
+
+Not yet tagged.
+
+
+File: README.info,  Node: Development,  Next: License,  Prev: Changelog,  Up: Top
+
+4 Development
+*************
+
+Bug reports, feature requests, suggestions — _oh my_!
+
+
+File: README.info,  Node: License,  Prev: Development,  Up: Top
+
+5 License
+*********
+
+GPLv3
+
+
+
+Tag Table:
+Node: Top218
+Node: Examples1057
+Node: Usage8957
+Node: Dynamic taxys11040
+Node: Reusable taxys13407
+Node: Threading macros17564
+Node: Magit section18085
+Node: Changelog18680
+Node: 01-pre18818
+Node: Development18912
+Node: License19083
+
+End Tag Table
+
+
+Local Variables:
+coding: utf-8
+End:
