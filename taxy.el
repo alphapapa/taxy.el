@@ -3,6 +3,8 @@
 ;; Copyright (C) 2021  Adam Porter
 
 ;; Author: Adam Porter <adam@alphapapa.net>
+;; URL: <https://github.com/alphapapa/taxy.el>
+;; Version: 0.1-pre
 ;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify
