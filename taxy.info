@@ -249,7 +249,7 @@ should pass ‘taxy-fill’ a taxy copied with ‘taxy-emptied’, which
 recursively copies a taxy without ‘:objects’.
 
    To return a taxy in a more human-readable format (with only relevant
-fields included), use ‘taxy-plain’.  You may also use ‘taxy-map’ to
+fields included), use ‘taxy-plain’.  You may also use ‘taxy-mapcar’ to
 replace objects in a taxy with, e.g.  a more useful representation.
 
 * Menu:
@@ -434,13 +434,13 @@ parent, "Opened" taxy, which may not always be the most useful way to
 present the objects).
 
    Using those defined taxys, we then fill the ‘ement-roomy’ taxy with
-all of the rooms in the user’s session, and then use ‘taxy-map’ to
+all of the rooms in the user’s session, and then use ‘taxy-mapcar’ to
 replace the room structs with useful representations for display:
 
      (taxy-plain
-      (taxy-map (lambda (room)
-                  (list (ement-room--room-display-name room)
-                        (ement-room-id room)))
+      (taxy-mapcar (lambda (room)
+                     (list (ement-room--room-display-name room)
+                           (ement-room-id room)))
         (taxy-fill (ement-session-rooms ement-session)
                    (taxy-emptied ement-roomy))))
 
@@ -486,9 +486,9 @@ If you happen to like macros, ‘taxy’ works well with threading (i.e.
      (thread-last ement-roomy
        taxy-emptied
        (taxy-fill (ement-session-rooms ement-session))
-       (taxy-map (lambda (room)
-                   (list (ement-room--room-display-name room)
-                         (ement-room-id room))))
+       (taxy-mapcar (lambda (room)
+                      (list (ement-room--room-display-name room)
+                            (ement-room-id room))))
        taxy-plain)
 
 
@@ -552,15 +552,15 @@ Tag Table:
 Node: Top218
 Node: Examples1101
 Node: Usage9001
-Node: Dynamic taxys11084
-Node: Multi-level dynamic taxys13502
-Node: Reusable taxys15662
-Node: Threading macros19819
-Node: Magit section20340
-Node: Changelog20935
-Node: 01-pre21073
-Node: Development21167
-Node: License21338
+Node: Dynamic taxys11087
+Node: Multi-level dynamic taxys13505
+Node: Reusable taxys15665
+Node: Threading macros19834
+Node: Magit section20364
+Node: Changelog20959
+Node: 01-pre21097
+Node: Development21191
+Node: License21362
 
 End Tag Table
 

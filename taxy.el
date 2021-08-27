@@ -101,8 +101,8 @@ when reusing taxy definitions."
         (taxy-taxys taxy) (mapcar #'taxy-emptied (taxy-taxys taxy)))
   taxy)
 
-(defun taxy-map (fn taxy)
-  "Return TAXY, having replaced each object in it with the value of FN on it.
+(defun taxy-mapcar-objects (fn taxy)
+  "Return copy of TAXY, having replaced its objects with the value of FN on each.
 Replaces every object in TAXY and its descendants.  Useful to
 replace objects with a more useful form after classification."
   (declare (indent defun))
@@ -111,8 +111,10 @@ replace objects with a more useful form after classification."
   ;; (even `cl-loop' with `in-ref' hasn't worked).
   (setf (taxy-objects taxy) (mapcar fn (taxy-objects taxy))
         (taxy-taxys taxy) (cl-loop for taxy in (taxy-taxys taxy)
-                                   collect (taxy-map fn taxy)))
+                                   collect (taxy-mapcar-objects fn taxy)))
   taxy)
+
+(defalias 'taxy-mapcar #'taxy-mapcar-objects)
 
 (cl-defun taxy-take-keyed (key-fn object taxy &key (key-name-fn #'identity))
   "Take OBJECT into TAXY, adding new taxys dynamically.
