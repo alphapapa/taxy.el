@@ -43,8 +43,7 @@
 (cl-defun taxy-magit-section-pp (taxy &key (objects 'first))
   "Pretty-print TAXY into a buffer with `magit-section' and show it."
   (with-current-buffer (get-buffer-create "*taxy-magit-section-pp*")
-    (setf buffer-read-only t)
-    (use-local-map magit-section-mode-map)
+    (magit-section-mode)
     (let ((inhibit-read-only t))
       (erase-buffer)
       (taxy-magit-section-insert taxy :objects objects))
