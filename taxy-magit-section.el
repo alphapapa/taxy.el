@@ -31,6 +31,8 @@
 
 ;;;; Variables
 
+(defvar taxy-magit-section-indent 2
+  "Default indentation per level.")
 
 ;;;; Customization
 
@@ -55,13 +57,13 @@ If OBJECTS is `first', insert a taxy's objects before its
 descendant taxys; if `last', insert them after descendants."
   (let ((depth 0))
     (cl-labels ((insert-object
-                 (object) (insert (make-string (+ 2 (* depth 2)) ? )
+                 (object) (insert (make-string (+ 2 (* depth taxy-magit-section-indent)) ? )
                                   (format "%s" object)
                                   "\n"))
                 (insert-taxy
                  (taxy) (magit-insert-section (magit-section taxy)
                           (magit-insert-heading
-                            (make-string (* depth 2) ? )
+                            (make-string (* depth taxy-magit-section-indent) ? )
                             (propertize (taxy-name taxy) 'face 'magit-section-heading)
                             (when (taxy-description taxy)
                               (concat " (" (taxy-description taxy) ")")))
