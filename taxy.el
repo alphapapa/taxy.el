@@ -146,7 +146,9 @@ by KEY-NAME-FN called with OBJECT."
                      (taxy-taxys taxy))))))
     (push object (taxy-objects key-taxy))))
 
-(cl-defun taxy-take-keyed* (key-fns object taxy &key (key-name-fn #'identity))
+(cl-defun taxy-take-keyed*
+    (key-fns object taxy
+             &key (key-name-fn #'identity) (then #'ignore))
   "Take OBJECT into TAXY, adding new taxys dynamically and recursively.
 Places OBJECT into a taxy in TAXY for the value returned by
 KEY-FNS called with OBJECT.  The new taxys are added to TAXY
@@ -165,7 +167,8 @@ by KEY-NAME-FN called with OBJECT."
                                                  (equal key (funcall key-fn object)))
                                     :take (when (cdr key-fns)
                                             (lambda (object taxy)
-                                              (taxy-take-keyed* (cdr key-fns) object taxy))))
+                                              (taxy-take-keyed* (cdr key-fns) object taxy)))
+                                    :then then)
                                    (taxy-taxys taxy))))))
           (if (cdr key-fns)
               (taxy-take-keyed* (cdr key-fns) object key-taxy)

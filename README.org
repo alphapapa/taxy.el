@@ -23,7 +23,10 @@ Helpful features include:
 :END:
 :CONTENTS:
 - [[#examples][Examples]]
-  - [[#example-applications][Example applications]]
+  - [[#numbery-starting-basically][Numbery (starting basically)]]
+  - [[#lettery-filling-incrementally][Lettery (filling incrementally)]]
+  - [[#sporty-understanding-completely][Sporty (understanding completely)]]
+  - [[#applications][Applications]]
 - [[#usage][Usage]]
   - [[#dynamic-taxys][Dynamic taxys]]
   - [[#reusable-taxys][Reusable taxys]]
@@ -35,6 +38,19 @@ Helpful features include:
 :END:
 
 * Examples
+:PROPERTIES:
+:TOC:      :include descendants :depth 1
+:END:
+:CONTENTS:
+- [[#numbery-starting-basically][Numbery (starting basically)]]
+- [[#lettery-filling-incrementally][Lettery (filling incrementally)]]
+- [[#sporty-understanding-completely][Sporty (understanding completely)]]
+- [[#applications][Applications]]
+:END:
+
+May these examples help you classify your understanding.
+
+** Numbery (starting basically)
 
 Let's imagine a silly taxonomy of numbers below 100:
 
@@ -134,6 +150,8 @@ You might think about how to produce that by writing some imperative code, but =
 
 The ~taxy-fill~ function applies the numbers in a "cascade" down the hierarchy of "taxys", and the ~taxy-plain~ function returns a meaningful subset of the taxys' slots, suitable for display.
 
+** Lettery (filling incrementally)
+
 You can also add more objects after the hierarchy has been filled:
 
 #+BEGIN_SRC elisp
@@ -200,7 +218,204 @@ That's better:
      ("B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N" "N" "P" "Q" "R" "S" "T" "V" "W" "X" "Y" "Z"))))
 #+END_SRC
 
-** Example applications
+** Sporty (understanding completely)
+
+Let's try to understand a few things about sports.  First we'll define a struct to make them easier to grasp:
+
+#+BEGIN_SRC elisp :exports code :results silent
+  (cl-defstruct sport
+    name uses venue fun)
+#+END_SRC
+
+Now we'll make a list of sports:
+
+#+BEGIN_SRC elisp :exports code :results silent
+  (defvar sports
+    (list (make-sport :name "Baseball"
+                      :uses '(bat ball glove)
+                      :venue 'outdoor
+                      :fun t)
+          (make-sport :name "Football"
+                      :uses '(ball)
+                      :venue 'outdoor
+                      :fun t)
+          (make-sport :name "Basketball"
+                      :uses '(ball hoop)
+                      :venue 'indoor
+                      :fun t)
+          (make-sport :name "Tennis"
+                      :uses '(ball racket)
+                      :venue 'outdoor
+                      :fun t)
+          (make-sport :name "Racquetball"
+                      :uses '(ball racket)
+                      :venue 'indoor
+                      :fun t)
+          (make-sport :name "Handball"
+                      :uses '(ball glove)
+                      :venue 'indoor
+                      :fun t)
+          (make-sport :name "Soccer"
+                      :uses '(ball)
+                      :venue 'outdoor
+                      :fun nil)
+          (make-sport :name "Disc golf"
+                      :uses '(disc basket)
+                      :venue 'outdoor
+                      :fun t)
+          (make-sport :name "Ultimate"
+                      :uses '(disc)
+                      :venue 'outdoor
+                      :fun t)
+          (make-sport :name "Volleyball"
+                      :uses '(ball)
+                      :venue 'indoor
+                      :fun t)))
+#+END_SRC
+
+And finally we'll define a taxy to organize them.  In this, we use a helper macro to make the ~member~ function easier to use in the list of key functions:
+
+#+BEGIN_SRC elisp :exports code :results silent :lexical t
+  (defvar sporty
+    (cl-macrolet ((in (needle haystack)
+                      `(lambda (object)
+                         (when (member ,needle (funcall ,haystack object))
+                           ,needle))))
+      (make-taxy
+       :taxys (list (make-taxy
+                     :name "Sporty"
+                     :take (lambda (object taxy)
+                             (taxy-take-keyed*
+                              (list #'sport-venue
+                                    (in 'ball 'sport-uses)
+                                    (in 'disc 'sport-uses)
+                                    (in 'glove 'sport-uses)
+                                    (in 'racket 'sport-uses))
+                              object taxy
+                              ;; We set the `:then' function of the taxys
+                              ;; created by `taxy-take-keyed*' to `identity'
+                              ;; so they will not consume their objects.
+                              :then #'identity)))))))
+#+END_SRC
+
+Now let's fill the taxy with the sports and format it:
+
+#+BEGIN_SRC elisp :exports code
+  (thread-last sporty
+    taxy-emptied
+    (taxy-fill sports)
+    (taxy-mapcar #'sport-name)
+    taxy-plain)
+#+END_SRC
+
+#+BEGIN_SRC elisp :exports code
+((("Sporty"
+   ((disc
+     ((outdoor
+       ("Ultimate" "Disc golf"))))
+    (ball
+     ((racket
+       ((indoor
+         ("Racquetball"))
+        (outdoor
+         ("Tennis"))))
+      (indoor
+       ("Volleyball" "Basketball"))
+      (outdoor
+       ("Soccer" "Football"))
+      (glove
+       ((indoor
+         ("Handball"))
+        (outdoor
+         ("Baseball"))))))))))
+#+END_SRC
+
+That's pretty sporty.  But classifying them by venue first makes the racket and glove sports not be listed together.  Let's swap that around:
+
+#+BEGIN_SRC elisp :exports code :results silent
+  (defvar sporty
+    (cl-macrolet ((in (needle haystack)
+                      `(lambda (object)
+                         (when (member ,needle (funcall ,haystack object))
+                           ,needle))))
+      (make-taxy
+       :taxys (list (make-taxy
+                     :name "Sporty"
+                     :take (lambda (object taxy)
+                             (taxy-take-keyed*
+                              (list (in 'ball 'sport-uses)
+                                    (in 'disc 'sport-uses)
+                                    (in 'glove 'sport-uses)
+                                    (in 'racket 'sport-uses)
+                                    #'sport-venue)
+                              object taxy
+                              :then #'identity)))))))
+
+  (thread-last sporty
+    taxy-emptied
+    (taxy-fill sports)
+    (taxy-mapcar #'sport-name)
+    taxy-plain)
+#+END_SRC
+
+#+BEGIN_SRC elisp :exports code
+((("Sporty"
+   ((disc
+     ((outdoor
+       ("Ultimate" "Disc golf"))))
+    (ball
+     ((racket
+       ((indoor
+         ("Racquetball"))
+        (outdoor
+         ("Tennis"))))
+      (indoor
+       ("Volleyball" "Basketball"))
+      (outdoor
+       ("Soccer" "Football"))
+      (glove
+       ((indoor
+         ("Handball"))
+        (outdoor
+         ("Baseball"))))))))))
+#+END_SRC
+
+That's better.  But I'd also like to see a very simple classification to help me decide what to play:
+
+#+BEGIN_SRC elisp :exports code
+  (thread-last
+      (make-taxy
+       :taxys (list
+               (make-taxy
+                :name "Funny"
+                :take (lambda (object taxy)
+                        (taxy-take-keyed*
+                         (list (lambda (sport)
+                                 (if (sport-fun sport)
+                                     'fun 'boring))
+                               #'sport-venue)
+                         object taxy)))))
+    taxy-emptied
+    (taxy-fill sports)
+    (taxy-mapcar #'sport-name)
+    taxy-plain)
+#+END_SRC
+
+#+BEGIN_SRC elisp :exports code
+((("Funny"
+   ((boring
+     ((outdoor
+       ("Soccer"))))
+    (fun
+     ((indoor
+       ("Volleyball" "Handball" "Racquetball" "Basketball"))
+      (outdoor
+       ("Ultimate" "Disc golf" "Tennis" "Football" "Baseball"))))))))
+#+END_SRC
+
+Ah, now I understand.
+
+** Applications
 
 Some example applications may be found in the [[file:examples/README.org][examples directory]]:
 
