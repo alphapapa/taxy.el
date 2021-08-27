@@ -65,8 +65,11 @@ descendant taxys; if `last', insert them after descendants."
                           (magit-insert-heading
                             (make-string (* depth taxy-magit-section-indent) ? )
                             (propertize (taxy-name taxy) 'face 'magit-section-heading)
-                            (when (taxy-description taxy)
-                              (concat " (" (taxy-description taxy) ")")))
+                            (format " (%s%s)"
+                                    (if (taxy-description taxy)
+                                        (concat (taxy-description taxy) " ")
+                                      "")
+                                    (taxy-size taxy)))
                           (magit-insert-section-body
                             (when (eq 'first objects)
                               (mapc #'insert-object (taxy-objects taxy)))

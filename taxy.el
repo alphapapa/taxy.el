@@ -175,6 +175,13 @@ by KEY-NAME-FN called with OBJECT."
           (taxy-take-keyed* (cdr key-fns) object taxy)
         (push object (taxy-objects taxy))))))
 
+(defun taxy-size (taxy)
+  "Return the number of objects TAXY holds.
+Includes objects in TAXY's sub-taxys."
+  (cl-loop for sub-taxy in (taxy-taxys taxy)
+           sum (taxy-size sub-taxy) into total
+           finally return (+ total (length (taxy-objects taxy)))))
+
 ;;;; Footer
 
 (provide 'taxy)
