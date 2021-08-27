@@ -333,7 +333,9 @@ File: README.info,  Node: Multi-level dynamic taxys,  Up: Dynamic taxys
 Of course, the point of taxonomies is that they aren’t restricted to a
 single level of depth, so you may also use the function
 ‘taxy-take-keyed*’ (notice the ‘*’) to dynamically make multi-level
-taxys.  Expanding on the previous example, we use ‘cl-labels’ to define
+taxys.
+
+   Expanding on the previous example, we use ‘cl-labels’ to define
 functions which are used in the taxy’s definition, which are used in the
 ‘:take’ function, which calls ‘taxy-take-keyed*’ (rather than using
 ‘apply-partially’ like in the previous example, we use a lambda
@@ -554,13 +556,13 @@ Node: Examples1101
 Node: Usage9001
 Node: Dynamic taxys11087
 Node: Multi-level dynamic taxys13505
-Node: Reusable taxys15665
-Node: Threading macros19834
-Node: Magit section20364
-Node: Changelog20959
-Node: 01-pre21097
-Node: Development21191
-Node: License21362
+Node: Reusable taxys15668
+Node: Threading macros19837
+Node: Magit section20367
+Node: Changelog20962
+Node: 01-pre21100
+Node: Development21194
+Node: License21365
 
 End Tag Table
 
