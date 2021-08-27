@@ -2,6 +2,18 @@
 
 Some example applcations using ~taxy~.
 
+* Diredy
+
+[[file:diredy.el][Diredy]] rearranges a Dired buffer, grouping files and directories by their size and MIME type.  Use it like:
+
+#+BEGIN_SRC elisp
+  (require 'diredy)
+#+END_SRC
+
+Then open a Dired buffer and =M-x diredy RET=, and it will be rearranged like so:
+
+[[../images/diredy.png]]
+
 * Musicy
 
 [[file:musicy.el][Musicy]] displays a music library in a ~magit-section~ buffer.  Use it like:
