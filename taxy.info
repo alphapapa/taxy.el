@@ -21,12 +21,17 @@ taxy.el
 
 — The Detailed Node Listing —
 
+Examples
+
+* Example applications::
+
 
 Usage
 
 * Dynamic taxys::
 * Reusable taxys::
 * Threading macros::
+* Modifying filled taxys::
 * Magit section::
 
 Dynamic taxys
@@ -210,13 +215,26 @@ subset of the taxys’ slots, suitable for display.
        ("Consonants" "Well, if they aren't a vowel..."
         ("B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N" "N" "P" "Q" "R" "S" "T" "V" "W" "X" "Y" "Z"))))
 
+* Menu:
+
+* Example applications::
+
+
+File: README.info,  Node: Example applications,  Up: Examples
+
+1.1 Example applications
+========================
+
+Some example applications may be found in the examples directory
+(examples/README.org).
+
 
 File: README.info,  Node: Usage,  Next: Changelog,  Prev: Examples,  Up: Top
 
 2 Usage
 *******
 
-   • • • • 
+   • • • • • 
    A taxy is defined with the ‘make-taxy’ constructor, like:
 
      (make-taxy :name "Numbery"
@@ -257,6 +275,7 @@ replace objects in a taxy with, e.g.  a more useful representation.
 * Dynamic taxys::
 * Reusable taxys::
 * Threading macros::
+* Modifying filled taxys::
 * Magit section::
 
 
@@ -477,7 +496,7 @@ replace the room structs with useful representations for display:
            ("#matrix-dev:matrix.org" "!jxlRxnrZCsjpjDubDX:matrix.org")))))))
 
 
-File: README.info,  Node: Threading macros,  Next: Magit section,  Prev: Reusable taxys,  Up: Usage
+File: README.info,  Node: Threading macros,  Next: Modifying filled taxys,  Prev: Reusable taxys,  Up: Usage
 
 2.3 Threading macros
 ====================
@@ -494,9 +513,35 @@ If you happen to like macros, ‘taxy’ works well with threading (i.e.
        taxy-plain)
 
 
-File: README.info,  Node: Magit section,  Prev: Threading macros,  Up: Usage
+File: README.info,  Node: Modifying filled taxys,  Next: Magit section,  Prev: Threading macros,  Up: Usage
 
-2.4 Magit section
+2.4 Modifying filled taxys
+==========================
+
+Sometimes it’s necessary to modify a taxy after filling it with objects,
+e.g.  to sort the objects and/or the sub-taxys.  For this, use the
+function ‘taxy-mapc-taxys’ (a.k.a.  ‘taxy-mapc*’).  For example, in the
+sample application musicy.el (examples/musicy.el), the taxys and their
+objects are sorted after filling, like so:
+
+     (defun musicy-files (files)
+       (thread-last musicy-taxy
+         taxy-emptied
+         (taxy-fill files)
+         (taxy-mapc* (lambda (taxy)
+                       ;; Sort sub-taxys by their name.
+                       (setf (taxy-taxys taxy)
+                             (cl-sort (taxy-taxys taxy) #'string<
+                                      :key #'taxy-name))
+                       ;; Sort sub-taxys' objects by name.
+                       (setf (taxy-objects taxy)
+                             (cl-sort (taxy-objects taxy) #'string<))))
+         taxy-magit-section-pp))
+
+
+File: README.info,  Node: Magit section,  Prev: Modifying filled taxys,  Up: Usage
+
+2.5 Magit section
 =================
 
 Showing a taxy with magit-section is very easy:
@@ -552,17 +597,19 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1101
-Node: Usage9001
-Node: Dynamic taxys11087
-Node: Multi-level dynamic taxys13505
-Node: Reusable taxys15668
-Node: Threading macros19837
-Node: Magit section20367
-Node: Changelog20962
-Node: 01-pre21100
-Node: Development21194
-Node: License21365
+Node: Examples1164
+Node: Example applications9099
+Node: Usage9304
+Node: Dynamic taxys11421
+Node: Multi-level dynamic taxys13839
+Node: Reusable taxys16002
+Node: Threading macros20171
+Node: Modifying filled taxys20710
+Node: Magit section21803
+Node: Changelog22404
+Node: 01-pre22542
+Node: Development22636
+Node: License22807
 
 End Tag Table
 

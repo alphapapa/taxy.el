@@ -23,36 +23,16 @@ Helpful features include:
 :END:
 :CONTENTS:
 - [[#examples][Examples]]
+  - [[#example-applications][Example applications]]
 - [[#usage][Usage]]
   - [[#dynamic-taxys][Dynamic taxys]]
   - [[#reusable-taxys][Reusable taxys]]
   - [[#threading-macros][Threading macros]]
+  - [[#modifying-filled-taxys][Modifying filled taxys]]
   - [[#magit-section][Magit section]]
 - [[#changelog][Changelog]]
 - [[#development][Development]]
 :END:
-
-# * Installation
-# :PROPERTIES:
-# :TOC:      :depth 0
-# :END:
-#
-# ** MELPA
-#
-# If you installed from MELPA, you're done.  Just run one of the commands below.
-#
-# ** Manual
-#
-#   Install these required packages:
-#
-#   + =foo=
-#   + =bar=
-#
-#   Then put this file in your load-path, and put this in your init file:
-#
-#   #+BEGIN_SRC elisp
-# (require 'taxy)
-#   #+END_SRC
 
 * Examples
 
@@ -220,6 +200,10 @@ That's better:
      ("B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N" "N" "P" "Q" "R" "S" "T" "V" "W" "X" "Y" "Z"))))
 #+END_SRC
 
+** Example applications
+
+Some example applications may be found in the [[file:examples/README.org][examples directory]].
+
 * Usage
 :PROPERTIES:
 :TOC:      :include descendants :depth 1
@@ -228,6 +212,7 @@ That's better:
 - [[#dynamic-taxys][Dynamic taxys]]
 - [[#reusable-taxys][Reusable taxys]]
 - [[#threading-macros][Threading macros]]
+- [[#modifying-filled-taxys][Modifying filled taxys]]
 - [[#magit-section][Magit section]]
 :END:
 
@@ -456,6 +441,26 @@ If you happen to like macros, ~taxy~ works well with threading (i.e. ~thread-las
                    (list (ement-room--room-display-name room)
                          (ement-room-id room))))
     taxy-plain)
+#+END_SRC
+
+** Modifying filled taxys
+
+Sometimes it's necessary to modify a taxy after filling it with objects, e.g. to sort the objects and/or the sub-taxys.  For this, use the function ~taxy-mapc-taxys~ (a.k.a. ~taxy-mapc*~).  For example, in the sample application [[file:examples/musicy.el][musicy.el]], the taxys and their objects are sorted after filling, like so:
+
+#+BEGIN_SRC elisp
+  (defun musicy-files (files)
+    (thread-last musicy-taxy
+      taxy-emptied
+      (taxy-fill files)
+      (taxy-mapc* (lambda (taxy)
+                    ;; Sort sub-taxys by their name.
+                    (setf (taxy-taxys taxy)
+                          (cl-sort (taxy-taxys taxy) #'string<
+                                   :key #'taxy-name))
+                    ;; Sort sub-taxys' objects by name.
+                    (setf (taxy-objects taxy)
+                          (cl-sort (taxy-objects taxy) #'string<))))
+      taxy-magit-section-pp))
 #+END_SRC
 
 ** Magit section

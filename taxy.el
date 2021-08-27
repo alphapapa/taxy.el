@@ -116,6 +116,17 @@ replace objects with a more useful form after classification."
 
 (defalias 'taxy-mapcar #'taxy-mapcar-objects)
 
+(defun taxy-mapc-taxys (fn taxy)
+  "Return TAXY having applied FN to it and its descendants.
+Does not copy TAXY.  Destructively modifies TAXY, if FN does."
+  (declare (indent defun))
+  (funcall fn taxy)
+  (cl-loop for sub-taxy in-ref (taxy-taxys taxy)
+           do (setf sub-taxy (taxy-mapc-taxys fn sub-taxy)))
+  taxy)
+
+(defalias 'taxy-mapc* #'taxy-mapc-taxys)
+
 (cl-defun taxy-take-keyed (key-fn object taxy &key (key-name-fn #'identity))
   "Take OBJECT into TAXY, adding new taxys dynamically.
 Places OBJECT into a taxy in TAXY for the value returned by
