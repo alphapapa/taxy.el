@@ -87,7 +87,11 @@
                              do (forward-line 1))))
            (filled-taxy (thread-last diredy-taxy
                           taxy-emptied
-                          (taxy-fill lines)))
+                          (taxy-fill lines)
+                          (taxy-mapc* (lambda (taxy)
+                                        (setf (taxy-taxys taxy)
+                                              (cl-sort (taxy-taxys taxy) #'string<
+                                                       :key #'taxy-name))))))
            (inhibit-read-only t)
            (taxy-magit-section-indent 2))
       (delete-region (point) (point-max))
