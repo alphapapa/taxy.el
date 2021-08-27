@@ -36,20 +36,20 @@ Helpful features include:
 # :PROPERTIES:
 # :TOC:      :depth 0
 # :END:
-# 
+#
 # ** MELPA
-# 
+#
 # If you installed from MELPA, you're done.  Just run one of the commands below.
-# 
+#
 # ** Manual
-# 
+#
 #   Install these required packages:
-# 
+#
 #   + =foo=
 #   + =bar=
-# 
+#
 #   Then put this file in your load-path, and put this in your init file:
-# 
+#
 #   #+BEGIN_SRC elisp
 # (require 'taxy)
 #   #+END_SRC
