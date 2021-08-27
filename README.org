@@ -250,6 +250,12 @@ After defining a taxy, call ~taxy-fill~ with it and a list of objects to fill th
 To return a taxy in a more human-readable format (with only relevant fields included), use ~taxy-plain~.  You may also use ~taxy-map~ to replace objects in a taxy with, e.g. a more useful representation.
 
 ** Dynamic taxys
+:PROPERTIES:
+:TOC:      :include descendants
+:END:
+:CONTENTS:
+- [[#multi-level-dynamic-taxys][Multi-level dynamic taxys]]
+:END:
 
 You may not always know in advance what taxonomy a set of objects fits into, so =taxy= lets you add taxys dynamically by using the ~:take~ function to add a taxy when an object is "taken into" a parent taxy.  For example, you could dynamically classify buffers by their major mode like so:
 
@@ -302,9 +308,51 @@ The taxy's ~:take~ function is set to the ~taxy-take-keyed~ function, partially 
                  #<buffer dash.el> #<buffer *Pp Eval Output*> #<buffer taxy.el> #<buffer scratch.el>))))))
 #+END_SRC
 
-# ** Tips
-# 
-# + You can customize settings in the =taxy= group.
+*** Multi-level dynamic taxys
+
+Of course, the point of taxonomies is that they aren't restricted to a single level of depth, so you may also use the function ~taxy-take-keyed*~ (notice the ~*~) to dynamically make multi-level taxys.  Expanding on the previous example, we use ~cl-labels~ to define functions which are used in the taxy's definition, which are used in the ~:take~ function, which calls ~taxy-take-keyed*~ (rather than using ~apply-partially~ like in the previous example, we use a lambda function, which performs better than partially applied functions).  Then when the taxy is filled, a multi-level hierarchy is created dynamically, organizing buffers first by their directory, and then by mode in each directory.
+
+# MAYBE: A macro to define :take functions more concisely.
+
+#+BEGIN_SRC elisp :exports code
+  (defvar buffery
+    (cl-labels ((buffer-mode (buffer) (buffer-local-value 'major-mode buffer))
+                (buffer-directory (buffer) (buffer-local-value 'default-directory buffer)))
+      (make-taxy
+       :name "Buffers"
+       :taxys (list
+               (make-taxy
+                :name "Directories"
+                :take (lambda (object taxy)
+                        (taxy-take-keyed* (list #'buffer-directory #'buffer-mode) object taxy)))))))
+
+  (taxy-plain
+   (taxy-fill (buffer-list)
+              (taxy-emptied buffery)))
+#+END_SRC
+
+That produces a list like:
+
+#+BEGIN_SRC elisp
+  ("Buffers"
+   (("Directories"
+     (("~/src/emacs/ement.el/"
+       ((dired-mode
+         (#<buffer ement.el<emacs>))
+        (emacs-lisp-mode
+         (#<buffer ement.el<ement.el> #<buffer ement-room-list.el> #<buffer ement-room.el>))
+        (magit-diff-mode
+         (#<buffer magit-diff: ement.el>))))
+      ("~/src/emacs/taxy.el/"
+       ((dired-mode
+         (#<buffer taxy.el<emacs>))
+        (Info-mode
+         (#<buffer *info*>))
+        (magit-status-mode
+         (#<buffer magit: taxy.el>))
+        (emacs-lisp-mode
+         (#<buffer taxy-magit-section.el> #<buffer taxy.el<taxy.el> #<buffer scratch.el>))))))))
+#+END_SRC
 
 ** Reusable taxys
 

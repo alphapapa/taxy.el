@@ -133,6 +133,35 @@ by KEY-NAME-FN called with OBJECT."
                      (taxy-taxys taxy))))))
     (push object (taxy-objects key-taxy))))
 
+(cl-defun taxy-take-keyed* (key-fns object taxy &key (key-name-fn #'identity))
+  "Take OBJECT into TAXY, adding new taxys dynamically and recursively.
+Places OBJECT into a taxy in TAXY for the value returned by
+KEY-FNS called with OBJECT.  The new taxys are added to TAXY
+recursively as necessary.  Each new taxy's name is that returned
+by KEY-NAME-FN called with OBJECT."
+  (let ((key-fn (car key-fns)))
+    (if-let ((key (funcall key-fn object)))
+        (let ((key-taxy (or (cl-find-if (lambda (taxy-key)
+                                          (equal key taxy-key))
+                                        (taxy-taxys taxy)
+                                        :key #'taxy-key)
+                            (car
+                             (push (make-taxy
+                                    :name (funcall key-name-fn key) :key key
+                                    :predicate (lambda (object)
+                                                 (equal key (funcall key-fn object)))
+                                    :take (when (cdr key-fns)
+                                            (lambda (object taxy)
+                                              (taxy-take-keyed* (cdr key-fns) object taxy))))
+                                   (taxy-taxys taxy))))))
+          (if (cdr key-fns)
+              (taxy-take-keyed* (cdr key-fns) object key-taxy)
+            (push object (taxy-objects key-taxy))))
+      ;; No key value: push to this taxy.
+      (if (cdr key-fns)
+          (taxy-take-keyed* (cdr key-fns) object taxy)
+        (push object (taxy-objects taxy))))))
+
 ;;;; Footer
 
 (provide 'taxy)

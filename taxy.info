@@ -29,7 +29,9 @@ Usage
 * Threading macros::
 * Magit section::
 
+Dynamic taxys
 
+* Multi-level dynamic taxys::
 
 Changelog
 
@@ -263,8 +265,9 @@ File: README.info,  Node: Dynamic taxys,  Next: Reusable taxys,  Up: Usage
 2.1 Dynamic taxys
 =================
 
-You may not always know in advance what taxonomy a set of objects fits
-into, so taxy lets you add taxys dynamically by using the ‘:take’
+   • 
+   You may not always know in advance what taxonomy a set of objects
+fits into, so taxy lets you add taxys dynamically by using the ‘:take’
 function to add a taxy when an object is "taken into" a parent taxy.
 For example, you could dynamically classify buffers by their major mode
 like so:
@@ -316,6 +319,64 @@ produces this taxonomy of buffers:
           (#<buffer ement.el<ement.el>> #<buffer ement-room-list.el> #<buffer *scratch*>
                     #<buffer ement-room.el> #<buffer init.el> #<buffer bufler.el>
                     #<buffer dash.el> #<buffer *Pp Eval Output*> #<buffer taxy.el> #<buffer scratch.el>))))))
+
+* Menu:
+
+* Multi-level dynamic taxys::
+
+
+File: README.info,  Node: Multi-level dynamic taxys,  Up: Dynamic taxys
+
+2.1.1 Multi-level dynamic taxys
+-------------------------------
+
+Of course, the point of taxonomies is that they aren’t restricted to a
+single level of depth, so you may also use the function
+‘taxy-take-keyed*’ (notice the ‘*’) to dynamically make multi-level
+taxys.  Expanding on the previous example, we use ‘cl-labels’ to define
+functions which are used in the taxy’s definition, which are used in the
+‘:take’ function, which calls ‘taxy-take-keyed*’ (rather than using
+‘apply-partially’ like in the previous example, we use a lambda
+function, which performs better than partially applied functions).  Then
+when the taxy is filled, a multi-level hierarchy is created dynamically,
+organizing buffers first by their directory, and then by mode in each
+directory.
+
+     (defvar buffery
+       (cl-labels ((buffer-mode (buffer) (buffer-local-value 'major-mode buffer))
+                   (buffer-directory (buffer) (buffer-local-value 'default-directory buffer)))
+         (make-taxy
+          :name "Buffers"
+          :taxys (list
+                  (make-taxy
+                   :name "Directories"
+                   :take (lambda (object taxy)
+                           (taxy-take-keyed* (list #'buffer-directory #'buffer-mode) object taxy)))))))
+
+     (taxy-plain
+      (taxy-fill (buffer-list)
+                 (taxy-emptied buffery)))
+
+   That produces a list like:
+
+     ("Buffers"
+      (("Directories"
+        (("~/src/emacs/ement.el/"
+          ((dired-mode
+            (#<buffer ement.el<emacs>))
+           (emacs-lisp-mode
+            (#<buffer ement.el<ement.el> #<buffer ement-room-list.el> #<buffer ement-room.el>))
+           (magit-diff-mode
+            (#<buffer magit-diff: ement.el>))))
+         ("~/src/emacs/taxy.el/"
+          ((dired-mode
+            (#<buffer taxy.el<emacs>))
+           (Info-mode
+            (#<buffer *info*>))
+           (magit-status-mode
+            (#<buffer magit: taxy.el>))
+           (emacs-lisp-mode
+            (#<buffer taxy-magit-section.el> #<buffer taxy.el<taxy.el> #<buffer scratch.el>))))))))
 
 
 File: README.info,  Node: Reusable taxys,  Next: Threading macros,  Prev: Dynamic taxys,  Up: Usage
@@ -489,16 +550,17 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1057
-Node: Usage8957
-Node: Dynamic taxys11040
-Node: Reusable taxys13407
-Node: Threading macros17564
-Node: Magit section18085
-Node: Changelog18680
-Node: 01-pre18818
-Node: Development18912
-Node: License19083
+Node: Examples1101
+Node: Usage9001
+Node: Dynamic taxys11084
+Node: Multi-level dynamic taxys13502
+Node: Reusable taxys15662
+Node: Threading macros19819
+Node: Magit section20340
+Node: Changelog20935
+Node: 01-pre21073
+Node: Development21167
+Node: License21338
 
 End Tag Table
 
