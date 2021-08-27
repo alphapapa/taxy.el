@@ -1,0 +1,4 @@
+scratch.*
+org-src-*
+*.elc
+.#*
