@@ -202,7 +202,12 @@ That's better:
 
 ** Example applications
 
-Some example applications may be found in the [[file:examples/README.org][examples directory]].
+Some example applications may be found in the [[file:examples/README.org][examples directory]]:
+
++  Diredy rearranges a Dired buffer into groups by file size and type:
+   [[images/diredy.png]]
++  Musicy shows a music library with tracks categorized by genre, artist, year, album, etc:
+   [[images/musicy.png]]
 
 * Usage
 :PROPERTIES:

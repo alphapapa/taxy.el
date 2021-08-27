@@ -226,7 +226,11 @@ File: README.info,  Node: Example applications,  Up: Examples
 ========================
 
 Some example applications may be found in the examples directory
-(examples/README.org).
+(examples/README.org):
+
+   • Diredy rearranges a Dired buffer into groups by file size and type:
+   • Musicy shows a music library with tracks categorized by genre,
+     artist, year, album, etc:
 
 
 File: README.info,  Node: Usage,  Next: Changelog,  Prev: Examples,  Up: Top
@@ -599,17 +603,17 @@ Tag Table:
 Node: Top218
 Node: Examples1164
 Node: Example applications9099
-Node: Usage9304
-Node: Dynamic taxys11421
-Node: Multi-level dynamic taxys13839
-Node: Reusable taxys16002
-Node: Threading macros20171
-Node: Modifying filled taxys20710
-Node: Magit section21803
-Node: Changelog22404
-Node: 01-pre22542
-Node: Development22636
-Node: License22807
+Node: Usage9481
+Node: Dynamic taxys11598
+Node: Multi-level dynamic taxys14016
+Node: Reusable taxys16179
+Node: Threading macros20348
+Node: Modifying filled taxys20887
+Node: Magit section21980
+Node: Changelog22581
+Node: 01-pre22719
+Node: Development22813
+Node: License22984
 
 End Tag Table
 
