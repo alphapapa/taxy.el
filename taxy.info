@@ -14,6 +14,7 @@ taxy.el
 * Menu:
 
 * Examples::
+* Installation::
 * Usage::
 * Changelog::
 * Development::
@@ -27,6 +28,7 @@ Examples
 * Lettery (filling incrementally)::
 * Sporty (understanding completely)::
 * Applications::
+
 
 
 
@@ -46,6 +48,11 @@ Changelog
 
 * 0.1-pre: 01-pre. 
 
+
+Development
+
+* Copyright assignment::
+
 _Now, where did I put that…_
 
    This library provides a programmable way to classify arbitrary
@@ -62,7 +69,7 @@ say that this lets you put things in nested groups.)
      taxonomies’ descendant groups.
 
 
-File: README.info,  Node: Examples,  Next: Usage,  Prev: Top,  Up: Top
+File: README.info,  Node: Examples,  Next: Installation,  Prev: Top,  Up: Top
 
 1 Examples
 **********
@@ -443,9 +450,19 @@ Some example applications may be found in the examples directory
      artist, year, album, etc:
 
 
-File: README.info,  Node: Usage,  Next: Changelog,  Prev: Examples,  Up: Top
+File: README.info,  Node: Installation,  Next: Usage,  Prev: Examples,  Up: Top
 
-2 Usage
+2 Installation
+**************
+
+taxy is distributed in GNU ELPA (https://elpa.gnu.org/), which is
+available in Emacs by default.  Use M-x package-install RET taxy RET,
+then ‘(require 'taxy)’ in your Elisp project.
+
+
+File: README.info,  Node: Usage,  Next: Changelog,  Prev: Installation,  Up: Top
+
+3 Usage
 *******
 
    • • • • • 
@@ -495,7 +512,7 @@ replace objects in a taxy with, e.g.  a more useful representation.
 
 File: README.info,  Node: Dynamic taxys,  Next: Reusable taxys,  Up: Usage
 
-2.1 Dynamic taxys
+3.1 Dynamic taxys
 =================
 
    • 
@@ -560,7 +577,7 @@ produces this taxonomy of buffers:
 
 File: README.info,  Node: Multi-level dynamic taxys,  Up: Dynamic taxys
 
-2.1.1 Multi-level dynamic taxys
+3.1.1 Multi-level dynamic taxys
 -------------------------------
 
 Of course, the point of taxonomies is that they aren’t restricted to a
@@ -616,7 +633,7 @@ directory.
 
 File: README.info,  Node: Reusable taxys,  Next: Threading macros,  Prev: Dynamic taxys,  Up: Usage
 
-2.2 Reusable taxys
+3.2 Reusable taxys
 ==================
 
 Since taxys are structs, they may be stored in variables and used in
@@ -712,7 +729,7 @@ replace the room structs with useful representations for display:
 
 File: README.info,  Node: Threading macros,  Next: Modifying filled taxys,  Prev: Reusable taxys,  Up: Usage
 
-2.3 Threading macros
+3.3 Threading macros
 ====================
 
 If you happen to like macros, ‘taxy’ works well with threading (i.e.
@@ -729,7 +746,7 @@ If you happen to like macros, ‘taxy’ works well with threading (i.e.
 
 File: README.info,  Node: Modifying filled taxys,  Next: Magit section,  Prev: Threading macros,  Up: Usage
 
-2.4 Modifying filled taxys
+3.4 Modifying filled taxys
 ==========================
 
 Sometimes it’s necessary to modify a taxy after filling it with objects,
@@ -755,7 +772,7 @@ objects are sorted after filling, like so:
 
 File: README.info,  Node: Magit section,  Prev: Modifying filled taxys,  Up: Usage
 
-2.5 Magit section
+3.5 Magit section
 =================
 
 Showing a taxy with magit-section is very easy:
@@ -776,7 +793,7 @@ package by default.
 
 File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 
-3 Changelog
+4 Changelog
 ***********
 
 * Menu:
@@ -786,7 +803,7 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 
 File: README.info,  Node: 01-pre,  Up: Changelog
 
-3.1 0.1-pre
+4.1 0.1-pre
 ===========
 
 Not yet tagged.
@@ -794,15 +811,33 @@ Not yet tagged.
 
 File: README.info,  Node: Development,  Next: License,  Prev: Changelog,  Up: Top
 
-4 Development
+5 Development
 *************
 
 Bug reports, feature requests, suggestions — _oh my_!
 
+* Menu:
+
+* Copyright assignment::
+
+
+File: README.info,  Node: Copyright assignment,  Up: Development
+
+5.1 Copyright assignment
+========================
+
+This package is part of GNU Emacs (https://www.gnu.org/software/emacs/),
+being distributed in GNU ELPA (https://elpa.gnu.org/).  Contributions to
+this project must follow GNU guidelines, which means that, as with other
+parts of Emacs, patches of more than a few lines must be accompanied by
+having assigned copyright for the contribution to the FSF. Contributors
+who wish to do so may contact emacs-devel@lists.gnu.org
+<emacs-devel@lists.gnu.org> to request the assignment form.
+
 
 File: README.info,  Node: License,  Prev: Development,  Up: Top
 
-5 License
+6 License
 *********
 
 GPLv3
@@ -811,22 +846,24 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1264
-Node: Numbery (starting basically)1576
-Node: Lettery (filling incrementally)7335
-Node: Sporty (understanding completely)9784
-Node: Applications16263
-Node: Usage16663
-Node: Dynamic taxys18780
-Node: Multi-level dynamic taxys21198
-Node: Reusable taxys23361
-Node: Threading macros27530
-Node: Modifying filled taxys28069
-Node: Magit section29162
-Node: Changelog29763
-Node: 01-pre29901
-Node: Development29995
-Node: License30166
+Node: Examples1322
+Node: Numbery (starting basically)1641
+Node: Lettery (filling incrementally)7400
+Node: Sporty (understanding completely)9849
+Node: Applications16328
+Node: Installation16728
+Node: Usage17029
+Node: Dynamic taxys19150
+Node: Multi-level dynamic taxys21568
+Node: Reusable taxys23731
+Node: Threading macros27900
+Node: Modifying filled taxys28439
+Node: Magit section29532
+Node: Changelog30133
+Node: 01-pre30271
+Node: Development30365
+Node: Copyright assignment30571
+Node: License31170
 
 End Tag Table
 

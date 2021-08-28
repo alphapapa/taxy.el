@@ -1,8 +1,9 @@
 ;;; taxy.el --- Programmable taxonomical grouping for arbitrary objects  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021  Adam Porter
+;; Copyright (C) 2021  Free Software Foundation, Inc.
 
 ;; Author: Adam Porter <adam@alphapapa.net>
+;; Maintainer: Adam Porter <adam@alphapapa.net>
 ;; URL: <https://github.com/alphapapa/taxy.el>
 ;; Version: 0.1-pre
 ;; Keywords: lisp

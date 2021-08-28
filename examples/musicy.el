@@ -1,8 +1,9 @@
 ;;; musicy.el --- View a music library in a useful taxonomy  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021  Adam Porter
+;; Copyright (C) 2021  Free Software Foundation, Inc.
 
 ;; Author: Adam Porter <adam@alphapapa.net>
+;; Maintainer: Adam Porter <adam@alphapapa.net>
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
