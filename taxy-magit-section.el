@@ -37,10 +37,64 @@
 ;;;; Customization
 
 
+;;;; Structs
+
+(cl-defstruct (taxy-magit-section (:include taxy))
+  ;; This struct is not required to be used for taxys passed to
+  ;; `taxy-magit-section-insert', but it allows a visibility function
+  ;; to be specified to override the default for it.
+  (visibility-fn #'taxy-magit-section-visibility)
+  format-fn)
+
 ;;;; Commands
 
 
 ;;;; Functions
+
+(cl-defun taxy-magit-section-insert (taxy &key (objects 'first))
+  "Insert a `magit-section' for TAXY into current buffer.
+If OBJECTS is `first', insert a taxy's objects before its
+descendant taxys; if `last', insert them after descendants."
+  (let* ((depth 0)
+         (magit-section-set-visibility-hook (cons #'taxy-magit-section-visibility magit-section-set-visibility-hook)))
+    (cl-labels ((insert-object
+                 (object &optional (format-fn (lambda (o) (format "%s" o))))
+                 (magit-insert-section (magit-section object)
+                   (magit-insert-section-body
+                     (insert (make-string (+ 2 (* depth taxy-magit-section-indent)) ? )
+                             (funcall format-fn object)
+                             "\n"))))
+                (insert-taxy
+                 (taxy) (let ((magit-section-set-visibility-hook magit-section-set-visibility-hook)
+                              (format-fn (cl-typecase taxy
+                                           (taxy-magit-section
+                                            (taxy-magit-section-format-fn taxy)))))
+                          (cl-typecase taxy
+                            (taxy-magit-section
+                             (when (taxy-magit-section-visibility-fn taxy)
+                               (push (taxy-magit-section-visibility-fn taxy) magit-section-set-visibility-hook))))
+                          (magit-insert-section (magit-section taxy)
+                            (magit-insert-heading
+                              (make-string (* depth taxy-magit-section-indent) ? )
+                              (propertize (taxy-name taxy) 'face 'magit-section-heading)
+                              (format " (%s%s)"
+                                      (if (taxy-description taxy)
+                                          (concat (taxy-description taxy) " ")
+                                        "")
+                                      (taxy-size taxy)))
+                            (magit-insert-section-body
+                              (when (eq 'first objects)
+                                (dolist (object (taxy-objects taxy))
+                                  (insert-object object format-fn))
+                                (mapc #'insert-object (taxy-objects taxy)))
+                              (cl-incf depth)
+                              (mapc #'insert-taxy (taxy-taxys taxy))
+                              (cl-decf depth)
+                              (when (eq 'last objects)
+                                (dolist (object (taxy-objects taxy))
+                                  (insert-object object format-fn))))))))
+      (magit-insert-section (magit-section)
+        (insert-taxy taxy)))))
 
 (cl-defun taxy-magit-section-pp (taxy &key (objects 'first))
   "Pretty-print TAXY into a buffer with `magit-section' and show it."
@@ -51,35 +105,16 @@
       (taxy-magit-section-insert taxy :objects objects))
     (pop-to-buffer (current-buffer))))
 
-(cl-defun taxy-magit-section-insert (taxy &key (objects 'first))
-  "Insert a `magit-section' for TAXY into current buffer.
-If OBJECTS is `first', insert a taxy's objects before its
-descendant taxys; if `last', insert them after descendants."
-  (let ((depth 0))
-    (cl-labels ((insert-object
-                 (object) (insert (make-string (+ 2 (* depth taxy-magit-section-indent)) ? )
-                                  (format "%s" object)
-                                  "\n"))
-                (insert-taxy
-                 (taxy) (magit-insert-section (magit-section taxy)
-                          (magit-insert-heading
-                            (make-string (* depth taxy-magit-section-indent) ? )
-                            (propertize (taxy-name taxy) 'face 'magit-section-heading)
-                            (format " (%s%s)"
-                                    (if (taxy-description taxy)
-                                        (concat (taxy-description taxy) " ")
-                                      "")
-                                    (taxy-size taxy)))
-                          (magit-insert-section-body
-                            (when (eq 'first objects)
-                              (mapc #'insert-object (taxy-objects taxy)))
-                            (cl-incf depth)
-                            (mapc #'insert-taxy (taxy-taxys taxy))
-                            (cl-decf depth)
-                            (when (eq 'last objects)
-                              (mapc #'insert-object (taxy-objects taxy)))))))
-      (magit-insert-section (magit-section)
-        (insert-taxy taxy)))))
+(defun taxy-magit-section-visibility (section)
+  "Show SECTION if its taxy is non-empty.
+Default visibility function for
+`magit-section-set-visibility-hook'."
+  (pcase (oref section value)
+    ((and (pred taxy-p) taxy)
+     (pcase (taxy-size taxy)
+       (0 'hide)
+       (_ 'show)))
+    (_ nil)))
 
 ;;;; Footer
 
