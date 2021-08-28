@@ -18,6 +18,7 @@ taxy.el
 * Usage::
 * Changelog::
 * Development::
+* Credits::
 * License::
 
 — The Detailed Node Listing —
@@ -46,7 +47,7 @@ Dynamic taxys
 
 Changelog
 
-* 0.1-pre: 01-pre. 
+* 0.1: 01. 
 
 
 Development
@@ -798,18 +799,18 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 
 * Menu:
 
-* 0.1-pre: 01-pre. 
+* 0.1: 01. 
 
 
-File: README.info,  Node: 01-pre,  Up: Changelog
+File: README.info,  Node: 01,  Up: Changelog
 
-4.1 0.1-pre
-===========
+4.1 0.1
+=======
 
-Not yet tagged.
+First tagged version.
 
 
-File: README.info,  Node: Development,  Next: License,  Prev: Changelog,  Up: Top
+File: README.info,  Node: Development,  Next: Credits,  Prev: Changelog,  Up: Top
 
 5 Development
 *************
@@ -835,9 +836,18 @@ who wish to do so may contact emacs-devel@lists.gnu.org
 <emacs-devel@lists.gnu.org> to request the assignment form.
 
 
-File: README.info,  Node: License,  Prev: Development,  Up: Top
+File: README.info,  Node: Credits,  Next: License,  Prev: Development,  Up: Top
 
-6 License
+6 Credits
+*********
+
+   • Thanks to Stefan Monnier for his feedback, and for maintaining GNU
+     ELPA.
+
+
+File: README.info,  Node: License,  Prev: Credits,  Up: Top
+
+7 License
 *********
 
 GPLv3
@@ -846,24 +856,25 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1322
-Node: Numbery (starting basically)1641
-Node: Lettery (filling incrementally)7400
-Node: Sporty (understanding completely)9849
-Node: Applications16328
-Node: Installation16728
-Node: Usage17029
-Node: Dynamic taxys19150
-Node: Multi-level dynamic taxys21568
-Node: Reusable taxys23731
-Node: Threading macros27900
-Node: Modifying filled taxys28439
-Node: Magit section29532
-Node: Changelog30133
-Node: 01-pre30271
-Node: Development30365
-Node: Copyright assignment30571
-Node: License31170
+Node: Examples1326
+Node: Numbery (starting basically)1645
+Node: Lettery (filling incrementally)7404
+Node: Sporty (understanding completely)9853
+Node: Applications16332
+Node: Installation16732
+Node: Usage17033
+Node: Dynamic taxys19154
+Node: Multi-level dynamic taxys21572
+Node: Reusable taxys23735
+Node: Threading macros27904
+Node: Modifying filled taxys28443
+Node: Magit section29536
+Node: Changelog30137
+Node: 0130267
+Node: Development30355
+Node: Copyright assignment30561
+Node: Credits31160
+Node: License31350
 
 End Tag Table
 

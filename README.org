@@ -37,6 +37,7 @@ Helpful features include:
 - [[#changelog][Changelog]]
 - [[#development][Development]]
   - [[#copyright-assignment][Copyright assignment]]
+- [[#credits][Credits]]
 :END:
 
 * Examples
@@ -714,11 +715,9 @@ Note that =taxy-magit-section.el= is not installed with the =taxy= package by de
 :TOC:      :depth 0
 :END:
 
-** 0.1-pre
+** 0.1
 
-Not yet tagged.
-
-# * Credits
+First tagged version.
 
 * Development
 
@@ -727,6 +726,10 @@ Bug reports, feature requests, suggestions — /oh my/!
 ** Copyright assignment
 
 This package is part of [[https://www.gnu.org/software/emacs/][GNU Emacs]], being distributed in [[https://elpa.gnu.org/][GNU ELPA]].  Contributions to this project must follow GNU guidelines, which means that, as with other parts of Emacs, patches of more than a few lines must be accompanied by having assigned copyright for the contribution to the FSF.  Contributors who wish to do so may contact [[mailto:emacs-devel@lists.gnu.org][emacs-devel@lists.gnu.org]] to request the assignment form.
+
+* Credits
+
++  Thanks to Stefan Monnier for his feedback, and for maintaining GNU ELPA.
 
 * License
 :PROPERTIES:
