@@ -23,26 +23,16 @@ Helpful features include:
 :END:
 :CONTENTS:
 - [[#examples][Examples]]
-  - [[#numbery-starting-basically][Numbery (starting basically)]]
-  - [[#lettery-filling-incrementally][Lettery (filling incrementally)]]
-  - [[#sporty-understanding-completely][Sporty (understanding completely)]]
-  - [[#applications][Applications]]
 - [[#installation][Installation]]
 - [[#usage][Usage]]
-  - [[#dynamic-taxys][Dynamic taxys]]
-  - [[#reusable-taxys][Reusable taxys]]
-  - [[#threading-macros][Threading macros]]
-  - [[#modifying-filled-taxys][Modifying filled taxys]]
-  - [[#magit-section][Magit section]]
 - [[#changelog][Changelog]]
 - [[#development][Development]]
-  - [[#copyright-assignment][Copyright assignment]]
 - [[#credits][Credits]]
 :END:
 
 * Examples
 :PROPERTIES:
-:TOC:      :include descendants :depth 1
+:TOC:      :include descendants :depth 1 :ignore (descendants)
 :END:
 :CONTENTS:
 - [[#numbery-starting-basically][Numbery (starting basically)]]
@@ -433,7 +423,7 @@ Some example applications may be found in the [[file:examples/README.org][exampl
 
 * Usage
 :PROPERTIES:
-:TOC:      :include descendants :depth 1
+:TOC:      :include descendants :depth 1 :ignore (descendants)
 :END:
 :CONTENTS:
 - [[#dynamic-taxys][Dynamic taxys]]
@@ -808,6 +798,9 @@ Nothing new yet.
 First tagged version.
 
 * Development
+:PROPERTIES:
+:TOC:      :ignore (descendants)
+:END:
 
 Bug reports, feature requests, suggestions — /oh my/!
 
