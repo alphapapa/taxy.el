@@ -715,6 +715,10 @@ Note that =taxy-magit-section.el= is not installed with the =taxy= package by de
 :TOC:      :depth 0
 :END:
 
+** 0.2-pre
+
+Nothing new yet.
+
 ** 0.1
 
 First tagged version.

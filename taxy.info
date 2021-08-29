@@ -47,7 +47,9 @@ Dynamic taxys
 
 Changelog
 
+* 0.2-pre: 02-pre. 
 * 0.1: 01. 
+
 
 
 Development
@@ -799,12 +801,21 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 
 * Menu:
 
+* 0.2-pre: 02-pre. 
 * 0.1: 01. 
 
 
-File: README.info,  Node: 01,  Up: Changelog
+File: README.info,  Node: 02-pre,  Next: 01,  Up: Changelog
 
-4.1 0.1
+4.1 0.2-pre
+===========
+
+Nothing new yet.
+
+
+File: README.info,  Node: 01,  Prev: 02-pre,  Up: Changelog
+
+4.2 0.1
 =======
 
 First tagged version.
@@ -856,25 +867,26 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1326
-Node: Numbery (starting basically)1645
-Node: Lettery (filling incrementally)7404
-Node: Sporty (understanding completely)9853
-Node: Applications16332
-Node: Installation16732
-Node: Usage17033
-Node: Dynamic taxys19154
-Node: Multi-level dynamic taxys21572
-Node: Reusable taxys23735
-Node: Threading macros27904
-Node: Modifying filled taxys28443
-Node: Magit section29536
-Node: Changelog30137
-Node: 0130267
-Node: Development30355
-Node: Copyright assignment30561
-Node: Credits31160
-Node: License31350
+Node: Examples1347
+Node: Numbery (starting basically)1666
+Node: Lettery (filling incrementally)7425
+Node: Sporty (understanding completely)9874
+Node: Applications16353
+Node: Installation16753
+Node: Usage17054
+Node: Dynamic taxys19175
+Node: Multi-level dynamic taxys21593
+Node: Reusable taxys23756
+Node: Threading macros27925
+Node: Modifying filled taxys28464
+Node: Magit section29557
+Node: Changelog30158
+Node: 02-pre30308
+Node: 0130414
+Node: Development30517
+Node: Copyright assignment30723
+Node: Credits31322
+Node: License31512
 
 End Tag Table
 
