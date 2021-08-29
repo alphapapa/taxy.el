@@ -288,7 +288,7 @@ And finally we'll define a taxy to organize them.  In this, we use a helper macr
        :taxys (list (make-taxy
                      :name "Sporty"
                      :take (lambda (object taxy)
-                             (taxy-take-keyed*
+                             (taxy-take-keyed
                               (list #'sport-venue
                                     (in 'ball 'sport-uses)
                                     (in 'disc 'sport-uses)
@@ -296,7 +296,7 @@ And finally we'll define a taxy to organize them.  In this, we use a helper macr
                                     (in 'racket 'sport-uses))
                               object taxy
                               ;; We set the `:then' function of the taxys
-                              ;; created by `taxy-take-keyed*' to `identity'
+                              ;; created by `taxy-take-keyed' to `identity'
                               ;; so they will not consume their objects.
                               :then #'identity)))))))
 #+END_SRC
@@ -345,7 +345,7 @@ That's pretty sporty.  But classifying them by venue first makes the racket and 
        :taxys (list (make-taxy
                      :name "Sporty"
                      :take (lambda (object taxy)
-                             (taxy-take-keyed*
+                             (taxy-take-keyed
                               (list (in 'ball 'sport-uses)
                                     (in 'disc 'sport-uses)
                                     (in 'glove 'sport-uses)
@@ -392,7 +392,7 @@ That's better.  But I'd also like to see a very simple classification to help me
                (make-taxy
                 :name "Funny"
                 :take (lambda (object taxy)
-                        (taxy-take-keyed*
+                        (taxy-take-keyed
                          (list (lambda (sport)
                                  (if (sport-fun sport)
                                      'fun 'boring))
@@ -467,6 +467,7 @@ To return a taxy in a more human-readable format (with only relevant fields incl
 :END:
 :CONTENTS:
 - [[#multi-level-dynamic-taxys][Multi-level dynamic taxys]]
+- [[#chains-of-independent-multi-level-dynamic-taxys]["Chains" of independent, multi-level dynamic taxys]]
 :END:
 
 You may not always know in advance what taxonomy a set of objects fits into, so =taxy= lets you add taxys dynamically by using the ~:take~ function to add a taxy when an object is "taken into" a parent taxy.  For example, you could dynamically classify buffers by their major mode like so:
@@ -481,7 +482,7 @@ You may not always know in advance what taxonomy a set of objects fits into, so 
      :taxys (list
              (make-taxy
               :name "Modes"
-              :take (apply-partially #'taxy-take-keyed #'buffery-major-mode)))))
+              :take (apply-partially #'taxy-take-keyed (list #'buffery-major-mode))))))
 
   ;; Note the use of `taxy-emptied' to avoid mutating the original taxy definition.
   (taxy-plain
@@ -489,7 +490,7 @@ You may not always know in advance what taxonomy a set of objects fits into, so 
               (taxy-emptied buffery)))
 #+END_SRC
 
-The taxy's ~:take~ function is set to the ~taxy-take-keyed~ function, partially applied with the ~buffery-major-mode~ function as its ~key-fn~ (~taxy-fill~ supplies the buffer and the taxy as arguments), and it produces this taxonomy of buffers:
+The taxy's ~:take~ function is set to the ~taxy-take-keyed~ function, partially applied with the ~buffery-major-mode~ function as its list of ~key-fns~ (~taxy-fill~ supplies the buffer and the taxy as arguments), and it produces this taxonomy of buffers:
 
 #+BEGIN_SRC elisp
   ("Buffers"
@@ -522,9 +523,9 @@ The taxy's ~:take~ function is set to the ~taxy-take-keyed~ function, partially 
 
 *** Multi-level dynamic taxys
 
-Of course, the point of taxonomies is that they aren't restricted to a single level of depth, so you may also use the function ~taxy-take-keyed*~ (notice the ~*~) to dynamically make multi-level taxys.  
+Of course, the point of taxonomies is that they aren't restricted to a single level of depth, so you may also use the function ~taxy-take-keyed~ to dynamically make multi-level taxys.
 
-Expanding on the previous example, we use ~cl-labels~ to define functions which are used in the taxy's definition, which are used in the ~:take~ function, which calls ~taxy-take-keyed*~ (rather than using ~apply-partially~ like in the previous example, we use a lambda function, which performs better than partially applied functions).  Then when the taxy is filled, a multi-level hierarchy is created dynamically, organizing buffers first by their directory, and then by mode in each directory.
+Expanding on the previous example, we use ~cl-labels~ to define functions which are used in the taxy's definition, which are used in the ~:take~ function, which calls ~taxy-take-keyed~ (rather than using ~apply-partially~ like in the previous example, we use a lambda function, which performs better than partially applied functions).  Then when the taxy is filled, a multi-level hierarchy is created dynamically, organizing buffers first by their directory, and then by mode in each directory.
 
 # MAYBE: A macro to define :take functions more concisely.
 
@@ -538,7 +539,7 @@ Expanding on the previous example, we use ~cl-labels~ to define functions which 
                (make-taxy
                 :name "Directories"
                 :take (lambda (object taxy)
-                        (taxy-take-keyed* (list #'buffer-directory #'buffer-mode) object taxy)))))))
+                        (taxy-take-keyed (list #'buffer-directory #'buffer-mode) object taxy)))))))
 
   (taxy-plain
    (taxy-fill (buffer-list)
@@ -566,6 +567,72 @@ That produces a list like:
          (#<buffer magit: taxy.el>))
         (emacs-lisp-mode
          (#<buffer taxy-magit-section.el> #<buffer taxy.el<taxy.el> #<buffer scratch.el>))))))))
+#+END_SRC
+
+*** "Chains" of independent, multi-level dynamic taxys
+:PROPERTIES:
+:ID:       8aec3671-ee22-44a0-968c-81443f4dcd74
+:END:
+
+/Naming things is hard./
+
+Going a step further, each element in the ~taxy-take-keyed~ function's ~KEY-FNS~ argument may be a list of functions (or a list of lists of functions, etc.), which creates a "chain" of "independent" dynamic taxys.  Each such chain may be said to "short-circuit" the filling process in that, when an object is "taken" by the first key function in a chain, the object is not "offered" to other functions outside that chain.  This allows each dynamic sub-taxy to have its own set of sub-taxys, rather than sharing the same "global" set.  In effect, this creates multiple, unique taxonomies that share a single root taxy.
+
+Building on the ~sporty~ example, let's define a taxy in which outdoor sports are classified only by whether they involve a disc, but indoor sports are additionally classified by whatever equipment they may use:
+
+#+BEGIN_SRC elisp :exports code :results silent :lexical t
+  (defvar sporty-dynamic
+    (cl-macrolet ((in (needle haystack)
+                      `(lambda (object)
+                         (when (member ,needle (funcall ,haystack object))
+                           ,needle))))
+      (cl-labels ((outdoor-p
+                   (sport) (when (eq 'outdoor (sport-venue sport))
+                             "Outdoor"))
+                  (indoor-p
+                   (sport) (when (eq 'indoor (sport-venue sport))
+                             "Indoor"))
+                  (disc-p
+                   (sport) (if (funcall (in 'disc 'sport-uses) sport)
+                               'disc
+                             'non-disc)))
+        (make-taxy
+         :name "Sporty (dynamic)"
+         :take (lambda (object taxy)
+                 (taxy-take-keyed
+                   (list (list #'outdoor-p #'disc-p)
+                         (list #'indoor-p
+                               (in 'ball 'sport-uses)
+                               (in 'disc 'sport-uses)
+                               (in 'glove 'sport-uses)
+                               (in 'racket 'sport-uses)))
+                   object taxy))))))
+#+END_SRC
+
+Now let's fill the taxy with the sports and format it:
+
+#+BEGIN_SRC elisp :exports code :results code
+  (thread-last sporty-dynamic
+    taxy-emptied
+    (taxy-fill sports)
+    (taxy-mapcar #'sport-name)
+    taxy-plain)
+#+END_SRC
+
+#+BEGIN_SRC elisp :exports code
+  ("Sporty (dynamic)"
+   (("Indoor"
+     ((ball
+       ("Volleyball" "Basketball")
+       ((glove
+         ("Handball"))
+        (racket
+         ("Racquetball"))))))
+    ("Outdoor"
+     ((disc
+       ("Ultimate" "Disc golf"))
+      (non-disc
+       ("Soccer" "Tennis" "Football" "Baseball"))))))
 #+END_SRC
 
 ** Reusable taxys
@@ -717,10 +784,15 @@ Note that =taxy-magit-section.el= is not installed with the =taxy= package by de
 
 ** 0.2-pre
 
+*** Changes
+
++  Function ~taxy-take-keyed*~ is renamed to ~taxy-take-keyed~, replacing the old function: it's more powerful, and there's little reason to maintain two versions.
+
 *** Additions
 
-+  Struct ~taxy~ now has a ~:make~ slot, a function called to make new sub-taxys by ~take-take-keyed*~ (defaulting to ~make-taxy~).  This is useful when defining structs specialized on ~taxy~.
++  Struct ~taxy~ now has a ~:make~ slot, a function called to make new sub-taxys by ~take-take-keyed~ (defaulting to ~make-taxy~).  This is useful when defining structs specialized on ~taxy~.
 +  Struct ~taxy-magit-section~ now has an ~:indent~ slot, a number of characters by which to indent each level of sub-taxy, applied automatically by function ~taxy-magit-section-insert~.
++  Each element of the new ~taxy-take-keyed~'s ~KEY-FNS~ argument may now be a function or a list of functions (or a list of a list of functions, etc.).  Lists of functions create "chains" of independent, dynamic taxys descending from a single root taxy.  See [[id:8aec3671-ee22-44a0-968c-81443f4dcd74][example]].
 
 *** Fixes
 

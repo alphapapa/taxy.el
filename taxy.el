@@ -134,61 +134,98 @@ Does not copy TAXY.  Destructively modifies TAXY, if FN does."
 
 (defalias 'taxy-mapc* #'taxy-mapc-taxys)
 
-(cl-defun taxy-take-keyed (key-fn object taxy &key (key-name-fn #'identity))
-  "Take OBJECT into TAXY, adding new taxys dynamically.
-Places OBJECT into a taxy in TAXY for the value returned by
-KEY-FN called with OBJECT.  The new taxy's name is that returned
-by KEY-NAME-FN called with OBJECT."
-  (let* ((key (funcall key-fn object))
-         (key-taxy
-          (or (cl-find-if (lambda (taxy-key)
-                            (equal key taxy-key))
-                          (taxy-taxys taxy)
-                          :key #'taxy-key)
-              (car
-               (push (make-taxy
-                      :name (funcall key-name-fn key) :key key
-                      :predicate (lambda (object)
-                                   (equal key (funcall key-fn object))))
-                     (taxy-taxys taxy))))))
-    (push object (taxy-objects key-taxy))))
-
-(cl-defun taxy-take-keyed*
+(cl-defun taxy-take-keyed
     (key-fns object taxy
              &key (key-name-fn #'identity) (then #'ignore))
   "Take OBJECT into TAXY, adding new taxys dynamically and recursively.
 Places OBJECT into a taxy in TAXY for the value returned by
 KEY-FNS called with OBJECT.  The new taxys are added to TAXY
 recursively as necessary.  Each new taxy's name is that returned
-by KEY-NAME-FN called with OBJECT."
-  (let ((key-fn (car key-fns)))
-    (if-let ((key (funcall key-fn object)))
-        (let ((key-taxy
-               (or (cl-find-if (lambda (taxy-key)
-                                 (equal key taxy-key))
-                               (taxy-taxys taxy)
-                               :key #'taxy-key)
-                   (car
-                    ;; Calling `make-taxy' directly might offer the compiler a chance to optimize
-                    ;; compared to using `funcall', but allowing taxy structs to specify their
-                    ;; own MAKE functions is very helpful when using specialized structs.
-                    (push (funcall (taxy-make taxy)
-                                   :name (funcall key-name-fn key)
-                                   :key key
-                                   :predicate (lambda (object)
-                                                (equal key (funcall key-fn object)))
-                                   :take (when (cdr key-fns)
-                                           (lambda (object taxy)
-                                             (taxy-take-keyed* (cdr key-fns) object taxy)))
-                                   :then then)
-                          (taxy-taxys taxy))))))
-          (if (cdr key-fns)
-              (taxy-take-keyed* (cdr key-fns) object key-taxy)
-            (push object (taxy-objects key-taxy))))
-      ;; No key value: push to this taxy.
-      (if (cdr key-fns)
-          (taxy-take-keyed* (cdr key-fns) object taxy)
-        (push object (taxy-objects taxy))))))
+by KEY-NAME-FN called with OBJECT.
+
+Each element of KEY-FNS may be a function or a list of functions.
+A list of functions creates a \"chain\" of functions: when an
+object is matched by the first function in a chain, it is placed
+in that chain's taxonomy, and is not \"offered\" to functions
+outside of that chain.
+
+For example, if KEY-FNS were:
+
+  '(((lambda (n) (< n 10)) oddp)
+    ((lambda (n) (>= n 10)) evenp))
+
+Then a list of numbers from 0-19 would be classified
+like (listing numbers on a single line for the sake of example):
+
+  - <10:
+    - 0, 2, 4, 6, 8
+    - oddp:
+      - 1, 3, 5, 7, 9
+  - >=10:
+    - 11, 13, 15, 17, 19
+    - evenp:
+      - 10, 12, 14, 16, 18
+
+So only numbers below 10 are tested against `oddp', and only
+numbers greater-than-or-equal-to 10 are tested against
+`evenp'.  (A contrived example, of course, since testing against
+`evenp' or `oddp' is just the inverse.)"
+  (declare (indent defun))
+  (cl-macrolet ((offer-or-push
+                 () `(if (cdr key-fns)
+                         (taxy-take-keyed (cdr key-fns) object taxy
+                           :key-name-fn key-name-fn :then then)
+                       (push object (taxy-objects taxy)))))
+    (cl-typecase (car key-fns)
+      (function
+       ;; A single key function.
+       (let ((key-fn (car key-fns)))
+         (if-let ((key (funcall key-fn object)))
+             ;; This key function returned non-nil for the object:
+             ;; apply it to the appropriate sub-taxy.
+             (let ((key-taxy
+                    (or (cl-find-if (lambda (taxy-key)
+                                      (equal key taxy-key))
+                                    (taxy-taxys taxy)
+                                    :key #'taxy-key)
+                        ;; No existing, matching sub-taxy found: make
+                        ;; a new one and add it to TAXY's sub-taxys.
+                        (car
+                         (push (funcall
+                                ;; NOTE: Calling `make-taxy' directly might offer the
+                                ;; compiler a chance to optimize compared to using `funcall',
+                                ;; but allowing taxy structs to specify their own MAKE
+                                ;; functions is very helpful when using specialized structs.
+                                (taxy-make taxy)
+                                :name (funcall key-name-fn key)
+                                :key key
+                                :predicate (lambda (object)
+                                             (equal key (funcall key-fn object)))
+                                :take (when (cdr key-fns)
+                                        (lambda (object taxy)
+                                          (taxy-take-keyed (cdr key-fns) object taxy
+                                            :key-name-fn key-name-fn :then then)))
+                                :then then)
+                               (taxy-taxys taxy))))))
+               (if (cdr key-fns)
+                   ;; Other key-fns remain: offer object to them, allowing
+                   ;; them to create more sub-taxys beneath this key-taxy.
+                   (taxy-take-keyed (cdr key-fns) object key-taxy
+                     :key-name-fn key-name-fn :then then)
+                 ;; No more key-fns remain: add object to this taxy.
+                 (push object (taxy-objects key-taxy))))
+           ;; No key value: offer to other KEY-FNS or push to this taxy.
+           (offer-or-push))))
+      (list
+       ;; A "chain" of key functions.
+       (or (when (funcall (caar key-fns) object)
+             ;; The first function in this chain returns non-nil for
+             ;; the object: apply the object to the chain.
+             (taxy-take-keyed (car key-fns) object taxy
+               :key-name-fn key-name-fn :then then))
+           ;; This "chain" of key-fns didn't take the object: offer it to
+           ;; other chains, or push to this taxy if they don't take it.
+           (offer-or-push))))))
 
 (defun taxy-size (taxy)
   "Return the number of objects TAXY holds.

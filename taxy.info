@@ -44,6 +44,7 @@ Usage
 Dynamic taxys
 
 * Multi-level dynamic taxys::
+* "Chains" of independent, multi-level dynamic taxys: "Chains" of independent multi-level dynamic taxys. 
 
 Changelog
 
@@ -52,6 +53,7 @@ Changelog
 
 0.2-pre
 
+* Changes::
 * Additions::
 * Fixes::
 
@@ -323,7 +325,7 @@ key functions:
           :taxys (list (make-taxy
                         :name "Sporty"
                         :take (lambda (object taxy)
-                                (taxy-take-keyed*
+                                (taxy-take-keyed
                                  (list #'sport-venue
                                        (in 'ball 'sport-uses)
                                        (in 'disc 'sport-uses)
@@ -331,7 +333,7 @@ key functions:
                                        (in 'racket 'sport-uses))
                                  object taxy
                                  ;; We set the `:then' function of the taxys
-                                 ;; created by `taxy-take-keyed*' to `identity'
+                                 ;; created by `taxy-take-keyed' to `identity'
                                  ;; so they will not consume their objects.
                                  :then #'identity)))))))
 
@@ -375,7 +377,7 @@ racket and glove sports not be listed together.  Let’s swap that around:
           :taxys (list (make-taxy
                         :name "Sporty"
                         :take (lambda (object taxy)
-                                (taxy-take-keyed*
+                                (taxy-take-keyed
                                  (list (in 'ball 'sport-uses)
                                        (in 'disc 'sport-uses)
                                        (in 'glove 'sport-uses)
@@ -419,7 +421,7 @@ to help me decide what to play:
                   (make-taxy
                    :name "Funny"
                    :take (lambda (object taxy)
-                           (taxy-take-keyed*
+                           (taxy-take-keyed
                             (list (lambda (sport)
                                     (if (sport-fun sport)
                                         'fun 'boring))
@@ -521,7 +523,7 @@ File: README.info,  Node: Dynamic taxys,  Next: Reusable taxys,  Up: Usage
 3.1 Dynamic taxys
 =================
 
-   • 
+   • • 
    You may not always know in advance what taxonomy a set of objects
 fits into, so taxy lets you add taxys dynamically by using the ‘:take’
 function to add a taxy when an object is "taken into" a parent taxy.
@@ -537,7 +539,7 @@ like so:
         :taxys (list
                 (make-taxy
                  :name "Modes"
-                 :take (apply-partially #'taxy-take-keyed #'buffery-major-mode)))))
+                 :take (apply-partially #'taxy-take-keyed (list #'buffery-major-mode))))))
 
      ;; Note the use of `taxy-emptied' to avoid mutating the original taxy definition.
      (taxy-plain
@@ -545,9 +547,9 @@ like so:
                  (taxy-emptied buffery)))
 
    The taxy’s ‘:take’ function is set to the ‘taxy-take-keyed’ function,
-partially applied with the ‘buffery-major-mode’ function as its ‘key-fn’
-(‘taxy-fill’ supplies the buffer and the taxy as arguments), and it
-produces this taxonomy of buffers:
+partially applied with the ‘buffery-major-mode’ function as its list of
+‘key-fns’ (‘taxy-fill’ supplies the buffer and the taxy as arguments),
+and it produces this taxonomy of buffers:
 
      ("Buffers"
       (("Modes"
@@ -579,21 +581,21 @@ produces this taxonomy of buffers:
 * Menu:
 
 * Multi-level dynamic taxys::
+* "Chains" of independent, multi-level dynamic taxys: "Chains" of independent multi-level dynamic taxys. 
 
 
-File: README.info,  Node: Multi-level dynamic taxys,  Up: Dynamic taxys
+File: README.info,  Node: Multi-level dynamic taxys,  Next: "Chains" of independent multi-level dynamic taxys,  Up: Dynamic taxys
 
 3.1.1 Multi-level dynamic taxys
 -------------------------------
 
 Of course, the point of taxonomies is that they aren’t restricted to a
 single level of depth, so you may also use the function
-‘taxy-take-keyed*’ (notice the ‘*’) to dynamically make multi-level
-taxys.
+‘taxy-take-keyed’ to dynamically make multi-level taxys.
 
    Expanding on the previous example, we use ‘cl-labels’ to define
 functions which are used in the taxy’s definition, which are used in the
-‘:take’ function, which calls ‘taxy-take-keyed*’ (rather than using
+‘:take’ function, which calls ‘taxy-take-keyed’ (rather than using
 ‘apply-partially’ like in the previous example, we use a lambda
 function, which performs better than partially applied functions).  Then
 when the taxy is filled, a multi-level hierarchy is created dynamically,
@@ -609,7 +611,7 @@ directory.
                   (make-taxy
                    :name "Directories"
                    :take (lambda (object taxy)
-                           (taxy-take-keyed* (list #'buffer-directory #'buffer-mode) object taxy)))))))
+                           (taxy-take-keyed (list #'buffer-directory #'buffer-mode) object taxy)))))))
 
      (taxy-plain
       (taxy-fill (buffer-list)
@@ -635,6 +637,78 @@ directory.
             (#<buffer magit: taxy.el>))
            (emacs-lisp-mode
             (#<buffer taxy-magit-section.el> #<buffer taxy.el<taxy.el> #<buffer scratch.el>))))))))
+
+
+File: README.info,  Node: "Chains" of independent multi-level dynamic taxys,  Prev: Multi-level dynamic taxys,  Up: Dynamic taxys
+
+3.1.2 "Chains" of independent, multi-level dynamic taxys
+--------------------------------------------------------
+
+_Naming things is hard._
+
+   Going a step further, each element in the ‘taxy-take-keyed’
+function’s ‘KEY-FNS’ argument may be a list of functions (or a list of
+lists of functions, etc.), which creates a "chain" of "independent"
+dynamic taxys.  Each such chain may be said to "short-circuit" the
+filling process in that, when an object is "taken" by the first key
+function in a chain, the object is not "offered" to other functions
+outside that chain.  This allows each dynamic sub-taxy to have its own
+set of sub-taxys, rather than sharing the same "global" set.  In effect,
+this creates multiple, unique taxonomies that share a single root taxy.
+
+   Building on the ‘sporty’ example, let’s define a taxy in which
+outdoor sports are classified only by whether they involve a disc, but
+indoor sports are additionally classified by whatever equipment they may
+use:
+
+     (defvar sporty-dynamic
+       (cl-macrolet ((in (needle haystack)
+                         `(lambda (object)
+                            (when (member ,needle (funcall ,haystack object))
+                              ,needle))))
+         (cl-labels ((outdoor-p
+                      (sport) (when (eq 'outdoor (sport-venue sport))
+                                "Outdoor"))
+                     (indoor-p
+                      (sport) (when (eq 'indoor (sport-venue sport))
+                                "Indoor"))
+                     (disc-p
+                      (sport) (if (funcall (in 'disc 'sport-uses) sport)
+                                  'disc
+                                'non-disc)))
+           (make-taxy
+            :name "Sporty (dynamic)"
+            :take (lambda (object taxy)
+                    (taxy-take-keyed
+                      (list (list #'outdoor-p #'disc-p)
+                            (list #'indoor-p
+                                  (in 'ball 'sport-uses)
+                                  (in 'disc 'sport-uses)
+                                  (in 'glove 'sport-uses)
+                                  (in 'racket 'sport-uses)))
+                      object taxy))))))
+
+   Now let’s fill the taxy with the sports and format it:
+
+     (thread-last sporty-dynamic
+       taxy-emptied
+       (taxy-fill sports)
+       (taxy-mapcar #'sport-name)
+       taxy-plain)
+
+     ("Sporty (dynamic)"
+      (("Indoor"
+        ((ball
+          ("Volleyball" "Basketball")
+          ((glove
+            ("Handball"))
+           (racket
+            ("Racquetball"))))))
+       ("Outdoor"
+        ((disc
+          ("Ultimate" "Disc golf"))
+         (non-disc
+          ("Soccer" "Tennis" "Football" "Baseball"))))))
 
 
 File: README.info,  Node: Reusable taxys,  Next: Threading macros,  Prev: Dynamic taxys,  Up: Usage
@@ -815,26 +889,42 @@ File: README.info,  Node: 02-pre,  Next: 01,  Up: Changelog
 
 * Menu:
 
+* Changes::
 * Additions::
 * Fixes::
 
 
-File: README.info,  Node: Additions,  Next: Fixes,  Up: 02-pre
+File: README.info,  Node: Changes,  Next: Additions,  Up: 02-pre
 
-4.1.1 Additions
+4.1.1 Changes
+-------------
+
+   • Function ‘taxy-take-keyed*’ is renamed to ‘taxy-take-keyed’,
+     replacing the old function: it’s more powerful, and there’s little
+     reason to maintain two versions.
+
+
+File: README.info,  Node: Additions,  Next: Fixes,  Prev: Changes,  Up: 02-pre
+
+4.1.2 Additions
 ---------------
 
    • Struct ‘taxy’ now has a ‘:make’ slot, a function called to make new
-     sub-taxys by ‘take-take-keyed*’ (defaulting to ‘make-taxy’).  This
+     sub-taxys by ‘take-take-keyed’ (defaulting to ‘make-taxy’).  This
      is useful when defining structs specialized on ‘taxy’.
    • Struct ‘taxy-magit-section’ now has an ‘:indent’ slot, a number of
      characters by which to indent each level of sub-taxy, applied
      automatically by function ‘taxy-magit-section-insert’.
+   • Each element of the new ‘taxy-take-keyed’’s ‘KEY-FNS’ argument may
+     now be a function or a list of functions (or a list of a list of
+     functions, etc.).  Lists of functions create "chains" of
+     independent, dynamic taxys descending from a single root taxy.  See
+     *note example: "Chains" of independent multi-level dynamic taxys.
 
 
 File: README.info,  Node: Fixes,  Prev: Additions,  Up: 02-pre
 
-4.1.2 Fixes
+4.1.3 Fixes
 -----------
 
    • ‘taxy-magit-section’’s ‘insert-object’ function.
@@ -896,28 +986,30 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1379
-Node: Numbery (starting basically)1698
-Node: Lettery (filling incrementally)7457
-Node: Sporty (understanding completely)9906
-Node: Applications16385
-Node: Installation16785
-Node: Usage17086
-Node: Dynamic taxys19207
-Node: Multi-level dynamic taxys21625
-Node: Reusable taxys23788
-Node: Threading macros27957
-Node: Modifying filled taxys28496
-Node: Magit section29589
-Node: Changelog30190
-Node: 02-pre30340
-Node: Additions30462
-Node: Fixes31002
-Node: 0131252
-Node: Development31355
-Node: Copyright assignment31561
-Node: Credits32160
-Node: License32350
+Node: Examples1497
+Node: Numbery (starting basically)1816
+Node: Lettery (filling incrementally)7575
+Node: Sporty (understanding completely)10024
+Node: Applications16499
+Node: Installation16899
+Node: Usage17200
+Node: Dynamic taxys19321
+Node: Multi-level dynamic taxys21865
+Node: "Chains" of independent multi-level dynamic taxys24062
+Node: Reusable taxys26942
+Node: Threading macros31111
+Node: Modifying filled taxys31650
+Node: Magit section32743
+Node: Changelog33344
+Node: 02-pre33494
+Node: Changes33628
+Node: Additions33916
+Node: Fixes34831
+Node: 0135081
+Node: Development35184
+Node: Copyright assignment35390
+Node: Credits35989
+Node: License36179
 
 End Tag Table
 
