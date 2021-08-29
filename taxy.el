@@ -52,7 +52,7 @@
 ;;;; Structs
 
 (cl-defstruct taxy
-  name description key objects taxys dynamic
+  name description key objects taxys
   (predicate #'identity) (then #'ignore)
   take)
 
