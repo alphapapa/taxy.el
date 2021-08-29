@@ -1,0 +1,14 @@
+#+TITLE: taxy.el Notes
+
+* Ideas
+
+** Useful functions from [[id:8d9adb33-3f14-4667-a03e-bd5c6656d178][taxonomy Python package]]
+
+It's specifically intended for biological taxonomies, but some of the functions listed there may be useful, e.g. ~lineage~, ~prune~.
+
+* References
+
+** [[https://pypi.org/project/taxonomy/][taxonomy · PyPI]]
+:PROPERTIES:
+:ID:       8d9adb33-3f14-4667-a03e-bd5c6656d178
+:END:
