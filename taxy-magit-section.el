@@ -59,7 +59,7 @@ descendant taxys; if `last', insert them after descendants."
   (let* ((depth 0)
          (magit-section-set-visibility-hook (cons #'taxy-magit-section-visibility magit-section-set-visibility-hook)))
     (cl-labels ((insert-object
-                 (object &optional (format-fn (lambda (o) (format "%s" o))))
+                 (object format-fn)
                  (magit-insert-section (magit-section object)
                    (magit-insert-section-body
                      (insert (make-string (+ 2 (* depth taxy-magit-section-indent)) ? )
@@ -69,7 +69,8 @@ descendant taxys; if `last', insert them after descendants."
                  (taxy) (let ((magit-section-set-visibility-hook magit-section-set-visibility-hook)
                               (format-fn (cl-typecase taxy
                                            (taxy-magit-section
-                                            (taxy-magit-section-format-fn taxy)))))
+                                            (taxy-magit-section-format-fn taxy))
+                                           (t (lambda (o) (format "%s" o))))))
                           (cl-typecase taxy
                             (taxy-magit-section
                              (when (taxy-magit-section-visibility-fn taxy)
@@ -86,8 +87,7 @@ descendant taxys; if `last', insert them after descendants."
                             (magit-insert-section-body
                               (when (eq 'first objects)
                                 (dolist (object (taxy-objects taxy))
-                                  (insert-object object format-fn))
-                                (mapc #'insert-object (taxy-objects taxy)))
+                                  (insert-object object format-fn)))
                               (cl-incf depth)
                               (mapc #'insert-taxy (taxy-taxys taxy))
                               (cl-decf depth)

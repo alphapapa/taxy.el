@@ -717,7 +717,9 @@ Note that =taxy-magit-section.el= is not installed with the =taxy= package by de
 
 ** 0.2-pre
 
-Nothing new yet.
+*** Fixes
+
++  ~taxy-magit-section~'s ~insert-object~ function.
 
 ** 0.1
 

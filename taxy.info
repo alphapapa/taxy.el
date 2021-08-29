@@ -50,7 +50,9 @@ Changelog
 * 0.2-pre: 02-pre. 
 * 0.1: 01. 
 
+0.2-pre
 
+* Fixes::
 
 Development
 
@@ -810,7 +812,17 @@ File: README.info,  Node: 02-pre,  Next: 01,  Up: Changelog
 4.1 0.2-pre
 ===========
 
-Nothing new yet.
+* Menu:
+
+* Fixes::
+
+
+File: README.info,  Node: Fixes,  Up: 02-pre
+
+4.1.1 Fixes
+-----------
+
+   • ‘taxy-magit-section’’s ‘insert-object’ function.
 
 
 File: README.info,  Node: 01,  Prev: 02-pre,  Up: Changelog
@@ -867,26 +879,27 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1347
-Node: Numbery (starting basically)1666
-Node: Lettery (filling incrementally)7425
-Node: Sporty (understanding completely)9874
-Node: Applications16353
-Node: Installation16753
-Node: Usage17054
-Node: Dynamic taxys19175
-Node: Multi-level dynamic taxys21593
-Node: Reusable taxys23756
-Node: Threading macros27925
-Node: Modifying filled taxys28464
-Node: Magit section29557
-Node: Changelog30158
-Node: 02-pre30308
-Node: 0130414
-Node: Development30517
-Node: Copyright assignment30723
-Node: Credits31322
-Node: License31512
+Node: Examples1365
+Node: Numbery (starting basically)1684
+Node: Lettery (filling incrementally)7443
+Node: Sporty (understanding completely)9892
+Node: Applications16371
+Node: Installation16771
+Node: Usage17072
+Node: Dynamic taxys19193
+Node: Multi-level dynamic taxys21611
+Node: Reusable taxys23774
+Node: Threading macros27943
+Node: Modifying filled taxys28482
+Node: Magit section29575
+Node: Changelog30176
+Node: 02-pre30326
+Node: Fixes30434
+Node: 0130574
+Node: Development30677
+Node: Copyright assignment30883
+Node: Credits31482
+Node: License31672
 
 End Tag Table
 
