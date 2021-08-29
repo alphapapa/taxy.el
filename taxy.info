@@ -974,8 +974,8 @@ being distributed in GNU ELPA (https://elpa.gnu.org/).  Contributions to
 this project must follow GNU guidelines, which means that, as with other
 parts of Emacs, patches of more than a few lines must be accompanied by
 having assigned copyright for the contribution to the FSF. Contributors
-who wish to do so may contact emacs-devel@lists.gnu.org
-<emacs-devel@lists.gnu.org> to request the assignment form.
+who wish to do so may contact emacs-devel@gnu.org <emacs-devel@gnu.org>
+to request the assignment form.
 
 
 File: README.info,  Node: Credits,  Next: License,  Prev: Development,  Up: Top
@@ -1021,8 +1021,8 @@ Node: Fixes35010
 Node: 0135256
 Node: Development35355
 Node: Copyright assignment35561
-Node: Credits36160
-Node: License36350
+Node: Credits36148
+Node: License36338
 
 End Tag Table
 
