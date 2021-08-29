@@ -70,18 +70,23 @@
 (defun taxy-fill (objects taxy)
   "Fill TAXY with OBJECTS according to its definition."
   (cl-labels ((apply-object (object taxy)
-                            (cl-loop for taxy in (taxy-taxys taxy)
-                                     when (funcall (taxy-predicate taxy) object)
-                                     do (progn
-                                          (if (taxy-take taxy)
-                                              (funcall (taxy-take taxy) object taxy)
-                                            (if (taxy-taxys taxy)
-                                                (or (apply-object object taxy)
-                                                    (push object (taxy-objects taxy)))
-                                              (push object (taxy-objects taxy))))
-                                          (setf object (funcall (taxy-then taxy) object)))
-                                     unless object return t
-                                     finally return nil)))
+                            (or (cl-loop for taxy in (taxy-taxys taxy)
+                                         when (funcall (taxy-predicate taxy) object)
+                                         do (progn
+                                              (if (taxy-take taxy)
+                                                  (funcall (taxy-take taxy) object taxy)
+                                                (if (taxy-taxys taxy)
+                                                    (or (apply-object object taxy)
+                                                        (push object (taxy-objects taxy)))
+                                                  (push object (taxy-objects taxy))))
+                                              (setf object (funcall (taxy-then taxy) object)))
+                                         unless object return t
+                                         finally return nil)
+                                ;; No sub-taxys took the object: add it to this taxy.
+                                (when (funcall (taxy-predicate taxy) object)
+                                  (if (taxy-take taxy)
+                                      (funcall (taxy-take taxy) object taxy)
+                                    (push object (taxy-objects taxy)))))))
     (dolist (object objects taxy)
       (apply-object object taxy))))
 

@@ -823,6 +823,8 @@ File: README.info,  Node: Fixes,  Up: 02-pre
 -----------
 
    • ‘taxy-magit-section’’s ‘insert-object’ function.
+   • ‘taxy-fill’ now applies objects to the root taxy if no sub-taxys
+     take them.
 
 
 File: README.info,  Node: 01,  Prev: 02-pre,  Up: Changelog
@@ -895,11 +897,11 @@ Node: Magit section29575
 Node: Changelog30176
 Node: 02-pre30326
 Node: Fixes30434
-Node: 0130574
-Node: Development30677
-Node: Copyright assignment30883
-Node: Credits31482
-Node: License31672
+Node: 0130666
+Node: Development30769
+Node: Copyright assignment30975
+Node: Credits31574
+Node: License31764
 
 End Tag Table
 

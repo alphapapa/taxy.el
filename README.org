@@ -720,6 +720,7 @@ Note that =taxy-magit-section.el= is not installed with the =taxy= package by de
 *** Fixes
 
 +  ~taxy-magit-section~'s ~insert-object~ function.
++  ~taxy-fill~ now applies objects to the root taxy if no sub-taxys take them.
 
 ** 0.1
 
