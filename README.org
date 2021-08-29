@@ -720,6 +720,7 @@ Note that =taxy-magit-section.el= is not installed with the =taxy= package by de
 *** Additions
 
 +  Struct ~taxy~ now has a ~:make~ slot, a function called to make new sub-taxys by ~take-take-keyed*~ (defaulting to ~make-taxy~).  This is useful when defining structs specialized on ~taxy~.
++  Struct ~taxy-magit-section~ now has an ~:indent~ slot, a number of characters by which to indent each level of sub-taxy, applied automatically by function ~taxy-magit-section-insert~.
 
 *** Fixes
 

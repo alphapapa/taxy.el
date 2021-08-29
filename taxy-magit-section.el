@@ -45,6 +45,7 @@
   ;; `taxy-magit-section-insert', but it allows a visibility function
   ;; to be specified to override the default for it.
   (visibility-fn #'taxy-magit-section-visibility)
+  (indent 2)
   format-fn)
 
 ;;;; Commands
@@ -59,10 +60,10 @@ descendant taxys; if `last', insert them after descendants."
   (let* ((depth 0)
          (magit-section-set-visibility-hook (cons #'taxy-magit-section-visibility magit-section-set-visibility-hook)))
     (cl-labels ((insert-object
-                 (object format-fn)
+                 (object format-fn indent)
                  (magit-insert-section (magit-section object)
                    (magit-insert-section-body
-                     (insert (make-string (+ 2 (* depth taxy-magit-section-indent)) ? )
+                     (insert (make-string (+ 2 (* depth indent)) ? )
                              (funcall format-fn object)
                              "\n"))))
                 (insert-taxy
@@ -87,13 +88,13 @@ descendant taxys; if `last', insert them after descendants."
                             (magit-insert-section-body
                               (when (eq 'first objects)
                                 (dolist (object (taxy-objects taxy))
-                                  (insert-object object format-fn)))
+                                  (insert-object object format-fn (taxy-magit-section-indent taxy))))
                               (cl-incf depth)
                               (mapc #'insert-taxy (taxy-taxys taxy))
                               (cl-decf depth)
                               (when (eq 'last objects)
                                 (dolist (object (taxy-objects taxy))
-                                  (insert-object object format-fn))))))))
+                                  (insert-object object format-fn (taxy-magit-section-indent taxy)))))))))
       (magit-insert-section (magit-section)
         (insert-taxy taxy)))))
 

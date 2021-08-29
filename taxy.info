@@ -827,6 +827,9 @@ File: README.info,  Node: Additions,  Next: Fixes,  Up: 02-pre
    • Struct ‘taxy’ now has a ‘:make’ slot, a function called to make new
      sub-taxys by ‘take-take-keyed*’ (defaulting to ‘make-taxy’).  This
      is useful when defining structs specialized on ‘taxy’.
+   • Struct ‘taxy-magit-section’ now has an ‘:indent’ slot, a number of
+     characters by which to indent each level of sub-taxy, applied
+     automatically by function ‘taxy-magit-section-insert’.
 
 
 File: README.info,  Node: Fixes,  Prev: Additions,  Up: 02-pre
@@ -909,12 +912,12 @@ Node: Magit section29589
 Node: Changelog30190
 Node: 02-pre30340
 Node: Additions30462
-Node: Fixes30789
-Node: 0131039
-Node: Development31142
-Node: Copyright assignment31348
-Node: Credits31947
-Node: License32137
+Node: Fixes31002
+Node: 0131252
+Node: Development31355
+Node: Copyright assignment31561
+Node: Credits32160
+Node: License32350
 
 End Tag Table
 
