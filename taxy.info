@@ -52,6 +52,7 @@ Changelog
 
 0.2-pre
 
+* Additions::
 * Fixes::
 
 Development
@@ -814,12 +815,23 @@ File: README.info,  Node: 02-pre,  Next: 01,  Up: Changelog
 
 * Menu:
 
+* Additions::
 * Fixes::
 
 
-File: README.info,  Node: Fixes,  Up: 02-pre
+File: README.info,  Node: Additions,  Next: Fixes,  Up: 02-pre
 
-4.1.1 Fixes
+4.1.1 Additions
+---------------
+
+   • Struct ‘taxy’ now has a ‘:make’ slot, a function called to make new
+     sub-taxys by ‘take-take-keyed*’ (defaulting to ‘make-taxy’).  This
+     is useful when defining structs specialized on ‘taxy’.
+
+
+File: README.info,  Node: Fixes,  Prev: Additions,  Up: 02-pre
+
+4.1.2 Fixes
 -----------
 
    • ‘taxy-magit-section’’s ‘insert-object’ function.
@@ -881,27 +893,28 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1365
-Node: Numbery (starting basically)1684
-Node: Lettery (filling incrementally)7443
-Node: Sporty (understanding completely)9892
-Node: Applications16371
-Node: Installation16771
-Node: Usage17072
-Node: Dynamic taxys19193
-Node: Multi-level dynamic taxys21611
-Node: Reusable taxys23774
-Node: Threading macros27943
-Node: Modifying filled taxys28482
-Node: Magit section29575
-Node: Changelog30176
-Node: 02-pre30326
-Node: Fixes30434
-Node: 0130666
-Node: Development30769
-Node: Copyright assignment30975
-Node: Credits31574
-Node: License31764
+Node: Examples1379
+Node: Numbery (starting basically)1698
+Node: Lettery (filling incrementally)7457
+Node: Sporty (understanding completely)9906
+Node: Applications16385
+Node: Installation16785
+Node: Usage17086
+Node: Dynamic taxys19207
+Node: Multi-level dynamic taxys21625
+Node: Reusable taxys23788
+Node: Threading macros27957
+Node: Modifying filled taxys28496
+Node: Magit section29589
+Node: Changelog30190
+Node: 02-pre30340
+Node: Additions30462
+Node: Fixes30789
+Node: 0131039
+Node: Development31142
+Node: Copyright assignment31348
+Node: Credits31947
+Node: License32137
 
 End Tag Table
 

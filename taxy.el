@@ -54,6 +54,7 @@
 (cl-defstruct taxy
   name description key objects taxys
   (predicate #'identity) (then #'ignore)
+  (make #'make-taxy)
   take)
 
 ;;;; Variables
@@ -162,20 +163,25 @@ recursively as necessary.  Each new taxy's name is that returned
 by KEY-NAME-FN called with OBJECT."
   (let ((key-fn (car key-fns)))
     (if-let ((key (funcall key-fn object)))
-        (let ((key-taxy (or (cl-find-if (lambda (taxy-key)
-                                          (equal key taxy-key))
-                                        (taxy-taxys taxy)
-                                        :key #'taxy-key)
-                            (car
-                             (push (make-taxy
-                                    :name (funcall key-name-fn key) :key key
-                                    :predicate (lambda (object)
-                                                 (equal key (funcall key-fn object)))
-                                    :take (when (cdr key-fns)
-                                            (lambda (object taxy)
-                                              (taxy-take-keyed* (cdr key-fns) object taxy)))
-                                    :then then)
-                                   (taxy-taxys taxy))))))
+        (let ((key-taxy
+               (or (cl-find-if (lambda (taxy-key)
+                                 (equal key taxy-key))
+                               (taxy-taxys taxy)
+                               :key #'taxy-key)
+                   (car
+                    ;; Calling `make-taxy' directly might offer the compiler a chance to optimize
+                    ;; compared to using `funcall', but allowing taxy structs to specify their
+                    ;; own MAKE functions is very helpful when using specialized structs.
+                    (push (funcall (taxy-make taxy)
+                                   :name (funcall key-name-fn key)
+                                   :key key
+                                   :predicate (lambda (object)
+                                                (equal key (funcall key-fn object)))
+                                   :take (when (cdr key-fns)
+                                           (lambda (object taxy)
+                                             (taxy-take-keyed* (cdr key-fns) object taxy)))
+                                   :then then)
+                          (taxy-taxys taxy))))))
           (if (cdr key-fns)
               (taxy-take-keyed* (cdr key-fns) object key-taxy)
             (push object (taxy-objects key-taxy))))
