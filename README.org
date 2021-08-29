@@ -145,18 +145,21 @@ The ~taxy-fill~ function applies the numbers in a "cascade" down the hierarchy o
 
 ** Lettery (filling incrementally)
 
-You can also add more objects after the hierarchy has been filled:
+You can also add more objects after the hierarchy has been filled.  In this example we'll make a comprehensive taxonomy of letters.  The first sub-taxy collects vowels, and the second, by leaving its predicate at the default value, ~identity~, collects all letters not collected by the first taxy, i.e. non-vowels.
 
 #+BEGIN_SRC elisp
   (defvar lettery
-    (make-taxy :name "Lettery"
-               :description "A comprehensive taxonomy of letters."
-               :taxys (list (make-taxy :name "Vowels"
-                                       :description "You know what those are."
-                                       :predicate (lambda (l)
-                                                    (member-ignore-case l '("a" "e" "i" "o" "u"))))
-                            (make-taxy :name "Consonants"
-                                       :description "Well, if they aren't a vowel..."))))
+    (make-taxy
+     :name "Lettery"
+     :description "A comprehensive taxonomy of letters."
+     :taxys (list (make-taxy
+                   :name "Vowels"
+                   :description "You know what those are."
+                   :predicate (lambda (l)
+                                (member-ignore-case l '("a" "e" "i" "o" "u"))))
+                  (make-taxy
+                   :name "Consonants"
+                   :description "Well, if they aren't vowels..."))))
 
   (taxy-plain
    (taxy-fill (reverse
@@ -164,6 +167,8 @@ You can also add more objects after the hierarchy has been filled:
                         collect (upcase (char-to-string l))))
               lettery))
 #+END_SRC
+
+That produces:
 
 #+BEGIN_SRC elisp
   ("Lettery" "A comprehensive taxonomy of letters."
@@ -183,6 +188,8 @@ Oops, we forgot the letters after N!  Let's add them, too:
               lettery))
 #+END_SRC
 
+Which gives us:
+
 #+BEGIN_SRC elisp
   ("Lettery" "A comprehensive taxonomy of letters."
    (("Vowels" "You know what those are."
@@ -193,12 +200,13 @@ Oops, we forgot the letters after N!  Let's add them, too:
 
 Oh, they're out of order, now.  That won't do.  Let's fix that:
 
-#+BEGIN_SRC elisp
-  (cl-loop for taxy in-ref (taxy-taxys lettery)
-           do (setf (taxy-objects taxy) (cl-sort (taxy-objects taxy) #'<
-                                                 :key #'string-to-char)))
-
-  (taxy-plain lettery)
+#+BEGIN_SRC elisp :exports code :results code
+  (taxy-plain
+   (taxy-mapc* (lambda (taxy)
+                 (setf (taxy-objects taxy)
+                       (cl-sort (taxy-objects taxy) #'<
+                                :key #'string-to-char)))
+     lettery))
 #+END_SRC
 
 That's better:
@@ -275,20 +283,19 @@ And finally we'll define a taxy to organize them.  In this, we use a helper macr
                          (when (member ,needle (funcall ,haystack object))
                            ,needle))))
       (make-taxy
-       :taxys (list (make-taxy
-                     :name "Sporty"
-                     :take (lambda (object taxy)
-                             (taxy-take-keyed
-                              (list #'sport-venue
-                                    (in 'ball 'sport-uses)
-                                    (in 'disc 'sport-uses)
-                                    (in 'glove 'sport-uses)
-                                    (in 'racket 'sport-uses))
-                              object taxy
-                              ;; We set the `:then' function of the taxys
-                              ;; created by `taxy-take-keyed' to `identity'
-                              ;; so they will not consume their objects.
-                              :then #'identity)))))))
+       :name "Sporty"
+       :take (lambda (object taxy)
+               (taxy-take-keyed
+                 (list #'sport-venue
+                       (in 'ball 'sport-uses)
+                       (in 'disc 'sport-uses)
+                       (in 'glove 'sport-uses)
+                       (in 'racket 'sport-uses))
+                 object taxy
+                 ;; We set the `:then' function of the taxys
+                 ;; created by `taxy-take-keyed' to `identity'
+                 ;; so they will not consume their objects.
+                 :then #'identity)))))
 #+END_SRC
 
 Now let's fill the taxy with the sports and format it:
@@ -302,28 +309,26 @@ Now let's fill the taxy with the sports and format it:
 #+END_SRC
 
 #+BEGIN_SRC elisp :exports code
-((("Sporty"
-   ((disc
-     ((outdoor
-       ("Ultimate" "Disc golf"))))
-    (ball
-     ((racket
-       ((indoor
-         ("Racquetball"))
-        (outdoor
-         ("Tennis"))))
-      (indoor
-       ("Volleyball" "Basketball"))
+  ((("Sporty"
+     ((indoor
+       ((ball
+         ("Volleyball" "Basketball")
+         ((glove
+           ("Handball"))
+          (racket
+           ("Racquetball"))))))
       (outdoor
-       ("Soccer" "Football"))
-      (glove
-       ((indoor
-         ("Handball"))
-        (outdoor
-         ("Baseball"))))))))))
+       ((disc
+         ("Ultimate" "Disc golf"))
+        (ball
+         ("Soccer" "Football")
+         ((racket
+           ("Tennis"))
+          (glove
+           ("Baseball"))))))))))
 #+END_SRC
 
-That's pretty sporty.  But classifying them by venue first makes the racket and glove sports not be listed together.  Let's swap that around:
+That's pretty sporty.  But classifying them by venue first makes the racket and glove sports not be listed together.  Let's swap the key functions around so the venue is classified at the deepest level of the hierarchy:
 
 #+BEGIN_SRC elisp :exports code :results silent
   (defvar sporty
@@ -332,17 +337,16 @@ That's pretty sporty.  But classifying them by venue first makes the racket and 
                          (when (member ,needle (funcall ,haystack object))
                            ,needle))))
       (make-taxy
-       :taxys (list (make-taxy
-                     :name "Sporty"
-                     :take (lambda (object taxy)
-                             (taxy-take-keyed
-                              (list (in 'ball 'sport-uses)
-                                    (in 'disc 'sport-uses)
-                                    (in 'glove 'sport-uses)
-                                    (in 'racket 'sport-uses)
-                                    #'sport-venue)
-                              object taxy
-                              :then #'identity)))))))
+       :name "Sporty"
+       :take (lambda (object taxy)
+               (taxy-take-keyed
+                 (list (in 'ball 'sport-uses)
+                       (in 'disc 'sport-uses)
+                       (in 'glove 'sport-uses)
+                       (in 'racket 'sport-uses)
+                       #'sport-venue)
+                 object taxy
+                 :then #'identity)))))
 
   (thread-last sporty
     taxy-emptied
@@ -352,25 +356,25 @@ That's pretty sporty.  But classifying them by venue first makes the racket and 
 #+END_SRC
 
 #+BEGIN_SRC elisp :exports code
-((("Sporty"
-   ((disc
-     ((outdoor
-       ("Ultimate" "Disc golf"))))
-    (ball
-     ((racket
-       ((indoor
-         ("Racquetball"))
+  ((("Sporty"
+     ((disc
+       ((outdoor
+         ("Ultimate" "Disc golf"))))
+      (ball
+       ((racket
+         ((indoor
+           ("Racquetball"))
+          (outdoor
+           ("Tennis"))))
+        (indoor
+         ("Volleyball" "Basketball"))
         (outdoor
-         ("Tennis"))))
-      (indoor
-       ("Volleyball" "Basketball"))
-      (outdoor
-       ("Soccer" "Football"))
-      (glove
-       ((indoor
-         ("Handball"))
-        (outdoor
-         ("Baseball"))))))))))
+         ("Soccer" "Football"))
+        (glove
+         ((indoor
+           ("Handball"))
+          (outdoor
+           ("Baseball"))))))))))
 #+END_SRC
 
 That's better.  But I'd also like to see a very simple classification to help me decide what to play:
@@ -378,16 +382,14 @@ That's better.  But I'd also like to see a very simple classification to help me
 #+BEGIN_SRC elisp :exports code
   (thread-last
       (make-taxy
-       :taxys (list
-               (make-taxy
-                :name "Funny"
-                :take (lambda (object taxy)
-                        (taxy-take-keyed
-                         (list (lambda (sport)
-                                 (if (sport-fun sport)
-                                     'fun 'boring))
-                               #'sport-venue)
-                         object taxy)))))
+       :name "Funny"
+       :take (lambda (object taxy)
+               (taxy-take-keyed
+                 (list (lambda (sport)
+                         (if (sport-fun sport)
+                             'fun 'boring))
+                       #'sport-venue)
+                 object taxy)))
     taxy-emptied
     (taxy-fill sports)
     (taxy-mapcar #'sport-name)

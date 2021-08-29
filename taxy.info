@@ -204,23 +204,32 @@ File: README.info,  Node: Lettery (filling incrementally),  Next: Sporty (unders
 1.2 Lettery (filling incrementally)
 ===================================
 
-You can also add more objects after the hierarchy has been filled:
+You can also add more objects after the hierarchy has been filled.  In
+this example we’ll make a comprehensive taxonomy of letters.  The first
+sub-taxy collects vowels, and the second, by leaving its predicate at
+the default value, ‘identity’, collects all letters not collected by the
+first taxy, i.e.  non-vowels.
 
      (defvar lettery
-       (make-taxy :name "Lettery"
-                  :description "A comprehensive taxonomy of letters."
-                  :taxys (list (make-taxy :name "Vowels"
-                                          :description "You know what those are."
-                                          :predicate (lambda (l)
-                                                       (member-ignore-case l '("a" "e" "i" "o" "u"))))
-                               (make-taxy :name "Consonants"
-                                          :description "Well, if they aren't a vowel..."))))
+       (make-taxy
+        :name "Lettery"
+        :description "A comprehensive taxonomy of letters."
+        :taxys (list (make-taxy
+                      :name "Vowels"
+                      :description "You know what those are."
+                      :predicate (lambda (l)
+                                   (member-ignore-case l '("a" "e" "i" "o" "u"))))
+                     (make-taxy
+                      :name "Consonants"
+                      :description "Well, if they aren't vowels..."))))
 
      (taxy-plain
       (taxy-fill (reverse
                   (cl-loop for l from ?a to ?n
                            collect (upcase (char-to-string l))))
                  lettery))
+
+   That produces:
 
      ("Lettery" "A comprehensive taxonomy of letters."
       (("Vowels" "You know what those are."
@@ -236,6 +245,8 @@ You can also add more objects after the hierarchy has been filled:
                            collect (upcase (char-to-string l))))
                  lettery))
 
+   Which gives us:
+
      ("Lettery" "A comprehensive taxonomy of letters."
       (("Vowels" "You know what those are."
         ("O" "U" "A" "E" "I"))
@@ -244,11 +255,12 @@ You can also add more objects after the hierarchy has been filled:
 
    Oh, they’re out of order, now.  That won’t do.  Let’s fix that:
 
-     (cl-loop for taxy in-ref (taxy-taxys lettery)
-              do (setf (taxy-objects taxy) (cl-sort (taxy-objects taxy) #'<
-                                                    :key #'string-to-char)))
-
-     (taxy-plain lettery)
+     (taxy-plain
+      (taxy-mapc* (lambda (taxy)
+                    (setf (taxy-objects taxy)
+                          (cl-sort (taxy-objects taxy) #'<
+                                   :key #'string-to-char)))
+        lettery))
 
    That’s better:
 
@@ -324,20 +336,19 @@ key functions:
                             (when (member ,needle (funcall ,haystack object))
                               ,needle))))
          (make-taxy
-          :taxys (list (make-taxy
-                        :name "Sporty"
-                        :take (lambda (object taxy)
-                                (taxy-take-keyed
-                                 (list #'sport-venue
-                                       (in 'ball 'sport-uses)
-                                       (in 'disc 'sport-uses)
-                                       (in 'glove 'sport-uses)
-                                       (in 'racket 'sport-uses))
-                                 object taxy
-                                 ;; We set the `:then' function of the taxys
-                                 ;; created by `taxy-take-keyed' to `identity'
-                                 ;; so they will not consume their objects.
-                                 :then #'identity)))))))
+          :name "Sporty"
+          :take (lambda (object taxy)
+                  (taxy-take-keyed
+                    (list #'sport-venue
+                          (in 'ball 'sport-uses)
+                          (in 'disc 'sport-uses)
+                          (in 'glove 'sport-uses)
+                          (in 'racket 'sport-uses))
+                    object taxy
+                    ;; We set the `:then' function of the taxys
+                    ;; created by `taxy-take-keyed' to `identity'
+                    ;; so they will not consume their objects.
+                    :then #'identity)))))
 
    Now let’s fill the taxy with the sports and format it:
 
@@ -348,27 +359,27 @@ key functions:
        taxy-plain)
 
      ((("Sporty"
-        ((disc
-          ((outdoor
-            ("Ultimate" "Disc golf"))))
-         (ball
-          ((racket
-            ((indoor
-              ("Racquetball"))
-             (outdoor
-              ("Tennis"))))
-           (indoor
-            ("Volleyball" "Basketball"))
-           (outdoor
-            ("Soccer" "Football"))
-           (glove
-            ((indoor
+        ((indoor
+          ((ball
+            ("Volleyball" "Basketball")
+            ((glove
               ("Handball"))
-             (outdoor
+             (racket
+              ("Racquetball"))))))
+         (outdoor
+          ((disc
+            ("Ultimate" "Disc golf"))
+           (ball
+            ("Soccer" "Football")
+            ((racket
+              ("Tennis"))
+             (glove
               ("Baseball"))))))))))
 
    That’s pretty sporty.  But classifying them by venue first makes the
-racket and glove sports not be listed together.  Let’s swap that around:
+racket and glove sports not be listed together.  Let’s swap the key
+functions around so the venue is classified at the deepest level of the
+hierarchy:
 
      (defvar sporty
        (cl-macrolet ((in (needle haystack)
@@ -376,17 +387,16 @@ racket and glove sports not be listed together.  Let’s swap that around:
                             (when (member ,needle (funcall ,haystack object))
                               ,needle))))
          (make-taxy
-          :taxys (list (make-taxy
-                        :name "Sporty"
-                        :take (lambda (object taxy)
-                                (taxy-take-keyed
-                                 (list (in 'ball 'sport-uses)
-                                       (in 'disc 'sport-uses)
-                                       (in 'glove 'sport-uses)
-                                       (in 'racket 'sport-uses)
-                                       #'sport-venue)
-                                 object taxy
-                                 :then #'identity)))))))
+          :name "Sporty"
+          :take (lambda (object taxy)
+                  (taxy-take-keyed
+                    (list (in 'ball 'sport-uses)
+                          (in 'disc 'sport-uses)
+                          (in 'glove 'sport-uses)
+                          (in 'racket 'sport-uses)
+                          #'sport-venue)
+                    object taxy
+                    :then #'identity)))))
 
      (thread-last sporty
        taxy-emptied
@@ -419,16 +429,14 @@ to help me decide what to play:
 
      (thread-last
          (make-taxy
-          :taxys (list
-                  (make-taxy
-                   :name "Funny"
-                   :take (lambda (object taxy)
-                           (taxy-take-keyed
-                            (list (lambda (sport)
-                                    (if (sport-fun sport)
-                                        'fun 'boring))
-                                  #'sport-venue)
-                            object taxy)))))
+          :name "Funny"
+          :take (lambda (object taxy)
+                  (taxy-take-keyed
+                    (list (lambda (sport)
+                            (if (sport-fun sport)
+                                'fun 'boring))
+                          #'sport-venue)
+                    object taxy)))
        taxy-emptied
        (taxy-fill sports)
        (taxy-mapcar #'sport-name)
@@ -1001,28 +1009,28 @@ Node: Top218
 Node: Examples1506
 Node: Numbery (starting basically)1825
 Node: Lettery (filling incrementally)7584
-Node: Sporty (understanding completely)10033
-Node: Applications16508
-Node: Installation16908
-Node: Usage17209
-Node: Dynamic taxys19330
-Node: Multi-level dynamic taxys21874
-Node: "Chains" of independent multi-level dynamic taxys24071
-Node: Reusable taxys26951
-Node: Threading macros31120
-Node: Modifying filled taxys31659
-Node: Magit section32752
-Node: Changelog33410
-Node: 03-pre33572
-Node: 0233678
-Node: Changes33815
-Node: Additions34099
-Node: Fixes35010
-Node: 0135256
-Node: Development35355
-Node: Copyright assignment35561
-Node: Credits36148
-Node: License36338
+Node: Sporty (understanding completely)10270
+Node: Applications16279
+Node: Installation16679
+Node: Usage16980
+Node: Dynamic taxys19101
+Node: Multi-level dynamic taxys21645
+Node: "Chains" of independent multi-level dynamic taxys23842
+Node: Reusable taxys26722
+Node: Threading macros30891
+Node: Modifying filled taxys31430
+Node: Magit section32523
+Node: Changelog33181
+Node: 03-pre33343
+Node: 0233449
+Node: Changes33586
+Node: Additions33870
+Node: Fixes34781
+Node: 0135027
+Node: Development35126
+Node: Copyright assignment35332
+Node: Credits35919
+Node: License36109
 
 End Tag Table
 
