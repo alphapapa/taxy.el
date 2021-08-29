@@ -2,3 +2,4 @@ scratch.*
 org-src-*
 *.elc
 .#*
+/worktrees/
