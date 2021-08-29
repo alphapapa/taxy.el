@@ -775,7 +775,7 @@ That shows a buffer like this:
 
 [[images/magit-section-numbery.png]]
 
-Note that =taxy-magit-section.el= is not installed with the =taxy= package by default.
+Note that while =taxy-magit-section.el= is installed with the =taxy= package, the =magit-section= package is not automatically installed with it.
 
 * Changelog
 :PROPERTIES:

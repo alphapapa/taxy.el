@@ -869,8 +869,9 @@ Showing a taxy with magit-section is very easy:
 
    That shows a buffer like this:
 
-   Note that taxy-magit-section.el is not installed with the taxy
-package by default.
+   Note that while taxy-magit-section.el is installed with the taxy
+package, the magit-section package is not automatically installed with
+it.
 
 
 File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
@@ -1011,17 +1012,17 @@ Node: Reusable taxys26951
 Node: Threading macros31120
 Node: Modifying filled taxys31659
 Node: Magit section32752
-Node: Changelog33353
-Node: 03-pre33515
-Node: 0233621
-Node: Changes33758
-Node: Additions34042
-Node: Fixes34953
-Node: 0135199
-Node: Development35298
-Node: Copyright assignment35504
-Node: Credits36103
-Node: License36293
+Node: Changelog33410
+Node: 03-pre33572
+Node: 0233678
+Node: Changes33815
+Node: Additions34099
+Node: Fixes35010
+Node: 0135256
+Node: Development35355
+Node: Copyright assignment35561
+Node: Credits36160
+Node: License36350
 
 End Tag Table
 
