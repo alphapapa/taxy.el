@@ -48,9 +48,11 @@ Dynamic taxys
 
 Changelog
 
+* 0.4-pre: 04-pre. 
 * 0.3: 03. 
 * 0.2: 02. 
 * 0.1: 01. 
+
 
 0.3
 
@@ -898,14 +900,23 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 
 * Menu:
 
+* 0.4-pre: 04-pre. 
 * 0.3: 03. 
 * 0.2: 02. 
 * 0.1: 01. 
 
 
-File: README.info,  Node: 03,  Next: 02,  Up: Changelog
+File: README.info,  Node: 04-pre,  Next: 03,  Up: Changelog
 
-4.1 0.3
+4.1 0.4-pre
+===========
+
+Nothing new yet.
+
+
+File: README.info,  Node: 03,  Next: 02,  Prev: 04-pre,  Up: Changelog
+
+4.2 0.3
 =======
 
 * Menu:
@@ -916,7 +927,7 @@ File: README.info,  Node: 03,  Next: 02,  Up: Changelog
 
 File: README.info,  Node: Changes,  Next: Fixes,  Up: 03
 
-4.1.1 Changes
+4.2.1 Changes
 -------------
 
    • Within the ‘taxy’ struct and related functions, the term objects is
@@ -927,7 +938,7 @@ File: README.info,  Node: Changes,  Next: Fixes,  Up: 03
 
 File: README.info,  Node: Fixes,  Prev: Changes,  Up: 03
 
-4.1.2 Fixes
+4.2.2 Fixes
 -----------
 
    • Function ‘taxy-fill’ always calls a taxy’s ‘:take’ function if
@@ -939,7 +950,7 @@ File: README.info,  Node: Fixes,  Prev: Changes,  Up: 03
 
 File: README.info,  Node: 02,  Next: 01,  Prev: 03,  Up: Changelog
 
-4.2 0.2
+4.3 0.2
 =======
 
 * Menu:
@@ -951,7 +962,7 @@ File: README.info,  Node: 02,  Next: 01,  Prev: 03,  Up: Changelog
 
 File: README.info,  Node: Changesx,  Next: Additions,  Up: 02
 
-4.2.1 Changes
+4.3.1 Changes
 -------------
 
    • Function ‘taxy-take-keyed*’ is renamed to ‘taxy-take-keyed’,
@@ -961,7 +972,7 @@ File: README.info,  Node: Changesx,  Next: Additions,  Up: 02
 
 File: README.info,  Node: Additions,  Next: Fixesx,  Prev: Changesx,  Up: 02
 
-4.2.2 Additions
+4.3.2 Additions
 ---------------
 
    • Struct ‘taxy’ now has a ‘:make’ slot, a function called to make new
@@ -979,7 +990,7 @@ File: README.info,  Node: Additions,  Next: Fixesx,  Prev: Changesx,  Up: 02
 
 File: README.info,  Node: Fixesx,  Prev: Additions,  Up: 02
 
-4.2.3 Fixes
+4.3.3 Fixes
 -----------
 
    • ‘taxy-magit-section’’s ‘insert-object’ function.
@@ -989,7 +1000,7 @@ File: README.info,  Node: Fixesx,  Prev: Additions,  Up: 02
 
 File: README.info,  Node: 01,  Prev: 02,  Up: Changelog
 
-4.3 0.1
+4.4 0.1
 =======
 
 First tagged version.
@@ -1041,33 +1052,34 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1646
-Node: Numbery (starting basically)1965
-Node: Lettery (filling incrementally)7720
-Node: Sporty (understanding completely)10400
-Node: Applications16387
-Node: Installation16787
-Node: Usage17088
-Node: Dynamic taxys19225
-Node: Multi-level dynamic taxys21780
-Node: "Chains" of independent multi-level dynamic taxys23973
-Node: Reusable taxys26845
-Node: Threading macros31014
-Node: Modifying filled taxys31553
-Node: Magit section32636
-Node: Changelog33294
-Node: 0333448
-Node: Changes33556
-Node: Fixes33904
-Node: 0234335
-Node: Changesx34486
-Node: Additions34771
-Node: Fixesx35684
-Node: 0135931
-Node: Development36030
-Node: Copyright assignment36236
-Node: Credits36823
-Node: License37013
+Node: Examples1667
+Node: Numbery (starting basically)1986
+Node: Lettery (filling incrementally)7741
+Node: Sporty (understanding completely)10421
+Node: Applications16408
+Node: Installation16808
+Node: Usage17109
+Node: Dynamic taxys19246
+Node: Multi-level dynamic taxys21801
+Node: "Chains" of independent multi-level dynamic taxys23994
+Node: Reusable taxys26866
+Node: Threading macros31035
+Node: Modifying filled taxys31574
+Node: Magit section32657
+Node: Changelog33315
+Node: 04-pre33489
+Node: 0333595
+Node: Changes33718
+Node: Fixes34066
+Node: 0234497
+Node: Changesx34648
+Node: Additions34933
+Node: Fixesx35846
+Node: 0136093
+Node: Development36192
+Node: Copyright assignment36398
+Node: Credits36985
+Node: License37175
 
 End Tag Table
 
