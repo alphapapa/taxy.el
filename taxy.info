@@ -932,6 +932,9 @@ File: README.info,  Node: Fixes,  Prev: Changes,  Up: 03-pre
 
    • Function ‘taxy-fill’ always calls a taxy’s ‘:take’ function if
      present.  (Fixing "chains" of dynamic taxys.)
+   • Function ‘taxy-magit-section-insert’ applies text properties from
+     the inserted string to the indentation string (so commands that
+     rely on text properties at the beginning of a line will work).
 
 
 File: README.info,  Node: 02,  Next: 01,  Prev: 03-pre,  Up: Changelog
@@ -1056,15 +1059,15 @@ Node: Changelog33306
 Node: 03-pre33468
 Node: Changes33588
 Node: Fixes33944
-Node: 0234165
-Node: Changesx34320
-Node: Additions34605
-Node: Fixesx35518
-Node: 0135765
-Node: Development35864
-Node: Copyright assignment36070
-Node: Credits36657
-Node: License36847
+Node: 0234379
+Node: Changesx34534
+Node: Additions34819
+Node: Fixesx35732
+Node: 0135979
+Node: Development36078
+Node: Copyright assignment36284
+Node: Credits36871
+Node: License37061
 
 End Tag Table
 

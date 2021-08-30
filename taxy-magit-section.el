@@ -63,9 +63,19 @@ descendant taxys; if `last', insert them after descendants."
                  (item format-fn indent)
                  (magit-insert-section (magit-section item)
                    (magit-insert-section-body
-                     (insert (make-string (+ 2 (* depth indent)) ? )
-                             (funcall format-fn item)
-                             "\n"))))
+		     ;; This is a tedious way to give the indent
+		     ;; string the same text properties as the start
+		     ;; of the formatted string, but no matter where I
+		     ;; left point after using `insert-and-inherit',
+		     ;; something was wrong about the properties, and
+		     ;; `magit-section' didn't navigate the sections
+		     ;; properly anymore.
+		     (let* ((formatted (funcall format-fn item))
+			    (indent (make-string (+ 2 (* depth indent)) ? )))
+		       (add-text-properties 0 (length indent)
+					    (text-properties-at 0 formatted)
+					    indent)
+		       (insert indent formatted "\n")))))
                 (insert-taxy
                  (taxy) (let ((magit-section-set-visibility-hook magit-section-set-visibility-hook)
                               (format-fn (cl-typecase taxy

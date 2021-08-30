@@ -783,6 +783,7 @@ Note that while =taxy-magit-section.el= is installed with the =taxy= package, th
 *** Fixes
 
 +  Function ~taxy-fill~ always calls a taxy's ~:take~ function if present.  (Fixing "chains" of dynamic taxys.)
++  Function ~taxy-magit-section-insert~ applies text properties from the inserted string to the indentation string (so commands that rely on text properties at the beginning of a line will work).
 
 ** 0.2
 
