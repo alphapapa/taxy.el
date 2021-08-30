@@ -73,23 +73,25 @@
 (defun taxy-fill (items taxy)
   "Fill TAXY with ITEMS according to its definition."
   (cl-labels ((apply-item (item taxy)
-                            (or (cl-loop for taxy in (taxy-taxys taxy)
-                                         when (funcall (taxy-predicate taxy) item)
-                                         do (progn
-                                              (if (taxy-take taxy)
-                                                  (funcall (taxy-take taxy) item taxy)
-                                                (if (taxy-taxys taxy)
-                                                    (or (apply-item item taxy)
-                                                        (push item (taxy-items taxy)))
-                                                  (push item (taxy-items taxy))))
-                                              (setf item (funcall (taxy-then taxy) item)))
-                                         unless item return t
-                                         finally return nil)
-                                ;; No sub-taxys took the item: add it to this taxy.
-                                (when (funcall (taxy-predicate taxy) item)
-                                  (if (taxy-take taxy)
-                                      (funcall (taxy-take taxy) item taxy)
-                                    (push item (taxy-items taxy)))))))
+                          (or (if (taxy-take taxy)
+				  (funcall (taxy-take taxy) item taxy)
+				(cl-loop for taxy in (taxy-taxys taxy)
+					 when (funcall (taxy-predicate taxy) item)
+					 do (progn
+					      (if (taxy-take taxy)
+						  (funcall (taxy-take taxy) item taxy)
+						(if (taxy-taxys taxy)
+						    (or (apply-item item taxy)
+							(push item (taxy-items taxy)))
+						  (push item (taxy-items taxy))))
+					      (setf item (funcall (taxy-then taxy) item)))
+					 unless item return t
+					 finally return nil))
+                              ;; No sub-taxys took the item: add it to this taxy.
+                              (when (funcall (taxy-predicate taxy) item)
+                                (if (taxy-take taxy)
+                                    (funcall (taxy-take taxy) item taxy)
+                                  (push item (taxy-items taxy)))))))
     (dolist (item items taxy)
       (apply-item item taxy))))
 

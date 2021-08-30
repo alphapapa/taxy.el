@@ -780,6 +780,10 @@ Note that while =taxy-magit-section.el= is installed with the =taxy= package, th
 
 +  Within the ~taxy~ struct and related functions, the term =objects= is renamed to =items=, which is more concise but has the same meaning.  This makes code a bit more concise (e.g. ~(taxy-objects taxy)~ becomes ~(taxy-items taxy)~).
 
+*** Fixes
+
++  Function ~taxy-fill~ always calls a taxy's ~:take~ function if present.  (Fixing "chains" of dynamic taxys.)
+
 ** 0.2
 
 *** Changes
