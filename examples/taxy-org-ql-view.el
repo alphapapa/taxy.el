@@ -45,33 +45,57 @@
 
 (defvar taxy-org-ql-view-keys nil)
 
-(defmacro taxy-org-ql-view-define-key (name &rest body)
-  "Define a `taxy-org-ql-view' key function by NAME having BODY.
+(defmacro taxy-org-ql-view-define-key (name args &rest body)
+  "Define a `taxy-org-ql-view' key function by NAME having BODY taking ARGS.
 Within BODY, `element' is bound to the `org-element' element
 being tested.
 
 Defines a function named `taxy-org-ql--predicate-NAME', and adds
 an entry to `taxy-org-ql-view-keys' mapping NAME to the new
 function symbol."
-  (declare (indent defun))
-  (let ((fn-symbol (intern (format "taxy-org-ql--predicate-%s" name)))
-	(fn `(lambda (element)
-	       ,@body)))
+  (declare (indent defun)
+	   (debug (&define symbolp listp &rest def-form)))
+  (let* ((fn-symbol (intern (format "taxy-org-ql--predicate-%s" name)))
+	 (fn `(lambda (element ,@args)
+		,@body)))
     `(progn
        (fset ',fn-symbol ,fn)
        (setf (map-elt taxy-org-ql-view-keys ',name) ',fn-symbol))))
 
-(taxy-org-ql-view-define-key todo
-  "Return the to-do keyword for ELEMENT."
-  (org-element-property :todo-keyword element))
+(taxy-org-ql-view-define-key heading (&rest strings)
+  "Return STRINGS that ELEMENT's heading matches."
+  (when-let ((matches (cl-loop with heading = (org-element-property :raw-value element)
+			       for string in strings
+			       when (string-match (regexp-quote string) heading)
+			       collect string)))
+    (format "Heading: %s" (string-join matches ", "))))
 
-(taxy-org-ql-view-define-key priority
-  "Return ELEMENT's priority as a string."
-  (when-let ((priority-number (org-element-property :priority element)))
-    ;; FIXME: Priority numbers may be wildly larger, right?
-    (char-to-string priority-number)))
+(taxy-org-ql-view-define-key todo (&optional keyword)
+  "Return the to-do keyword for ELEMENT.
+If KEYWORD, return whether it matches that."
+  (when-let ((element-keyword (org-element-property :todo-keyword element)))
+    (cl-flet ((format-keyword
+	       (keyword) (format "To-do: %s" keyword)))
+      (pcase keyword
+	('nil (format-keyword element-keyword))
+	(_ (pcase element-keyword
+	     ((pred (equal keyword))
+	      (format-keyword element-keyword))))))))
 
-(taxy-org-ql-view-define-key planning-month
+(taxy-org-ql-view-define-key priority (&optional priority)
+  "Return ELEMENT's priority as a string.
+If PRIORITY, return it if it matches ELEMENT's priority."
+  (cl-flet ((format-priority
+	     (num) (format "Priority: %s" num)))
+    (when-let ((priority-number (org-element-property :priority element)))
+      ;; FIXME: Priority numbers may be wildly larger, right?
+      (pcase priority
+	('nil (format-priority (char-to-string number)))
+	(_ (pcase (char-to-string priority-number)
+	     ((and (pred (equal priority)) string)
+	      (format-priority string))))))))
+
+(taxy-org-ql-view-define-key planning-month ()
   "Return ELEMENT's planning-date month, or nil.
 Returns in format \"%Y-%m (%B)\"."
   (when-let ((planning-element (or (org-element-property :deadline element)
@@ -79,7 +103,7 @@ Returns in format \"%Y-%m (%B)\"."
 				   (org-element-property :closed element))))
     (ts-format "%Y-%m (%B)" (ts-parse-org-element planning-element))))
 
-(taxy-org-ql-view-define-key planning-year
+(taxy-org-ql-view-define-key planning-year ()
   "Return ELEMENT's planning-date year, or nil.
 Returns in format \"%Y\"."
   (when-let ((planning-element (or (org-element-property :deadline element)
@@ -87,7 +111,7 @@ Returns in format \"%Y\"."
 				   (org-element-property :closed element))))
     (ts-format "%Y" (ts-parse-org-element planning-element))))
 
-(taxy-org-ql-view-define-key planning-date
+(taxy-org-ql-view-define-key planning-date ()
   "Return ELEMENT's planning date, or nil.
 Returns in format \"%Y-%m-%d\"."
   (when-let ((planning-element (or (org-element-property :deadline element)
@@ -100,17 +124,30 @@ Returns in format \"%Y-%m-%d\"."
 Each of KEYS should be a function alias defined in
 `taxy-org-ql-view-keys', or a list of such KEY-FNS (recursively,
 ad infinitum, approximately)."
-  (cl-labels ((quote-fn
-	       (fn) (cl-typecase fn
-		      (symbol fn)
-		      (list (cons 'list (mapcar #'quote-fn fn))))))
-    (setf keys (mapcar #'quote-fn keys)))
   (let ((macrolets (cl-loop for (name . fn) in taxy-org-ql-view-keys
 			    collect `(,name ',fn))))
-    ;; Is using (cadr (macroexpand-all ...)) really better than `eval'?
-    (cadr (macroexpand-all `(cl-symbol-macrolet (,@macrolets)
-			      (lambda (item taxy)
-				(taxy-take-keyed (list ,@keys) item taxy)))))))
+    (cl-labels ((expand-form
+		 ;; Is using (cadr (macroexpand-all ...)) really better than `eval'?
+		 (form) (cadr
+			 (macroexpand-all
+			  `(cl-symbol-macrolet (,@macrolets)
+			     ,form))))
+		(quote-fn
+		 (fn) (pcase fn
+			((pred symbolp) fn)
+			(`(,(and (pred symbolp) fn)
+			   . ,(and args (guard (and args
+						    (atom (car args))
+						    (cl-notany #'symbolp args)))))
+			 ;; Key with args: replace with a lambda that
+			 ;; calls that key's function with given args.
+			 `(lambda (element)
+			    (,(expand-form fn) element ,@args)))
+			((pred listp) (cons 'list (mapcar #'quote-fn fn))))))
+      (setf keys (mapcar #'quote-fn keys))
+      (expand-form
+       `(lambda (item taxy)
+	  (taxy-take-keyed (list ,@keys) item taxy))))))
 
 (defun taxy-org-ql-view-make-taxy (name keys)
   "Return a dynamic `taxy-org-ql-view-section' taxy named NAME having KEYS.
