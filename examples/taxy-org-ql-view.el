@@ -82,15 +82,27 @@ If KEYWORD, return whether it matches that."
 	     ((pred (equal keyword))
 	      (format-keyword element-keyword))))))))
 
+(taxy-org-ql-view-define-key tags (&rest tags)
+  "Return the tags for ELEMENT.
+If TAGS, return whether it matches them."
+  (cl-flet ((tags-at
+	     (pos) (apply #'append (delq 'org-ql-nil (org-ql--tags-at pos)))))
+    (org-with-point-at (org-element-property :org-hd-marker element)
+      (pcase tags
+	('nil (tags-at (point)))
+	(_ (when-let (common-tags (seq-intersection tags (tags-at (point))
+						    #'cl-equalp))
+	     (format "Tags: %s" (string-join common-tags ", "))))))))
+
 (taxy-org-ql-view-define-key priority (&optional priority)
   "Return ELEMENT's priority as a string.
 If PRIORITY, return it if it matches ELEMENT's priority."
-  (cl-flet ((format-priority
-	     (num) (format "Priority: %s" num)))
-    (when-let ((priority-number (org-element-property :priority element)))
+  (when-let ((priority-number (org-element-property :priority element)))
+    (cl-flet ((format-priority
+	       (num) (format "Priority: %s" num)))
       ;; FIXME: Priority numbers may be wildly larger, right?
       (pcase priority
-	('nil (format-priority (char-to-string number)))
+	('nil (format-priority (char-to-string priority-number)))
 	(_ (pcase (char-to-string priority-number)
 	     ((and (pred (equal priority)) string)
 	      (format-priority string))))))))
@@ -101,7 +113,7 @@ Returns in format \"%Y-%m (%B)\"."
   (when-let ((planning-element (or (org-element-property :deadline element)
 				   (org-element-property :scheduled element)
 				   (org-element-property :closed element))))
-    (ts-format "%Y-%m (%B)" (ts-parse-org-element planning-element))))
+    (ts-format "Planning: %Y-%m (%B)" (ts-parse-org-element planning-element))))
 
 (taxy-org-ql-view-define-key planning-year ()
   "Return ELEMENT's planning-date year, or nil.
@@ -109,7 +121,7 @@ Returns in format \"%Y\"."
   (when-let ((planning-element (or (org-element-property :deadline element)
 				   (org-element-property :scheduled element)
 				   (org-element-property :closed element))))
-    (ts-format "%Y" (ts-parse-org-element planning-element))))
+    (ts-format "Planning: %Y" (ts-parse-org-element planning-element))))
 
 (taxy-org-ql-view-define-key planning-date ()
   "Return ELEMENT's planning date, or nil.
@@ -117,7 +129,14 @@ Returns in format \"%Y-%m-%d\"."
   (when-let ((planning-element (or (org-element-property :deadline element)
 				   (org-element-property :scheduled element)
 				   (org-element-property :closed element))))
-    (ts-format "%Y-%m-%d" (ts-parse-org-element planning-element))))
+    (ts-format "Planning: %Y-%m-%d" (ts-parse-org-element planning-element))))
+
+(taxy-org-ql-view-define-key planning ()
+  "Return non-nil if ELEMENT has a planning date."
+  (when (or (org-element-property :deadline element)
+	    (org-element-property :scheduled element)
+	    (org-element-property :closed element))
+    "Planned"))
 
 (defun taxy-org-ql-view-take-fn (keys)
   "Return a `taxy' \"take\" function for KEYS.
@@ -185,7 +204,7 @@ KEYS is passed to `taxy-org-ql-view-take-fn', which see."
 	(erase-buffer)
 	(delete-all-overlays)
 	(magit-section-mode)
-	(use-local-map (make-composed-keymap (list org-ql-view-map magit-section-mode-map)))
+	(use-local-map (make-composed-keymap (list magit-section-mode-map org-ql-view-map)))
 	(taxy-magit-section-insert
 	 (thread-last taxy
 	   (taxy-fill items)
@@ -193,7 +212,7 @@ KEYS is passed to `taxy-org-ql-view-take-fn', which see."
 			 (setf (taxy-taxys taxy)
 			       (cl-sort (taxy-taxys taxy) #'string<
 					:key #'taxy-name)))))
-	 :objects 'last))
+	 :items 'last))
       (pop-to-buffer (current-buffer)))))
 
 ;;;; Footer
