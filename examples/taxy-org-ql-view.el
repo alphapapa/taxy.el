@@ -26,6 +26,9 @@
 
 ;;;; Requirements
 
+(require 'map)
+(require 'seq)
+
 (require 'org-ql-view)
 
 (require 'taxy)
@@ -132,11 +135,52 @@ Returns in format \"%Y-%m-%d\"."
     (ts-format "Planning: %Y-%m-%d" (ts-parse-org-element planning-element))))
 
 (taxy-org-ql-view-define-key planning ()
-  "Return non-nil if ELEMENT has a planning date."
+  "Return \"Planned\" if ELEMENT has a planning date."
   (when (or (org-element-property :deadline element)
 	    (org-element-property :scheduled element)
 	    (org-element-property :closed element))
     "Planned"))
+
+(taxy-org-ql-view-define-key deadline (&rest args)
+  "Return whether ELEMENT has a deadline according to ARGS."
+  (when-let ((deadline-element (org-element-property :deadline element)))
+    (pcase args
+      (`(,(or 'nil 't)) "Deadlined")
+      (_ (let ((element-ts (ts-parse-org-element deadline-element)))
+	   (pcase args
+	     ((and `(:past)
+		   (guard (ts> (ts-now) element-ts)))
+	      "Overdue")
+	     ((and `(:today)
+		   (guard (equal (ts-day (ts-now)) (ts-day element-ts))))
+	      "Due today")
+	     ((and `(:future)
+		   (guard (ts< (ts-now) element-ts)))
+	      ;; FIXME: Not necessarily soon.
+	      "Due soon")
+	     ((and `(:before ,target-date)
+		   (guard (ts< element-ts (ts-parse target-date))))
+	      (concat "Due before: " target-date))
+	     ((and `(:after ,target-date)
+		   (guard (ts> element-ts (ts-parse target-date))))
+	      (concat "Due after: " target-date))
+	     ((and `(:on ,target-date)
+		   (guard (let ((now (ts-now)))
+			    (and (equal (ts-doy element-ts)
+					(ts-doy now))
+				 (equal (ts-year element-ts)
+					(ts-year now))))))
+	      (concat "Due on: " target-date))
+	     ((and `(:from ,target-ts)
+		   (guard (ts<= (ts-parse target-ts) element-ts)))
+	      (concat "Due from: " target-ts))
+	     ((and `(:to ,target-ts)
+		   (guard (ts>= (ts-parse target-ts) element-ts)))
+	      (concat "Due to: " target-ts))
+	     ((and `(:from ,from-ts :to ,to-ts)
+		   (guard (and (ts<= (ts-parse from-ts) element-ts)
+			       (ts>= (ts-parse to-ts) element-ts))))
+	      (format "Due from: %s to %s" from-ts to-ts))))))))
 
 (defun taxy-org-ql-view-take-fn (keys)
   "Return a `taxy' \"take\" function for KEYS.
@@ -155,9 +199,9 @@ ad infinitum, approximately)."
 		 (fn) (pcase fn
 			((pred symbolp) fn)
 			(`(,(and (pred symbolp) fn)
-			   . ,(and args (guard (and args
-						    (atom (car args))
-						    (cl-notany #'symbolp args)))))
+			   . ,(and args (guard (cl-typecase (car args)
+						 ((or keyword (and atom (not symbol)))
+						  t)))))
 			 ;; Key with args: replace with a lambda that
 			 ;; calls that key's function with given args.
 			 `(lambda (element)
