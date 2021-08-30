@@ -67,7 +67,10 @@ Development
 
 * Copyright assignment::
 
-_Now, where did I put that…_
+<https://elpa.gnu.org/packages/taxy.svg>
+(https://elpa.gnu.org/packages/taxy.html)
+
+   _Now, where did I put that…_
 
    This library provides a programmable way to classify arbitrary
 objects into a hierarchical taxonomy.  (That’s a lot of fancy words to
@@ -1023,32 +1026,32 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1538
-Node: Numbery (starting basically)1857
-Node: Lettery (filling incrementally)7612
-Node: Sporty (understanding completely)10292
-Node: Applications16279
-Node: Installation16679
-Node: Usage16980
-Node: Dynamic taxys19117
-Node: Multi-level dynamic taxys21672
-Node: "Chains" of independent multi-level dynamic taxys23865
-Node: Reusable taxys26737
-Node: Threading macros30906
-Node: Modifying filled taxys31445
-Node: Magit section32528
-Node: Changelog33186
-Node: 03-pre33348
-Node: Changes33458
-Node: 0233800
-Node: Changesx33947
-Node: Additions34232
-Node: Fixes35144
-Node: 0135390
-Node: Development35489
-Node: Copyright assignment35695
-Node: Credits36282
-Node: License36472
+Node: Examples1625
+Node: Numbery (starting basically)1944
+Node: Lettery (filling incrementally)7699
+Node: Sporty (understanding completely)10379
+Node: Applications16366
+Node: Installation16766
+Node: Usage17067
+Node: Dynamic taxys19204
+Node: Multi-level dynamic taxys21759
+Node: "Chains" of independent multi-level dynamic taxys23952
+Node: Reusable taxys26824
+Node: Threading macros30993
+Node: Modifying filled taxys31532
+Node: Magit section32615
+Node: Changelog33273
+Node: 03-pre33435
+Node: Changes33545
+Node: 0233887
+Node: Changesx34034
+Node: Additions34319
+Node: Fixes35231
+Node: 0135477
+Node: Development35576
+Node: Copyright assignment35782
+Node: Credits36369
+Node: License36559
 
 End Tag Table
 
