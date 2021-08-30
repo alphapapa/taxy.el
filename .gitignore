@@ -6,3 +6,4 @@ org-src-*
 /Makefile
 /makem.sh
 /.sandbox/
+/scratch/
