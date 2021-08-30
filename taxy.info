@@ -74,7 +74,7 @@ Development
 
    This library provides a programmable way to classify arbitrary
 objects into a hierarchical taxonomy.  (That’s a lot of fancy words to
-say that this lets you put things in nested groups.)
+say that this lets you automatically put things in nested groups.)
 
    Helpful features include:
 
@@ -1026,32 +1026,32 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1625
-Node: Numbery (starting basically)1944
-Node: Lettery (filling incrementally)7699
-Node: Sporty (understanding completely)10379
-Node: Applications16366
-Node: Installation16766
-Node: Usage17067
-Node: Dynamic taxys19204
-Node: Multi-level dynamic taxys21759
-Node: "Chains" of independent multi-level dynamic taxys23952
-Node: Reusable taxys26824
-Node: Threading macros30993
-Node: Modifying filled taxys31532
-Node: Magit section32615
-Node: Changelog33273
-Node: 03-pre33435
-Node: Changes33545
-Node: 0233887
-Node: Changesx34034
-Node: Additions34319
-Node: Fixes35231
-Node: 0135477
-Node: Development35576
-Node: Copyright assignment35782
-Node: Credits36369
-Node: License36559
+Node: Examples1639
+Node: Numbery (starting basically)1958
+Node: Lettery (filling incrementally)7713
+Node: Sporty (understanding completely)10393
+Node: Applications16380
+Node: Installation16780
+Node: Usage17081
+Node: Dynamic taxys19218
+Node: Multi-level dynamic taxys21773
+Node: "Chains" of independent multi-level dynamic taxys23966
+Node: Reusable taxys26838
+Node: Threading macros31007
+Node: Modifying filled taxys31546
+Node: Magit section32629
+Node: Changelog33287
+Node: 03-pre33449
+Node: Changes33559
+Node: 0233901
+Node: Changesx34048
+Node: Additions34333
+Node: Fixes35245
+Node: 0135491
+Node: Development35590
+Node: Copyright assignment35796
+Node: Credits36383
+Node: License36573
 
 End Tag Table
 

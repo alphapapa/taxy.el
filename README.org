@@ -10,7 +10,7 @@
 
 /Now, where did I put that.../
 
-This library provides a programmable way to classify arbitrary objects into a hierarchical taxonomy.  (That's a lot of fancy words to say that this lets you put things in nested groups.)
+This library provides a programmable way to classify arbitrary objects into a hierarchical taxonomy.  (That's a lot of fancy words to say that this lets you automatically put things in nested groups.)
 
 Helpful features include:
 
