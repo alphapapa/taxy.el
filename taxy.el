@@ -39,8 +39,8 @@
 ;; Basic usage:
 
 ;; 1.  Make a taxy with `make-taxy'.
-;; 2.  Fill the taxy with objects using `taxy-fill'.
-;; 3.  For a simple display of a taxy's objects, use `taxy-plain'.
+;; 2.  Fill the taxy with items using `taxy-fill'.
+;; 3.  For a simple display of a taxy's items, use `taxy-plain'.
 
 ;; For more details, please see the README.org file.
 
@@ -54,7 +54,7 @@
 ;;;; Structs
 
 (cl-defstruct taxy
-  name description key objects taxys
+  name description key items taxys
   (predicate #'identity) (then #'ignore)
   (make #'make-taxy)
   take)
@@ -70,60 +70,60 @@
 
 ;;;; Functions
 
-(defun taxy-fill (objects taxy)
-  "Fill TAXY with OBJECTS according to its definition."
-  (cl-labels ((apply-object (object taxy)
+(defun taxy-fill (items taxy)
+  "Fill TAXY with ITEMS according to its definition."
+  (cl-labels ((apply-item (item taxy)
                             (or (cl-loop for taxy in (taxy-taxys taxy)
-                                         when (funcall (taxy-predicate taxy) object)
+                                         when (funcall (taxy-predicate taxy) item)
                                          do (progn
                                               (if (taxy-take taxy)
-                                                  (funcall (taxy-take taxy) object taxy)
+                                                  (funcall (taxy-take taxy) item taxy)
                                                 (if (taxy-taxys taxy)
-                                                    (or (apply-object object taxy)
-                                                        (push object (taxy-objects taxy)))
-                                                  (push object (taxy-objects taxy))))
-                                              (setf object (funcall (taxy-then taxy) object)))
-                                         unless object return t
+                                                    (or (apply-item item taxy)
+                                                        (push item (taxy-items taxy)))
+                                                  (push item (taxy-items taxy))))
+                                              (setf item (funcall (taxy-then taxy) item)))
+                                         unless item return t
                                          finally return nil)
-                                ;; No sub-taxys took the object: add it to this taxy.
-                                (when (funcall (taxy-predicate taxy) object)
+                                ;; No sub-taxys took the item: add it to this taxy.
+                                (when (funcall (taxy-predicate taxy) item)
                                   (if (taxy-take taxy)
-                                      (funcall (taxy-take taxy) object taxy)
-                                    (push object (taxy-objects taxy)))))))
-    (dolist (object objects taxy)
-      (apply-object object taxy))))
+                                      (funcall (taxy-take taxy) item taxy)
+                                    (push item (taxy-items taxy)))))))
+    (dolist (item items taxy)
+      (apply-item item taxy))))
 
 (defun taxy-plain (taxy)
   "Return a list of the human-readable parts of TAXY."
   (delq nil
         (list (taxy-name taxy)
               (taxy-description taxy)
-              (taxy-objects taxy)
+              (taxy-items taxy)
               (mapcar #'taxy-plain (taxy-taxys taxy)))))
 
 (defun taxy-emptied (taxy)
-  "Return a copy of TAXY without objects.
-Omits TAXY's objects and those of its descendant taxys.  Useful
+  "Return a copy of TAXY without items.
+Omits TAXY's items and those of its descendant taxys.  Useful
 when reusing taxy definitions."
   (setf taxy (copy-taxy taxy)
-        (taxy-objects taxy) nil
+        (taxy-items taxy) nil
         (taxy-taxys taxy) (mapcar #'taxy-emptied (taxy-taxys taxy)))
   taxy)
 
-(defun taxy-mapcar-objects (fn taxy)
-  "Return copy of TAXY, having replaced its objects with the value of FN on each.
-Replaces every object in TAXY and its descendants.  Useful to
-replace objects with a more useful form after classification."
+(defun taxy-mapcar-items (fn taxy)
+  "Return copy of TAXY, having replaced its items with the value of FN on each.
+Replaces every item in TAXY and its descendants.  Useful to
+replace items with a more useful form after classification."
   (declare (indent defun))
-  ;; It might be preferable to destructively replace objects rather
+  ;; It might be preferable to destructively replace items rather
   ;; than consing new lists, but I haven't found a way that works
   ;; (even `cl-loop' with `in-ref' hasn't worked).
-  (setf (taxy-objects taxy) (mapcar fn (taxy-objects taxy))
+  (setf (taxy-items taxy) (mapcar fn (taxy-items taxy))
         (taxy-taxys taxy) (cl-loop for taxy in (taxy-taxys taxy)
-                                   collect (taxy-mapcar-objects fn taxy)))
+                                   collect (taxy-mapcar-items fn taxy)))
   taxy)
 
-(defalias 'taxy-mapcar #'taxy-mapcar-objects)
+(defalias 'taxy-mapcar #'taxy-mapcar-items)
 
 (defun taxy-mapc-taxys (fn taxy)
   "Return TAXY having applied FN to it and its descendants.
@@ -137,17 +137,17 @@ Does not copy TAXY.  Destructively modifies TAXY, if FN does."
 (defalias 'taxy-mapc* #'taxy-mapc-taxys)
 
 (cl-defun taxy-take-keyed
-    (key-fns object taxy
+    (key-fns item taxy
              &key (key-name-fn #'identity) (then #'ignore))
-  "Take OBJECT into TAXY, adding new taxys dynamically and recursively.
-Places OBJECT into a taxy in TAXY for the value returned by
-KEY-FNS called with OBJECT.  The new taxys are added to TAXY
+  "Take ITEM into TAXY, adding new taxys dynamically and recursively.
+Places ITEM into a taxy in TAXY for the value returned by
+KEY-FNS called with ITEM.  The new taxys are added to TAXY
 recursively as necessary.  Each new taxy's name is that returned
-by KEY-NAME-FN called with OBJECT.
+by KEY-NAME-FN called with ITEM.
 
 Each element of KEY-FNS may be a function or a list of functions.
 A list of functions creates a \"chain\" of functions: when an
-object is matched by the first function in a chain, it is placed
+item is matched by the first function in a chain, it is placed
 in that chain's taxonomy, and is not \"offered\" to functions
 outside of that chain.
 
@@ -175,15 +175,15 @@ numbers greater-than-or-equal-to 10 are tested against
   (declare (indent defun))
   (cl-macrolet ((offer-or-push
                  () `(if (cdr key-fns)
-                         (taxy-take-keyed (cdr key-fns) object taxy
+                         (taxy-take-keyed (cdr key-fns) item taxy
                            :key-name-fn key-name-fn :then then)
-                       (push object (taxy-objects taxy)))))
+                       (push item (taxy-items taxy)))))
     (cl-typecase (car key-fns)
       (function
        ;; A single key function.
        (let ((key-fn (car key-fns)))
-         (if-let ((key (funcall key-fn object)))
-             ;; This key function returned non-nil for the object:
+         (if-let ((key (funcall key-fn item)))
+             ;; This key function returned non-nil for the item:
              ;; apply it to the appropriate sub-taxy.
              (let ((key-taxy
                     (or (cl-find-if (lambda (taxy-key)
@@ -201,40 +201,40 @@ numbers greater-than-or-equal-to 10 are tested against
                                 (taxy-make taxy)
                                 :name (funcall key-name-fn key)
                                 :key key
-                                :predicate (lambda (object)
-                                             (equal key (funcall key-fn object)))
+                                :predicate (lambda (item)
+                                             (equal key (funcall key-fn item)))
                                 :take (when (cdr key-fns)
-                                        (lambda (object taxy)
-                                          (taxy-take-keyed (cdr key-fns) object taxy
+                                        (lambda (item taxy)
+                                          (taxy-take-keyed (cdr key-fns) item taxy
                                             :key-name-fn key-name-fn :then then)))
                                 :then then)
                                (taxy-taxys taxy))))))
                (if (cdr key-fns)
-                   ;; Other key-fns remain: offer object to them, allowing
+                   ;; Other key-fns remain: offer item to them, allowing
                    ;; them to create more sub-taxys beneath this key-taxy.
-                   (taxy-take-keyed (cdr key-fns) object key-taxy
+                   (taxy-take-keyed (cdr key-fns) item key-taxy
                      :key-name-fn key-name-fn :then then)
-                 ;; No more key-fns remain: add object to this taxy.
-                 (push object (taxy-objects key-taxy))))
+                 ;; No more key-fns remain: add item to this taxy.
+                 (push item (taxy-items key-taxy))))
            ;; No key value: offer to other KEY-FNS or push to this taxy.
            (offer-or-push))))
       (list
        ;; A "chain" of key functions.
-       (or (when (funcall (caar key-fns) object)
+       (or (when (funcall (caar key-fns) item)
              ;; The first function in this chain returns non-nil for
-             ;; the object: apply the object to the chain.
-             (taxy-take-keyed (car key-fns) object taxy
+             ;; the item: apply the item to the chain.
+             (taxy-take-keyed (car key-fns) item taxy
                :key-name-fn key-name-fn :then then))
-           ;; This "chain" of key-fns didn't take the object: offer it to
+           ;; This "chain" of key-fns didn't take the item: offer it to
            ;; other chains, or push to this taxy if they don't take it.
            (offer-or-push))))))
 
 (defun taxy-size (taxy)
-  "Return the number of objects TAXY holds.
-Includes objects in TAXY's sub-taxys."
+  "Return the number of items TAXY holds.
+Includes items in TAXY's sub-taxys."
   (cl-loop for sub-taxy in (taxy-taxys taxy)
            sum (taxy-size sub-taxy) into total
-           finally return (+ total (length (taxy-objects taxy)))))
+           finally return (+ total (length (taxy-items taxy)))))
 
 ;;;; Footer
 

@@ -107,8 +107,8 @@
                   (setf (taxy-taxys taxy)
                         (cl-sort (taxy-taxys taxy) #'string<
                                  :key #'taxy-name))
-                  (setf (taxy-objects taxy)
-                        (cl-sort (taxy-objects taxy) #'string<))))
+                  (setf (taxy-items taxy)
+                        (cl-sort (taxy-items taxy) #'string<))))
     ;;  taxy-plain
     taxy-magit-section-pp))
 

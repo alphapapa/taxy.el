@@ -52,10 +52,14 @@ Changelog
 * 0.2: 02. 
 * 0.1: 01. 
 
+0.3-pre
+
+* Changes::
+
 
 0.2
 
-* Changes::
+* Changes: Changesx. 
 * Additions::
 * Fixes::
 
@@ -108,7 +112,7 @@ Let’s imagine a silly taxonomy of numbers below 100:
         (0 2 4 6 8)
         ;; These sub-taxys further classify the numbers below 10 into odd
         ;; and even.  The odd taxy "consumes" numbers, while the even one
-        ;; doesn't, leaving them to reappear in the parent taxy's objects.
+        ;; doesn't, leaving them to reappear in the parent taxy's items.
         (("Odd" "(consuming)"
           (1 3 5 7 9))
          ("Even" "(non-consuming)"
@@ -149,7 +153,7 @@ manner:
                       :taxys (list
                               ;; These sub-taxys further classify the numbers below 10 into odd
                               ;; and even.  The odd taxy "consumes" numbers, while the even one
-                              ;; doesn't, leaving them to reappear in the parent taxy's objects.
+                              ;; doesn't, leaving them to reappear in the parent taxy's items.
                               (make-taxy :name "Odd"
                                          :description "(consuming)"
                                          :predicate #'oddp)
@@ -204,7 +208,7 @@ File: README.info,  Node: Lettery (filling incrementally),  Next: Sporty (unders
 1.2 Lettery (filling incrementally)
 ===================================
 
-You can also add more objects after the hierarchy has been filled.  In
+You can also add more items after the hierarchy has been filled.  In
 this example we’ll make a comprehensive taxonomy of letters.  The first
 sub-taxy collects vowels, and the second, by leaving its predicate at
 the default value, ‘identity’, collects all letters not collected by the
@@ -257,8 +261,8 @@ first taxy, i.e.  non-vowels.
 
      (taxy-plain
       (taxy-mapc* (lambda (taxy)
-                    (setf (taxy-objects taxy)
-                          (cl-sort (taxy-objects taxy) #'<
+                    (setf (taxy-items taxy)
+                          (cl-sort (taxy-items taxy) #'<
                                    :key #'string-to-char)))
         lettery))
 
@@ -332,22 +336,22 @@ key functions:
 
      (defvar sporty
        (cl-macrolet ((in (needle haystack)
-                         `(lambda (object)
-                            (when (member ,needle (funcall ,haystack object))
+                         `(lambda (item)
+                            (when (member ,needle (funcall ,haystack item))
                               ,needle))))
          (make-taxy
           :name "Sporty"
-          :take (lambda (object taxy)
+          :take (lambda (item taxy)
                   (taxy-take-keyed
                     (list #'sport-venue
                           (in 'ball 'sport-uses)
                           (in 'disc 'sport-uses)
                           (in 'glove 'sport-uses)
                           (in 'racket 'sport-uses))
-                    object taxy
+                    item taxy
                     ;; We set the `:then' function of the taxys
                     ;; created by `taxy-take-keyed' to `identity'
-                    ;; so they will not consume their objects.
+                    ;; so they will not consume their items.
                     :then #'identity)))))
 
    Now let’s fill the taxy with the sports and format it:
@@ -383,19 +387,19 @@ hierarchy:
 
      (defvar sporty
        (cl-macrolet ((in (needle haystack)
-                         `(lambda (object)
-                            (when (member ,needle (funcall ,haystack object))
+                         `(lambda (item)
+                            (when (member ,needle (funcall ,haystack item))
                               ,needle))))
          (make-taxy
           :name "Sporty"
-          :take (lambda (object taxy)
+          :take (lambda (item taxy)
                   (taxy-take-keyed
                     (list (in 'ball 'sport-uses)
                           (in 'disc 'sport-uses)
                           (in 'glove 'sport-uses)
                           (in 'racket 'sport-uses)
                           #'sport-venue)
-                    object taxy
+                    item taxy
                     :then #'identity)))))
 
      (thread-last sporty
@@ -430,13 +434,13 @@ to help me decide what to play:
      (thread-last
          (make-taxy
           :name "Funny"
-          :take (lambda (object taxy)
+          :take (lambda (item taxy)
                   (taxy-take-keyed
                     (list (lambda (sport)
                             (if (sport-fun sport)
                                 'fun 'boring))
                           #'sport-venue)
-                    object taxy)))
+                    item taxy)))
        taxy-emptied
        (taxy-fill sports)
        (taxy-mapcar #'sport-name)
@@ -494,30 +498,30 @@ File: README.info,  Node: Usage,  Next: Changelog,  Prev: Installation,  Up: Top
 
    The ‘:predicate’ function determines whether an object fits into that
 taxy.  If it does, ‘taxy-fill’ adds the object to that taxy’s descendant
-‘:taxys’, if present, or to its own ‘:objects’.  The function defaults
-to ‘identity’, so a taxy "takes in" any object by default (i.e.  if you
+‘:taxys’, if present, or to its own ‘:items’.  The function defaults to
+‘identity’, so a taxy "takes in" any object by default (i.e.  if you
 only apply objects you want to classify, there’s no need to test them at
 the top-level taxy).
 
    The ‘:then’ function determines what happens to an object after being
-taken in: if the function, called with the object, returns a non-nil
-value, that value is applied to other taxys at the same level until one
-of their ‘:then’ functions returns nil or no more taxys remain.  The
-function defaults to ‘ignore’, which makes a taxy "consume" its objects
-by default.  Setting the function to, e.g.  ‘identity’, makes it not
-consume them, leaving them eligible to also be taken into subsequent
-taxys, or to appear in the parent taxy’s objects.
+taken in to the taxy’s ‘:items’: if the function, called with the
+object, returns a non-nil value, that value is applied to other taxys at
+the same level until one of their ‘:then’ functions returns nil or no
+more taxys remain.  The function defaults to ‘ignore’, which makes a
+taxy "consume" its items by default.  Setting the function to, e.g.
+‘identity’, makes it not consume them, leaving them eligible to also be
+taken into subsequent taxys, or to appear in the parent taxy’s items.
 
    After defining a taxy, call ‘taxy-fill’ with it and a list of objects
 to fill the taxy’s hierarchy.  *Note:* ‘taxy-fill’ modifies the taxy
-given to it (filling its ‘:objects’ and those of its ‘:taxys’), so when
+given to it (filling its ‘:items’ and those of its ‘:taxys’), so when
 using a statically defined taxy (e.g.  one defined with ‘defvar’), you
 should pass ‘taxy-fill’ a taxy copied with ‘taxy-emptied’, which
-recursively copies a taxy without ‘:objects’.
+recursively copies a taxy without ‘:items’.
 
    To return a taxy in a more human-readable format (with only relevant
 fields included), use ‘taxy-plain’.  You may also use ‘taxy-mapcar’ to
-replace objects in a taxy with, e.g.  a more useful representation.
+replace items in a taxy with, e.g.  a more useful representation.
 
 * Menu:
 
@@ -536,9 +540,9 @@ File: README.info,  Node: Dynamic taxys,  Next: Reusable taxys,  Up: Usage
    • • 
    You may not always know in advance what taxonomy a set of objects
 fits into, so taxy lets you add taxys dynamically by using the ‘:take’
-function to add a taxy when an object is "taken into" a parent taxy.
-For example, you could dynamically classify buffers by their major mode
-like so:
+function to add a taxy when an object is "taken into" a parent taxy’s
+items.  For example, you could dynamically classify buffers by their
+major mode like so:
 
      (defun buffery-major-mode (buffer)
        (buffer-local-value 'major-mode buffer))
@@ -620,8 +624,8 @@ directory.
           :taxys (list
                   (make-taxy
                    :name "Directories"
-                   :take (lambda (object taxy)
-                           (taxy-take-keyed (list #'buffer-directory #'buffer-mode) object taxy)))))))
+                   :take (lambda (item taxy)
+                           (taxy-take-keyed (list #'buffer-directory #'buffer-mode) item taxy)))))))
 
      (taxy-plain
       (taxy-fill (buffer-list)
@@ -673,8 +677,8 @@ use:
 
      (defvar sporty-dynamic
        (cl-macrolet ((in (needle haystack)
-                         `(lambda (object)
-                            (when (member ,needle (funcall ,haystack object))
+                         `(lambda (item)
+                            (when (member ,needle (funcall ,haystack item))
                               ,needle))))
          (cl-labels ((outdoor-p
                       (sport) (when (eq 'outdoor (sport-venue sport))
@@ -688,7 +692,7 @@ use:
                                 'non-disc)))
            (make-taxy
             :name "Sporty (dynamic)"
-            :take (lambda (object taxy)
+            :take (lambda (item taxy)
                     (taxy-take-keyed
                       (list (list #'outdoor-p #'disc-p)
                             (list #'indoor-p
@@ -696,7 +700,7 @@ use:
                                   (in 'disc 'sport-uses)
                                   (in 'glove 'sport-uses)
                                   (in 'racket 'sport-uses)))
-                      object taxy))))))
+                      item taxy))))))
 
    Now let’s fill the taxy with the sports and format it:
 
@@ -840,10 +844,10 @@ File: README.info,  Node: Modifying filled taxys,  Next: Magit section,  Prev: T
 ==========================
 
 Sometimes it’s necessary to modify a taxy after filling it with objects,
-e.g.  to sort the objects and/or the sub-taxys.  For this, use the
+e.g.  to sort the items and/or the sub-taxys.  For this, use the
 function ‘taxy-mapc-taxys’ (a.k.a.  ‘taxy-mapc*’).  For example, in the
 sample application musicy.el (examples/musicy.el), the taxys and their
-objects are sorted after filling, like so:
+items are sorted after filling, like so:
 
      (defun musicy-files (files)
        (thread-last musicy-taxy
@@ -854,9 +858,9 @@ objects are sorted after filling, like so:
                        (setf (taxy-taxys taxy)
                              (cl-sort (taxy-taxys taxy) #'string<
                                       :key #'taxy-name))
-                       ;; Sort sub-taxys' objects by name.
-                       (setf (taxy-objects taxy)
-                             (cl-sort (taxy-objects taxy) #'string<))))
+                       ;; Sort sub-taxys' items by name.
+                       (setf (taxy-items taxy)
+                             (cl-sort (taxy-items taxy) #'string<))))
          taxy-magit-section-pp))
 
 
@@ -899,7 +903,20 @@ File: README.info,  Node: 03-pre,  Next: 02,  Up: Changelog
 4.1 0.3-pre
 ===========
 
-Nothing new yet.
+* Menu:
+
+* Changes::
+
+
+File: README.info,  Node: Changes,  Up: 03-pre
+
+4.1.1 Changes
+-------------
+
+   • Within the ‘taxy’ struct and related functions, the term objects is
+     renamed to items, which is more concise but has the same meaning.
+     This makes code a bit more concise (e.g.  ‘(taxy-objects taxy)’
+     becomes ‘(taxy-items taxy)’).
 
 
 File: README.info,  Node: 02,  Next: 01,  Prev: 03-pre,  Up: Changelog
@@ -909,12 +926,12 @@ File: README.info,  Node: 02,  Next: 01,  Prev: 03-pre,  Up: Changelog
 
 * Menu:
 
-* Changes::
+* Changes: Changesx. 
 * Additions::
 * Fixes::
 
 
-File: README.info,  Node: Changes,  Next: Additions,  Up: 02
+File: README.info,  Node: Changesx,  Next: Additions,  Up: 02
 
 4.2.1 Changes
 -------------
@@ -924,7 +941,7 @@ File: README.info,  Node: Changes,  Next: Additions,  Up: 02
      reason to maintain two versions.
 
 
-File: README.info,  Node: Additions,  Next: Fixes,  Prev: Changes,  Up: 02
+File: README.info,  Node: Additions,  Next: Fixes,  Prev: Changesx,  Up: 02
 
 4.2.2 Additions
 ---------------
@@ -1006,31 +1023,32 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1506
-Node: Numbery (starting basically)1825
-Node: Lettery (filling incrementally)7584
-Node: Sporty (understanding completely)10270
+Node: Examples1538
+Node: Numbery (starting basically)1857
+Node: Lettery (filling incrementally)7612
+Node: Sporty (understanding completely)10292
 Node: Applications16279
 Node: Installation16679
 Node: Usage16980
-Node: Dynamic taxys19101
-Node: Multi-level dynamic taxys21645
-Node: "Chains" of independent multi-level dynamic taxys23842
-Node: Reusable taxys26722
-Node: Threading macros30891
-Node: Modifying filled taxys31430
-Node: Magit section32523
-Node: Changelog33181
-Node: 03-pre33343
-Node: 0233449
-Node: Changes33586
-Node: Additions33870
-Node: Fixes34781
-Node: 0135027
-Node: Development35126
-Node: Copyright assignment35332
-Node: Credits35919
-Node: License36109
+Node: Dynamic taxys19117
+Node: Multi-level dynamic taxys21672
+Node: "Chains" of independent multi-level dynamic taxys23865
+Node: Reusable taxys26737
+Node: Threading macros30906
+Node: Modifying filled taxys31445
+Node: Magit section32528
+Node: Changelog33186
+Node: 03-pre33348
+Node: Changes33458
+Node: 0233800
+Node: Changesx33947
+Node: Additions34232
+Node: Fixes35144
+Node: 0135390
+Node: Development35489
+Node: Copyright assignment35695
+Node: Credits36282
+Node: License36472
 
 End Tag Table
 

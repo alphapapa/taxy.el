@@ -53,18 +53,18 @@
 
 ;;;; Functions
 
-(cl-defun taxy-magit-section-insert (taxy &key (objects 'first))
+(cl-defun taxy-magit-section-insert (taxy &key (items 'first))
   "Insert a `magit-section' for TAXY into current buffer.
-If OBJECTS is `first', insert a taxy's objects before its
+If ITEMS is `first', insert a taxy's items before its
 descendant taxys; if `last', insert them after descendants."
   (let* ((depth 0)
          (magit-section-set-visibility-hook (cons #'taxy-magit-section-visibility magit-section-set-visibility-hook)))
-    (cl-labels ((insert-object
-                 (object format-fn indent)
-                 (magit-insert-section (magit-section object)
+    (cl-labels ((insert-item
+                 (item format-fn indent)
+                 (magit-insert-section (magit-section item)
                    (magit-insert-section-body
                      (insert (make-string (+ 2 (* depth indent)) ? )
-                             (funcall format-fn object)
+                             (funcall format-fn item)
                              "\n"))))
                 (insert-taxy
                  (taxy) (let ((magit-section-set-visibility-hook magit-section-set-visibility-hook)
@@ -86,25 +86,25 @@ descendant taxys; if `last', insert them after descendants."
                                         "")
                                       (taxy-size taxy)))
                             (magit-insert-section-body
-                              (when (eq 'first objects)
-                                (dolist (object (taxy-objects taxy))
-                                  (insert-object object format-fn (taxy-magit-section-indent taxy))))
+                              (when (eq 'first items)
+                                (dolist (item (taxy-items taxy))
+                                  (insert-item item format-fn (taxy-magit-section-indent taxy))))
                               (cl-incf depth)
                               (mapc #'insert-taxy (taxy-taxys taxy))
                               (cl-decf depth)
-                              (when (eq 'last objects)
-                                (dolist (object (taxy-objects taxy))
-                                  (insert-object object format-fn (taxy-magit-section-indent taxy)))))))))
+                              (when (eq 'last items)
+                                (dolist (item (taxy-items taxy))
+                                  (insert-item item format-fn (taxy-magit-section-indent taxy)))))))))
       (magit-insert-section (magit-section)
         (insert-taxy taxy)))))
 
-(cl-defun taxy-magit-section-pp (taxy &key (objects 'first))
+(cl-defun taxy-magit-section-pp (taxy &key (items 'first))
   "Pretty-print TAXY into a buffer with `magit-section' and show it."
   (with-current-buffer (get-buffer-create "*taxy-magit-section-pp*")
     (magit-section-mode)
     (let ((inhibit-read-only t))
       (erase-buffer)
-      (taxy-magit-section-insert taxy :objects objects))
+      (taxy-magit-section-insert taxy :items items))
     (pop-to-buffer (current-buffer))))
 
 (defun taxy-magit-section-visibility (section)

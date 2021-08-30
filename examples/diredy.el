@@ -96,7 +96,7 @@
            (inhibit-read-only t)
            (taxy-magit-section-indent 2))
       (delete-region (point) (point-max))
-      (taxy-magit-section-insert filled-taxy :objects 'first))))
+      (taxy-magit-section-insert filled-taxy :items 'first))))
 
 ;;;; Functions
 
