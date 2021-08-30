@@ -187,14 +187,14 @@ KEYS is passed to `taxy-org-ql-view-take-fn', which see."
 (cl-defun taxy-org-ql-search
     (buffers-or-files query &key taxy-keys sort)
   "Show Org QL QUERY on BUFFERS-OR-FILES with `taxy-org-ql-view'."
-  (declare (indent defun))
-  (let* ((title (format "Query:%S  In:%s" query buffers-or-files))
+  (declare (indent 1))
+  (let* ((title (format "Query:%S  In:%S" query buffers-or-files))
 	 (taxy (taxy-org-ql-view-make-taxy title
 		 taxy-keys))
 	 (items (org-ql-select buffers-or-files query
 		  :action 'element-with-markers
 		  :sort sort))
-	 (buffer-name (format "*Taxy Org QL View: %s" title)))
+	 (buffer-name (format "*Taxy Org QL View: %s*" title)))
     (when (get-buffer buffer-name)
       ;; Reusing an existing magit-section buffer seems to cause a lot
       ;; of GC, so just kill it if it already exists.
