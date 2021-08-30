@@ -778,11 +778,11 @@ Note that while =taxy-magit-section.el= is installed with the =taxy= package, th
 
 *** Changes
 
-+  Within the ~taxy~ struct and related functions, the term =objects= is renamed to =items=, which is more concise but has the same meaning.  This makes code a bit more concise (e.g. ~(taxy-objects taxy)~ becomes ~(taxy-items taxy)~).
++  Within the ~taxy~ struct and related functions, the term =objects= is renamed to =items=, which is shorter and has the same meaning.  This makes code a bit more concise (e.g. ~(taxy-objects taxy)~ becomes ~(taxy-items taxy)~).
 
 *** Fixes
 
-+  Function ~taxy-fill~ always calls a taxy's ~:take~ function if present.  (Fixing "chains" of dynamic taxys.)
++  Function ~taxy-fill~ always calls a taxy's ~:take~ function if defined.  (Fixing "chains" of dynamic taxys.)
 +  Function ~taxy-magit-section-insert~ applies text properties from the inserted string to the indentation string (so commands that rely on text properties at the beginning of a line will work).
 
 ** 0.2
