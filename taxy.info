@@ -48,7 +48,7 @@ Dynamic taxys
 
 Changelog
 
-* 0.4-pre: 04-pre. 
+* 0.4: 04. 
 * 0.3: 03. 
 * 0.2: 02. 
 * 0.1: 01. 
@@ -900,21 +900,22 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 
 * Menu:
 
-* 0.4-pre: 04-pre. 
+* 0.4: 04. 
 * 0.3: 03. 
 * 0.2: 02. 
 * 0.1: 01. 
 
 
-File: README.info,  Node: 04-pre,  Next: 03,  Up: Changelog
+File: README.info,  Node: 04,  Next: 03,  Up: Changelog
 
-4.1 0.4-pre
-===========
+4.1 0.4
+=======
 
-Nothing new yet.
+   • Incremented version to cause a new ELPA release (since removing a
+     file that wasn’t intended to be distributed on ELPA).
 
 
-File: README.info,  Node: 03,  Next: 02,  Prev: 04-pre,  Up: Changelog
+File: README.info,  Node: 03,  Next: 02,  Prev: 04,  Up: Changelog
 
 4.2 0.3
 =======
@@ -1052,34 +1053,34 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1667
-Node: Numbery (starting basically)1986
-Node: Lettery (filling incrementally)7741
-Node: Sporty (understanding completely)10421
-Node: Applications16408
-Node: Installation16808
-Node: Usage17109
-Node: Dynamic taxys19246
-Node: Multi-level dynamic taxys21801
-Node: "Chains" of independent multi-level dynamic taxys23994
-Node: Reusable taxys26866
-Node: Threading macros31035
-Node: Modifying filled taxys31574
-Node: Magit section32657
-Node: Changelog33315
-Node: 04-pre33489
-Node: 0333595
-Node: Changes33718
-Node: Fixes34066
-Node: 0234497
-Node: Changesx34648
-Node: Additions34933
-Node: Fixesx35846
-Node: 0136093
-Node: Development36192
-Node: Copyright assignment36398
-Node: Credits36985
-Node: License37175
+Node: Examples1659
+Node: Numbery (starting basically)1978
+Node: Lettery (filling incrementally)7733
+Node: Sporty (understanding completely)10413
+Node: Applications16400
+Node: Installation16800
+Node: Usage17101
+Node: Dynamic taxys19238
+Node: Multi-level dynamic taxys21793
+Node: "Chains" of independent multi-level dynamic taxys23986
+Node: Reusable taxys26858
+Node: Threading macros31027
+Node: Modifying filled taxys31566
+Node: Magit section32649
+Node: Changelog33307
+Node: 0433473
+Node: 0333684
+Node: Changes33803
+Node: Fixes34151
+Node: 0234582
+Node: Changesx34733
+Node: Additions35018
+Node: Fixesx35931
+Node: 0136178
+Node: Development36277
+Node: Copyright assignment36483
+Node: Credits37070
+Node: License37260
 
 End Tag Table
 
