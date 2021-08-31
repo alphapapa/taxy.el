@@ -48,10 +48,12 @@ Dynamic taxys
 
 Changelog
 
+* 0.5-pre: 05-pre. 
 * 0.4: 04. 
 * 0.3: 03. 
 * 0.2: 02. 
 * 0.1: 01. 
+
 
 
 0.3
@@ -900,15 +902,24 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 
 * Menu:
 
+* 0.5-pre: 05-pre. 
 * 0.4: 04. 
 * 0.3: 03. 
 * 0.2: 02. 
 * 0.1: 01. 
 
 
-File: README.info,  Node: 04,  Next: 03,  Up: Changelog
+File: README.info,  Node: 05-pre,  Next: 04,  Up: Changelog
 
-4.1 0.4
+4.1 0.5-pre
+===========
+
+Nothing new yet.
+
+
+File: README.info,  Node: 04,  Next: 03,  Prev: 05-pre,  Up: Changelog
+
+4.2 0.4
 =======
 
    • Incremented version to cause a new ELPA release (since removing a
@@ -917,7 +928,7 @@ File: README.info,  Node: 04,  Next: 03,  Up: Changelog
 
 File: README.info,  Node: 03,  Next: 02,  Prev: 04,  Up: Changelog
 
-4.2 0.3
+4.3 0.3
 =======
 
 * Menu:
@@ -928,7 +939,7 @@ File: README.info,  Node: 03,  Next: 02,  Prev: 04,  Up: Changelog
 
 File: README.info,  Node: Changes,  Next: Fixes,  Up: 03
 
-4.2.1 Changes
+4.3.1 Changes
 -------------
 
    • Within the ‘taxy’ struct and related functions, the term objects is
@@ -939,7 +950,7 @@ File: README.info,  Node: Changes,  Next: Fixes,  Up: 03
 
 File: README.info,  Node: Fixes,  Prev: Changes,  Up: 03
 
-4.2.2 Fixes
+4.3.2 Fixes
 -----------
 
    • Function ‘taxy-fill’ always calls a taxy’s ‘:take’ function if
@@ -951,7 +962,7 @@ File: README.info,  Node: Fixes,  Prev: Changes,  Up: 03
 
 File: README.info,  Node: 02,  Next: 01,  Prev: 03,  Up: Changelog
 
-4.3 0.2
+4.4 0.2
 =======
 
 * Menu:
@@ -963,7 +974,7 @@ File: README.info,  Node: 02,  Next: 01,  Prev: 03,  Up: Changelog
 
 File: README.info,  Node: Changesx,  Next: Additions,  Up: 02
 
-4.3.1 Changes
+4.4.1 Changes
 -------------
 
    • Function ‘taxy-take-keyed*’ is renamed to ‘taxy-take-keyed’,
@@ -973,7 +984,7 @@ File: README.info,  Node: Changesx,  Next: Additions,  Up: 02
 
 File: README.info,  Node: Additions,  Next: Fixesx,  Prev: Changesx,  Up: 02
 
-4.3.2 Additions
+4.4.2 Additions
 ---------------
 
    • Struct ‘taxy’ now has a ‘:make’ slot, a function called to make new
@@ -991,7 +1002,7 @@ File: README.info,  Node: Additions,  Next: Fixesx,  Prev: Changesx,  Up: 02
 
 File: README.info,  Node: Fixesx,  Prev: Additions,  Up: 02
 
-4.3.3 Fixes
+4.4.3 Fixes
 -----------
 
    • ‘taxy-magit-section’’s ‘insert-object’ function.
@@ -1001,7 +1012,7 @@ File: README.info,  Node: Fixesx,  Prev: Additions,  Up: 02
 
 File: README.info,  Node: 01,  Prev: 02,  Up: Changelog
 
-4.4 0.1
+4.5 0.1
 =======
 
 First tagged version.
@@ -1053,34 +1064,35 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1659
-Node: Numbery (starting basically)1978
-Node: Lettery (filling incrementally)7733
-Node: Sporty (understanding completely)10413
-Node: Applications16400
-Node: Installation16800
-Node: Usage17101
-Node: Dynamic taxys19238
-Node: Multi-level dynamic taxys21793
-Node: "Chains" of independent multi-level dynamic taxys23986
-Node: Reusable taxys26858
-Node: Threading macros31027
-Node: Modifying filled taxys31566
-Node: Magit section32649
-Node: Changelog33307
-Node: 0433473
-Node: 0333684
-Node: Changes33803
-Node: Fixes34151
-Node: 0234582
-Node: Changesx34733
-Node: Additions35018
-Node: Fixesx35931
-Node: 0136178
-Node: Development36277
-Node: Copyright assignment36483
-Node: Credits37070
-Node: License37260
+Node: Examples1680
+Node: Numbery (starting basically)1999
+Node: Lettery (filling incrementally)7754
+Node: Sporty (understanding completely)10434
+Node: Applications16421
+Node: Installation16821
+Node: Usage17122
+Node: Dynamic taxys19259
+Node: Multi-level dynamic taxys21814
+Node: "Chains" of independent multi-level dynamic taxys24007
+Node: Reusable taxys26879
+Node: Threading macros31048
+Node: Modifying filled taxys31587
+Node: Magit section32670
+Node: Changelog33328
+Node: 05-pre33514
+Node: 0433620
+Node: 0333846
+Node: Changes33965
+Node: Fixes34313
+Node: 0234744
+Node: Changesx34895
+Node: Additions35180
+Node: Fixesx36093
+Node: 0136340
+Node: Development36439
+Node: Copyright assignment36645
+Node: Credits37232
+Node: License37422
 
 End Tag Table
 

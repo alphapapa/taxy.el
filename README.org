@@ -774,6 +774,10 @@ Note that while =taxy-magit-section.el= is installed with the =taxy= package, th
 :TOC:      :depth 0
 :END:
 
+** 0.5-pre
+
+Nothing new yet.
+
 ** 0.4
 
 +  Incremented version to cause a new ELPA release (since removing a file that wasn't intended to be distributed on ELPA).
