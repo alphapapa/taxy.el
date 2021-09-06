@@ -48,13 +48,13 @@ Dynamic taxys
 
 Changelog
 
-* 0.5-pre: 05-pre. 
+* 0.5: 05. 
 * 0.4: 04. 
 * 0.3: 03. 
 * 0.2: 02. 
 * 0.1: 01. 
 
-0.5-pre
+0.5
 
 * Additions::
 * Fixes::
@@ -908,17 +908,17 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 
 * Menu:
 
-* 0.5-pre: 05-pre. 
+* 0.5: 05. 
 * 0.4: 04. 
 * 0.3: 03. 
 * 0.2: 02. 
 * 0.1: 01. 
 
 
-File: README.info,  Node: 05-pre,  Next: 04,  Up: Changelog
+File: README.info,  Node: 05,  Next: 04,  Up: Changelog
 
-4.1 0.5-pre
-===========
+4.1 0.5
+=======
 
 * Menu:
 
@@ -926,7 +926,7 @@ File: README.info,  Node: 05-pre,  Next: 04,  Up: Changelog
 * Fixes::
 
 
-File: README.info,  Node: Additions,  Next: Fixes,  Up: 05-pre
+File: README.info,  Node: Additions,  Next: Fixes,  Up: 05
 
 4.1.1 Additions
 ---------------
@@ -948,7 +948,7 @@ File: README.info,  Node: Additions,  Next: Fixes,  Up: 05-pre
    • New example ‘taxy-package-report’.
 
 
-File: README.info,  Node: Fixes,  Prev: Additions,  Up: 05-pre
+File: README.info,  Node: Fixes,  Prev: Additions,  Up: 05
 
 4.1.2 Fixes
 -----------
@@ -956,7 +956,7 @@ File: README.info,  Node: Fixes,  Prev: Additions,  Up: 05-pre
    • Example ‘diredy’ referred to an old function name.
 
 
-File: README.info,  Node: 04,  Next: 03,  Prev: 05-pre,  Up: Changelog
+File: README.info,  Node: 04,  Next: 03,  Prev: 05,  Up: Changelog
 
 4.2 0.4
 =======
@@ -1103,37 +1103,37 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1736
-Node: Numbery (starting basically)2055
-Node: Lettery (filling incrementally)7810
-Node: Sporty (understanding completely)10490
-Node: Applications16477
-Node: Installation16877
-Node: Usage17178
-Node: Dynamic taxys19315
-Node: Multi-level dynamic taxys21870
-Node: "Chains" of independent multi-level dynamic taxys24063
-Node: Reusable taxys26935
-Node: Threading macros31104
-Node: Modifying filled taxys31643
-Node: Magit section32726
-Node: Changelog33384
-Node: 05-pre33570
-Node: Additions33692
-Node: Fixes34798
-Node: 0434952
-Node: 0335178
-Node: Changes35305
-Node: Fixesx35654
-Node: 0236086
-Node: Changesx36250
-Node: Additionsx36536
-Node: Fixesxx37451
-Node: 0137700
-Node: Development37799
-Node: Copyright assignment38005
-Node: Credits38592
-Node: License38782
+Node: Examples1724
+Node: Numbery (starting basically)2043
+Node: Lettery (filling incrementally)7798
+Node: Sporty (understanding completely)10478
+Node: Applications16465
+Node: Installation16865
+Node: Usage17166
+Node: Dynamic taxys19303
+Node: Multi-level dynamic taxys21858
+Node: "Chains" of independent multi-level dynamic taxys24051
+Node: Reusable taxys26923
+Node: Threading macros31092
+Node: Modifying filled taxys31631
+Node: Magit section32714
+Node: Changelog33372
+Node: 0533550
+Node: Additions33660
+Node: Fixes34762
+Node: 0434912
+Node: 0335134
+Node: Changes35261
+Node: Fixesx35610
+Node: 0236042
+Node: Changesx36206
+Node: Additionsx36492
+Node: Fixesxx37407
+Node: 0137656
+Node: Development37755
+Node: Copyright assignment37961
+Node: Credits38548
+Node: License38738
 
 End Tag Table
 
