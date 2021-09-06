@@ -56,7 +56,9 @@ Changelog
 
 0.5-pre
 
+* Additions::
 * Fixes::
+
 
 
 
@@ -70,7 +72,7 @@ Changelog
 0.2
 
 * Changes: Changesx. 
-* Additions::
+* Additions: Additionsx. 
 * Fixes: Fixesxx. 
 
 Development
@@ -920,12 +922,34 @@ File: README.info,  Node: 05-pre,  Next: 04,  Up: Changelog
 
 * Menu:
 
+* Additions::
 * Fixes::
 
 
-File: README.info,  Node: Fixes,  Up: 05-pre
+File: README.info,  Node: Additions,  Next: Fixes,  Up: 05-pre
 
-4.1.1 Fixes
+4.1.1 Additions
+---------------
+
+   • Function ‘taxy-magit-section-insert’ takes new arguments:
+        • ‘:initial-depth’ sets the level at which the first level of
+          hierarchy is considered to be at, for purposes of indentation.
+          Setting it to a negative number prevents indentation of so
+          many levels (i.e.  setting it to -1 causes the first two
+          levels to be unindented, since the first level will be
+          considered to be at depth -1, and the second at depth 0).
+        • ‘:blank-between-depth’ sets the level up to which blank lines
+          are inserted between sections (i.e.  setting it to 1 causes
+          blank lines to be inserted between sections up to depth 1, but
+          not between sections deeper than that).
+   • Struct ‘taxy-magit-section’ has a new ‘heading-face’ slot, a
+     function which takes a depth level argument and returns the face
+     with which to propertize that section’s heading.
+
+
+File: README.info,  Node: Fixes,  Prev: Additions,  Up: 05-pre
+
+4.1.2 Fixes
 -----------
 
    • Example ‘diredy’ referred to an old function name.
@@ -982,11 +1006,11 @@ File: README.info,  Node: 02,  Next: 01,  Prev: 03,  Up: Changelog
 * Menu:
 
 * Changes: Changesx. 
-* Additions::
+* Additions: Additionsx. 
 * Fixes: Fixesxx. 
 
 
-File: README.info,  Node: Changesx,  Next: Additions,  Up: 02
+File: README.info,  Node: Changesx,  Next: Additionsx,  Up: 02
 
 4.4.1 Changes
 -------------
@@ -996,7 +1020,7 @@ File: README.info,  Node: Changesx,  Next: Additions,  Up: 02
      reason to maintain two versions.
 
 
-File: README.info,  Node: Additions,  Next: Fixesxx,  Prev: Changesx,  Up: 02
+File: README.info,  Node: Additionsx,  Next: Fixesxx,  Prev: Changesx,  Up: 02
 
 4.4.2 Additions
 ---------------
@@ -1014,7 +1038,7 @@ File: README.info,  Node: Additions,  Next: Fixesxx,  Prev: Changesx,  Up: 02
      *note example: "Chains" of independent multi-level dynamic taxys.
 
 
-File: README.info,  Node: Fixesxx,  Prev: Additions,  Up: 02
+File: README.info,  Node: Fixesxx,  Prev: Additionsx,  Up: 02
 
 4.4.3 Fixes
 -----------
@@ -1078,36 +1102,37 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1709
-Node: Numbery (starting basically)2028
-Node: Lettery (filling incrementally)7783
-Node: Sporty (understanding completely)10463
-Node: Applications16450
-Node: Installation16850
-Node: Usage17151
-Node: Dynamic taxys19288
-Node: Multi-level dynamic taxys21843
-Node: "Chains" of independent multi-level dynamic taxys24036
-Node: Reusable taxys26908
-Node: Threading macros31077
-Node: Modifying filled taxys31616
-Node: Magit section32699
-Node: Changelog33357
-Node: 05-pre33543
-Node: Fixes33651
-Node: 0433787
-Node: 0334013
-Node: Changes34140
-Node: Fixesx34489
-Node: 0234921
-Node: Changesx35073
-Node: Additions35358
-Node: Fixesxx36272
-Node: 0136520
-Node: Development36619
-Node: Copyright assignment36825
-Node: Credits37412
-Node: License37602
+Node: Examples1736
+Node: Numbery (starting basically)2055
+Node: Lettery (filling incrementally)7810
+Node: Sporty (understanding completely)10490
+Node: Applications16477
+Node: Installation16877
+Node: Usage17178
+Node: Dynamic taxys19315
+Node: Multi-level dynamic taxys21870
+Node: "Chains" of independent multi-level dynamic taxys24063
+Node: Reusable taxys26935
+Node: Threading macros31104
+Node: Modifying filled taxys31643
+Node: Magit section32726
+Node: Changelog33384
+Node: 05-pre33570
+Node: Additions33692
+Node: Fixes34752
+Node: 0434906
+Node: 0335132
+Node: Changes35259
+Node: Fixesx35608
+Node: 0236040
+Node: Changesx36204
+Node: Additionsx36490
+Node: Fixesxx37405
+Node: 0137654
+Node: Development37753
+Node: Copyright assignment37959
+Node: Credits38546
+Node: License38736
 
 End Tag Table
 

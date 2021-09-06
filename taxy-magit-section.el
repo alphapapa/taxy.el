@@ -40,11 +40,25 @@
 
 ;;;; Structs
 
-(cl-defstruct (taxy-magit-section (:include taxy))
-  ;; This struct is not required to be used for taxys passed to
-  ;; `taxy-magit-section-insert', but it allows a visibility function
-  ;; to be specified to override the default for it.
+;; NOTE: When making `taxy-magit-section' structs at runtime
+;; (e.g. with `taxy-take-keyed'), the struct's `make' slot must be set
+;; to a function that returns a new struct with the other slots set as
+;; desired; the slots' values do not automatically propagate to
+;; structs with the default `make' function.  (Using `cl-labels' to
+;; define the `make' function makes this simple.)
+
+;; MAYBE: In `taxy-take-keyed', use `taxy-emptied' to copy structs
+;; with inheritance for relevant slots, so defining custom `make'
+;; functions wouldn't be necessary.
+
+(cl-defstruct (taxy-magit-section
+               (:include taxy
+                         (make #'make-taxy-magit-section)))
+  ;; MAYBE: Pass parent section to the :make function, would make
+  ;; inheritance easier (and/or use EIEIO, but that would reduce
+  ;; performance, since slot accessors can't be optimized).
   (visibility-fn #'taxy-magit-section-visibility)
+  (heading-face (lambda (_depth) 'magit-section-heading))
   (indent 2)
   format-fn)
 
@@ -53,14 +67,17 @@
 
 ;;;; Functions
 
-(cl-defun taxy-magit-section-insert (taxy &key (items 'first))
+(cl-defun taxy-magit-section-insert (taxy &key (items 'first) (initial-depth 0) (blank-between-depth 1))
   "Insert a `magit-section' for TAXY into current buffer.
-If ITEMS is `first', insert a taxy's items before its
-descendant taxys; if `last', insert them after descendants."
-  (let* ((depth 0)
-         (magit-section-set-visibility-hook (cons #'taxy-magit-section-visibility magit-section-set-visibility-hook)))
+If ITEMS is `first', insert a taxy's items before its descendant
+taxys; if `last', insert them after descendants.  INITIAL-DEPTH
+is the initial indentation depth; it may be, e.g. -1 to make the
+second level unindented.  BLANK-BETWEEN-DEPTH is the level up to
+which blank lines are inserted between sections at that level."
+  (let* ((magit-section-set-visibility-hook
+          (cons #'taxy-magit-section-visibility magit-section-set-visibility-hook)))
     (cl-labels ((insert-item
-                 (item format-fn indent)
+                 (item format-fn depth indent)
                  (magit-insert-section (magit-section item)
                    (magit-insert-section-body
 		     ;; This is a tedious way to give the indent
@@ -71,42 +88,50 @@ descendant taxys; if `last', insert them after descendants."
 		     ;; `magit-section' didn't navigate the sections
 		     ;; properly anymore.
 		     (let* ((formatted (funcall format-fn item))
-			    (indent (make-string (+ 2 (* depth indent)) ? )))
+			    (indent (make-string (+ 2 (* (pcase depth
+                                                           ((pred (> 0)) 0)
+                                                           (_ depth))
+                                                         indent)) ? )))
 		       (add-text-properties 0 (length indent)
 					    (text-properties-at 0 formatted)
 					    indent)
 		       (insert indent formatted "\n")))))
                 (insert-taxy
-                 (taxy) (let ((magit-section-set-visibility-hook magit-section-set-visibility-hook)
-                              (format-fn (cl-typecase taxy
-                                           (taxy-magit-section
-                                            (taxy-magit-section-format-fn taxy))
-                                           (t (lambda (o) (format "%s" o))))))
-                          (cl-typecase taxy
-                            (taxy-magit-section
-                             (when (taxy-magit-section-visibility-fn taxy)
-                               (push (taxy-magit-section-visibility-fn taxy) magit-section-set-visibility-hook))))
-                          (magit-insert-section (magit-section taxy)
-                            (magit-insert-heading
-                              (make-string (* depth taxy-magit-section-indent) ? )
-                              (propertize (taxy-name taxy) 'face 'magit-section-heading)
-                              (format " (%s%s)"
-                                      (if (taxy-description taxy)
-                                          (concat (taxy-description taxy) " ")
-                                        "")
-                                      (taxy-size taxy)))
-                            (magit-insert-section-body
-                              (when (eq 'first items)
-                                (dolist (item (taxy-items taxy))
-                                  (insert-item item format-fn (taxy-magit-section-indent taxy))))
-                              (cl-incf depth)
-                              (mapc #'insert-taxy (taxy-taxys taxy))
-                              (cl-decf depth)
-                              (when (eq 'last items)
-                                (dolist (item (taxy-items taxy))
-                                  (insert-item item format-fn (taxy-magit-section-indent taxy)))))))))
+                 (taxy depth) (let ((magit-section-set-visibility-hook magit-section-set-visibility-hook)
+                                    (format-fn (cl-typecase taxy
+                                                 (taxy-magit-section
+                                                  (taxy-magit-section-format-fn taxy))
+                                                 (t (lambda (o) (format "%s" o))))))
+                                (cl-typecase taxy
+                                  (taxy-magit-section
+                                   (when (taxy-magit-section-visibility-fn taxy)
+                                     (push (taxy-magit-section-visibility-fn taxy) magit-section-set-visibility-hook))))
+                                (magit-insert-section (magit-section taxy)
+                                  (magit-insert-heading
+                                    (make-string (* (pcase depth
+                                                      ((pred (> 0)) 0)
+                                                      (_ depth))
+                                                    taxy-magit-section-indent) ? )
+                                    (propertize (taxy-name taxy)
+                                                'face (funcall (taxy-magit-section-heading-face taxy) depth))
+                                    (format " (%s%s)"
+                                            (if (taxy-description taxy)
+                                                (concat (taxy-description taxy) " ")
+                                              "")
+                                            (taxy-size taxy)))
+                                  (magit-insert-section-body
+                                    (when (eq 'first items)
+                                      (dolist (item (taxy-items taxy))
+                                        (insert-item item format-fn depth (taxy-magit-section-indent taxy))))
+                                    (dolist (taxy (taxy-taxys taxy))
+                                      (insert-taxy taxy (1+ depth)))
+                                    (when (eq 'last items)
+                                      (dolist (item (taxy-items taxy))
+                                        (insert-item item format-fn depth (taxy-magit-section-indent taxy)))))
+                                  (when (<= depth blank-between-depth)
+                                    (insert "\n"))))))
       (magit-insert-section (magit-section)
-        (insert-taxy taxy)))))
+        (insert-taxy taxy initial-depth)))))
 
 (cl-defun taxy-magit-section-pp (taxy &key (items 'first))
   "Pretty-print TAXY into a buffer with `magit-section' and show it."
