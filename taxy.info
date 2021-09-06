@@ -54,12 +54,16 @@ Changelog
 * 0.2: 02. 
 * 0.1: 01. 
 
+0.5-pre
+
+* Fixes::
+
 
 
 0.3
 
 * Changes::
-* Fixes::
+* Fixes: Fixesx. 
 
 
 
@@ -67,7 +71,7 @@ Changelog
 
 * Changes: Changesx. 
 * Additions::
-* Fixes: Fixesx. 
+* Fixes: Fixesxx. 
 
 Development
 
@@ -914,7 +918,17 @@ File: README.info,  Node: 05-pre,  Next: 04,  Up: Changelog
 4.1 0.5-pre
 ===========
 
-Nothing new yet.
+* Menu:
+
+* Fixes::
+
+
+File: README.info,  Node: Fixes,  Up: 05-pre
+
+4.1.1 Fixes
+-----------
+
+   • Example ‘diredy’ referred to an old function name.
 
 
 File: README.info,  Node: 04,  Next: 03,  Prev: 05-pre,  Up: Changelog
@@ -934,10 +948,10 @@ File: README.info,  Node: 03,  Next: 02,  Prev: 04,  Up: Changelog
 * Menu:
 
 * Changes::
-* Fixes::
+* Fixes: Fixesx. 
 
 
-File: README.info,  Node: Changes,  Next: Fixes,  Up: 03
+File: README.info,  Node: Changes,  Next: Fixesx,  Up: 03
 
 4.3.1 Changes
 -------------
@@ -948,7 +962,7 @@ File: README.info,  Node: Changes,  Next: Fixes,  Up: 03
      ‘(taxy-items taxy)’).
 
 
-File: README.info,  Node: Fixes,  Prev: Changes,  Up: 03
+File: README.info,  Node: Fixesx,  Prev: Changes,  Up: 03
 
 4.3.2 Fixes
 -----------
@@ -969,7 +983,7 @@ File: README.info,  Node: 02,  Next: 01,  Prev: 03,  Up: Changelog
 
 * Changes: Changesx. 
 * Additions::
-* Fixes: Fixesx. 
+* Fixes: Fixesxx. 
 
 
 File: README.info,  Node: Changesx,  Next: Additions,  Up: 02
@@ -982,7 +996,7 @@ File: README.info,  Node: Changesx,  Next: Additions,  Up: 02
      reason to maintain two versions.
 
 
-File: README.info,  Node: Additions,  Next: Fixesx,  Prev: Changesx,  Up: 02
+File: README.info,  Node: Additions,  Next: Fixesxx,  Prev: Changesx,  Up: 02
 
 4.4.2 Additions
 ---------------
@@ -1000,7 +1014,7 @@ File: README.info,  Node: Additions,  Next: Fixesx,  Prev: Changesx,  Up: 02
      *note example: "Chains" of independent multi-level dynamic taxys.
 
 
-File: README.info,  Node: Fixesx,  Prev: Additions,  Up: 02
+File: README.info,  Node: Fixesxx,  Prev: Additions,  Up: 02
 
 4.4.3 Fixes
 -----------
@@ -1064,35 +1078,36 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1680
-Node: Numbery (starting basically)1999
-Node: Lettery (filling incrementally)7754
-Node: Sporty (understanding completely)10434
-Node: Applications16421
-Node: Installation16821
-Node: Usage17122
-Node: Dynamic taxys19259
-Node: Multi-level dynamic taxys21814
-Node: "Chains" of independent multi-level dynamic taxys24007
-Node: Reusable taxys26879
-Node: Threading macros31048
-Node: Modifying filled taxys31587
-Node: Magit section32670
-Node: Changelog33328
-Node: 05-pre33514
-Node: 0433620
-Node: 0333846
-Node: Changes33965
-Node: Fixes34313
-Node: 0234744
-Node: Changesx34895
-Node: Additions35180
-Node: Fixesx36093
-Node: 0136340
-Node: Development36439
-Node: Copyright assignment36645
-Node: Credits37232
-Node: License37422
+Node: Examples1709
+Node: Numbery (starting basically)2028
+Node: Lettery (filling incrementally)7783
+Node: Sporty (understanding completely)10463
+Node: Applications16450
+Node: Installation16850
+Node: Usage17151
+Node: Dynamic taxys19288
+Node: Multi-level dynamic taxys21843
+Node: "Chains" of independent multi-level dynamic taxys24036
+Node: Reusable taxys26908
+Node: Threading macros31077
+Node: Modifying filled taxys31616
+Node: Magit section32699
+Node: Changelog33357
+Node: 05-pre33543
+Node: Fixes33651
+Node: 0433787
+Node: 0334013
+Node: Changes34140
+Node: Fixesx34489
+Node: 0234921
+Node: Changesx35073
+Node: Additions35358
+Node: Fixesxx36272
+Node: 0136520
+Node: Development36619
+Node: Copyright assignment36825
+Node: Credits37412
+Node: License37602
 
 End Tag Table
 

@@ -65,7 +65,7 @@
     (make-taxy
      :name "Diredy"
      :taxys (list (make-taxy :name "Types"
-                             :take (apply-partially #'taxy-take-keyed* (list #'file-dir? #'file-size-group #'file-type)))))))
+                             :take (apply-partially #'taxy-take-keyed (list #'file-dir? #'file-size-group #'file-type)))))))
 
 (defvar dired-mode)
 
