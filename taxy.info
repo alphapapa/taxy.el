@@ -945,6 +945,7 @@ File: README.info,  Node: Additions,  Next: Fixes,  Up: 05-pre
    • Struct ‘taxy-magit-section’ has a new ‘heading-face’ slot, a
      function which takes a depth level argument and returns the face
      with which to propertize that section’s heading.
+   • New example ‘taxy-package-report’.
 
 
 File: README.info,  Node: Fixes,  Prev: Additions,  Up: 05-pre
@@ -1119,20 +1120,20 @@ Node: Magit section32726
 Node: Changelog33384
 Node: 05-pre33570
 Node: Additions33692
-Node: Fixes34752
-Node: 0434906
-Node: 0335132
-Node: Changes35259
-Node: Fixesx35608
-Node: 0236040
-Node: Changesx36204
-Node: Additionsx36490
-Node: Fixesxx37405
-Node: 0137654
-Node: Development37753
-Node: Copyright assignment37959
-Node: Credits38546
-Node: License38736
+Node: Fixes34798
+Node: 0434952
+Node: 0335178
+Node: Changes35305
+Node: Fixesx35654
+Node: 0236086
+Node: Changesx36250
+Node: Additionsx36536
+Node: Fixesxx37451
+Node: 0137700
+Node: Development37799
+Node: Copyright assignment38005
+Node: Credits38592
+Node: License38782
 
 End Tag Table
 
