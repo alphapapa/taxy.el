@@ -77,7 +77,7 @@ which blank lines are inserted between sections at that level."
   (let* ((magit-section-set-visibility-hook
           (cons #'taxy-magit-section-visibility magit-section-set-visibility-hook)))
     (cl-labels ((insert-item
-                 (item format-fn depth indent)
+                 (item format-fn depth)
                  (magit-insert-section (magit-section item)
                    (magit-insert-section-body
 		     ;; This is a tedious way to give the indent
@@ -88,20 +88,21 @@ which blank lines are inserted between sections at that level."
 		     ;; `magit-section' didn't navigate the sections
 		     ;; properly anymore.
 		     (let* ((formatted (funcall format-fn item))
-			    (indent (make-string (+ 2 (* (pcase depth
-                                                           ((pred (> 0)) 0)
-                                                           (_ depth))
-                                                         indent)) ? )))
-		       (add-text-properties 0 (length indent)
+			    (indent-size (pcase depth
+                                           ((pred (> 0)) 0)
+                                           (_ (* depth taxy-magit-section-indent))))
+                            (indent-string (make-string indent-size ? )))
+		       (add-text-properties 0 (length indent-string)
 					    (text-properties-at 0 formatted)
-					    indent)
-		       (insert indent formatted "\n")))))
+					    indent-string)
+		       (insert indent-string formatted "\n")))))
                 (insert-taxy
                  (taxy depth) (let ((magit-section-set-visibility-hook magit-section-set-visibility-hook)
                                     (format-fn (cl-typecase taxy
                                                  (taxy-magit-section
                                                   (taxy-magit-section-format-fn taxy))
-                                                 (t (lambda (o) (format "%s" o))))))
+                                                 (t (lambda (o) (format "%s" o)))))
+                                    (taxy-magit-section-indent (taxy-magit-section-indent taxy)))
                                 (cl-typecase taxy
                                   (taxy-magit-section
                                    (when (taxy-magit-section-visibility-fn taxy)
@@ -111,7 +112,7 @@ which blank lines are inserted between sections at that level."
                                     (make-string (* (pcase depth
                                                       ((pred (> 0)) 0)
                                                       (_ depth))
-                                                    taxy-magit-section-indent) ? )
+                                                    (taxy-magit-section-indent taxy)) ? )
                                     (propertize (taxy-name taxy)
                                                 'face (funcall (taxy-magit-section-heading-face taxy) depth))
                                     (format " (%s%s)"
@@ -122,12 +123,12 @@ which blank lines are inserted between sections at that level."
                                   (magit-insert-section-body
                                     (when (eq 'first items)
                                       (dolist (item (taxy-items taxy))
-                                        (insert-item item format-fn depth (taxy-magit-section-indent taxy))))
+                                        (insert-item item format-fn depth)))
                                     (dolist (taxy (taxy-taxys taxy))
                                       (insert-taxy taxy (1+ depth)))
                                     (when (eq 'last items)
                                       (dolist (item (taxy-items taxy))
-                                        (insert-item item format-fn depth (taxy-magit-section-indent taxy)))))
+                                        (insert-item item format-fn depth))))
                                   (when (<= depth blank-between-depth)
                                     (insert "\n"))))))
       (magit-insert-section (magit-section)
