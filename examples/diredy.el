@@ -61,11 +61,17 @@
                            "< 10M")
                           (_ ">= 10M")))
               (file-dir? (string) (if (file-directory-p (file-name string))
-                                      "Directory" "File")))
-    (make-taxy
+                                      "Directory" "File"))
+	      (make-fn (&rest args)
+		       (apply #'make-taxy-magit-section
+			      :make #'make-fn
+			      :heading-indent 1
+			      :item-indent 2
+			      args)))
+    (make-fn
      :name "Diredy"
-     :taxys (list (make-taxy :name "Types"
-                             :take (apply-partially #'taxy-take-keyed (list #'file-dir? #'file-size-group #'file-type)))))))
+     :make #'make-fn
+     :take (apply-partially #'taxy-take-keyed (list #'file-dir? #'file-size-group #'file-type)))))
 
 (defvar dired-mode)
 
@@ -83,20 +89,20 @@
     (goto-char (point-min))
     (forward-line 2)
     (let* ((lines (save-excursion
-                    (cl-loop until (eobp)
-                             collect (buffer-substring (point-at-bol) (point-at-eol))
-                             do (forward-line 1))))
-           (filled-taxy (thread-last diredy-taxy
-                          taxy-emptied
-                          (taxy-fill lines)
-                          (taxy-mapc* (lambda (taxy)
-                                        (setf (taxy-taxys taxy)
-                                              (cl-sort (taxy-taxys taxy) #'string<
-                                                       :key #'taxy-name))))))
-           (inhibit-read-only t)
-           (taxy-magit-section-indent 2))
+		    (cl-loop until (eobp)
+			     collect (string-trim (buffer-substring (point-at-bol) (point-at-eol)))
+			     do (forward-line 1))))
+	   (filled-taxy (thread-last diredy-taxy
+			  taxy-emptied
+			  (taxy-fill lines)
+			  (taxy-mapc* (lambda (taxy)
+					(setf (taxy-taxys taxy)
+					      (cl-sort (taxy-taxys taxy) #'string<
+						       :key #'taxy-name))))))
+	   (inhibit-read-only t))
       (delete-region (point) (point-max))
-      (taxy-magit-section-insert filled-taxy :items 'first))))
+      (taxy-magit-section-insert filled-taxy :items 'last
+	:initial-depth 0 :blank-between-depth 1))))
 
 ;;;; Functions
 
