@@ -74,6 +74,7 @@ taxys; if `last', insert them after descendants.  INITIAL-DEPTH
 is the initial indentation depth; it may be, e.g. -1 to make the
 second level unindented.  BLANK-BETWEEN-DEPTH is the level up to
 which blank lines are inserted between sections at that level."
+  (declare (indent defun))
   (let* ((magit-section-set-visibility-hook
           (cons #'taxy-magit-section-visibility magit-section-set-visibility-hook)))
     (cl-labels ((insert-item
