@@ -926,6 +926,15 @@ File: README.info,  Node: Additions,  Up: 06-pre
           taxy and its sub-taxys.
         • ‘taxy-sort-taxys’ (alias: ‘taxy-sort*’) sorts a taxy’s
           sub-taxys.
+   • Table-like, column-based formatting system for
+     ‘taxy-magit-section’:
+        • Function ‘taxy-magit-section-format-items’, which formats
+          items by columns.
+        • Variable ‘taxy-magit-section-insert-indent-items’, which
+          controls whether ‘taxy-magit-section-insert’ applies
+          indentation to each item.  (Used to disable that behavior when
+          items are pre-indented strings, e.g.  as formatted by
+          ‘taxy-magit-section-format-items’.)
 
 
 File: README.info,  Node: 05,  Next: 04,  Prev: 06-pre,  Up: Changelog
@@ -1133,22 +1142,22 @@ Node: Magit section32349
 Node: Changelog33037
 Node: 06-pre33229
 Node: Additions33341
-Node: 0533665
-Node: Additions (1)33804
-Node: Fixes34910
-Node: 0435064
-Node: 0335286
-Node: Changes35415
-Node: Fixes (1)35778
-Node: 0236213
-Node: Changes (1)36382
-Node: Additions (2)36674
-Node: Fixes (2)37533
-Node: 0137787
-Node: Development37886
-Node: Copyright assignment38092
-Node: Credits38680
-Node: License38870
+Node: 0534179
+Node: Additions (1)34318
+Node: Fixes35424
+Node: 0435578
+Node: 0335800
+Node: Changes35929
+Node: Fixes (1)36292
+Node: 0236727
+Node: Changes (1)36896
+Node: Additions (2)37188
+Node: Fixes (2)38047
+Node: 0138301
+Node: Development38400
+Node: Copyright assignment38606
+Node: Credits39194
+Node: License39384
 
 End Tag Table
 
