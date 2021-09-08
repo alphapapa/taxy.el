@@ -67,7 +67,7 @@
   (heading-face-fn (lambda (_depth) 'magit-section-heading))
   (heading-indent 2)
   (item-indent 2)
-  format-fn)
+  (format-fn #'prin1-to-string))
 
 ;;;; Commands
 
