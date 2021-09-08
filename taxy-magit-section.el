@@ -41,6 +41,14 @@
 (defvar taxy-magit-section-depth nil
   "Bound to current depth around calls to a taxy's format-fn.")
 
+(defvar taxy-magit-section-insert-indent-items t
+  ;; NOTE: I hate to use a variable to control this, but it seems like
+  ;; the cleanest way for now.
+  "Whether to indent items in `taxy-magit-section-insert'.
+May be disabled when `taxy-magit-section-insert' should not
+indent items itself, e.g. if items are pre-indented.  Note that
+this does not disable indentation of section headings.")
+
 ;;;; Customization
 
 
@@ -85,7 +93,7 @@ which blank lines are inserted between sections at that level."
   (let* ((magit-section-set-visibility-hook
           (cons #'taxy-magit-section-visibility magit-section-set-visibility-hook)))
     (cl-labels ((insert-item
-                 (item format-fn depth)
+                 (item taxy format-fn depth)
                  (magit-insert-section (magit-section item)
                    (magit-insert-section-body
 		     ;; This is a tedious way to give the indent
@@ -95,11 +103,13 @@ which blank lines are inserted between sections at that level."
 		     ;; something was wrong about the properties, and
 		     ;; `magit-section' didn't navigate the sections
 		     ;; properly anymore.
-		     (let* ((taxy-magit-section-depth depth)
+		     (let* (
                             (formatted (funcall format-fn item))
-			    (indent-size (pcase depth
-                                           ((pred (> 0)) 0)
-                                           (_ (* depth taxy-magit-section-item-indent))))
+			    (indent-size (if (or (not taxy-magit-section-insert-indent-items)
+						 (< depth 0))
+					     0
+					   (+ (* depth (taxy-magit-section-heading-indent taxy))
+					      (taxy-magit-section-item-indent taxy))))
                             (indent-string (make-string indent-size ? )))
 		       (add-text-properties 0 (length indent-string)
 					    (text-properties-at 0 formatted)
@@ -119,10 +129,9 @@ which blank lines are inserted between sections at that level."
                                      (push (taxy-magit-section-visibility-fn taxy) magit-section-set-visibility-hook))))
                                 (magit-insert-section (magit-section taxy)
                                   (magit-insert-heading
-                                    (make-string (* (pcase depth
-                                                      ((pred (> 0)) 0)
-                                                      (_ depth))
-                                                    (taxy-magit-section-heading-indent taxy)) ? )
+                                    (make-string (* (if (< depth 0) 0 depth)
+                                                    (taxy-magit-section-heading-indent taxy))
+						 ? )
                                     (propertize (taxy-name taxy)
                                                 'face (funcall (taxy-magit-section-heading-face-fn taxy) depth))
                                     (format " (%s%s)"
@@ -133,12 +142,12 @@ which blank lines are inserted between sections at that level."
                                   (magit-insert-section-body
                                     (when (eq 'first items)
                                       (dolist (item (taxy-items taxy))
-                                        (insert-item item format-fn (1+ depth))))
+                                        (insert-item item taxy format-fn depth)))
                                     (dolist (taxy (taxy-taxys taxy))
                                       (insert-taxy taxy (1+ depth)))
                                     (when (eq 'last items)
                                       (dolist (item (taxy-items taxy))
-                                        (insert-item item format-fn (1+ depth)))))
+                                        (insert-item item taxy format-fn depth))))
                                   (when (<= depth blank-between-depth)
                                     (insert "\n"))))))
       (magit-insert-section (magit-section)
