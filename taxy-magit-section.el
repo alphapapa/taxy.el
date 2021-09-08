@@ -164,6 +164,11 @@ Default visibility function for
        (_ 'show)))
     (_ nil)))
 
+;; MAYBE: Consider using spaces with `:align-to', rather than formatting strings with indentation, as used by `epkg'
+;; (see <https://github.com/emacscollective/epkg/blob/edf8c009066360af61caedf67a2482eaa19481b0/epkg-desc.el#L363>).
+;; I'm not sure which would perform better; I guess that with many lines, redisplay might take longer to use the
+;; display properties for alignment than just having pre-aligned lines of text.
+
 (defun taxy-magit-section-format-items (columns formatters taxy)
   "Return a cons (table . column-sizes) for COLUMNS, FORMATTERS, and TAXY.
 COLUMNS is a list of column names, each of which should have an
