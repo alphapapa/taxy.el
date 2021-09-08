@@ -32,8 +32,14 @@
 
 ;;;; Variables
 
-(defvar taxy-magit-section-indent 2
-  "Default indentation per level.")
+(defvar taxy-magit-section-heading-indent 2
+  "Default heading indentation per level.")
+
+(defvar taxy-magit-section-item-indent 2
+  "Default item indentation per level.")
+
+(defvar taxy-magit-section-depth nil
+  "Bound to current depth around calls to a taxy's format-fn.")
 
 ;;;; Customization
 
@@ -58,8 +64,9 @@
   ;; inheritance easier (and/or use EIEIO, but that would reduce
   ;; performance, since slot accessors can't be optimized).
   (visibility-fn #'taxy-magit-section-visibility)
-  (heading-face (lambda (_depth) 'magit-section-heading))
-  (indent 2)
+  (heading-face-fn (lambda (_depth) 'magit-section-heading))
+  (heading-indent 2)
+  (item-indent 2)
   format-fn)
 
 ;;;; Commands
@@ -88,10 +95,11 @@ which blank lines are inserted between sections at that level."
 		     ;; something was wrong about the properties, and
 		     ;; `magit-section' didn't navigate the sections
 		     ;; properly anymore.
-		     (let* ((formatted (funcall format-fn item))
+		     (let* ((taxy-magit-section-depth depth)
+                            (formatted (funcall format-fn item))
 			    (indent-size (pcase depth
                                            ((pred (> 0)) 0)
-                                           (_ (* depth taxy-magit-section-indent))))
+                                           (_ (* depth taxy-magit-section-item-indent))))
                             (indent-string (make-string indent-size ? )))
 		       (add-text-properties 0 (length indent-string)
 					    (text-properties-at 0 formatted)
@@ -103,7 +111,8 @@ which blank lines are inserted between sections at that level."
                                                  (taxy-magit-section
                                                   (taxy-magit-section-format-fn taxy))
                                                  (t (lambda (o) (format "%s" o)))))
-                                    (taxy-magit-section-indent (taxy-magit-section-indent taxy)))
+                                    (taxy-magit-section-heading-indent (taxy-magit-section-heading-indent taxy))
+                                    (taxy-magit-section-item-indent (taxy-magit-section-item-indent taxy)))
                                 (cl-typecase taxy
                                   (taxy-magit-section
                                    (when (taxy-magit-section-visibility-fn taxy)
@@ -113,9 +122,9 @@ which blank lines are inserted between sections at that level."
                                     (make-string (* (pcase depth
                                                       ((pred (> 0)) 0)
                                                       (_ depth))
-                                                    (taxy-magit-section-indent taxy)) ? )
+                                                    (taxy-magit-section-heading-indent taxy)) ? )
                                     (propertize (taxy-name taxy)
-                                                'face (funcall (taxy-magit-section-heading-face taxy) depth))
+                                                'face (funcall (taxy-magit-section-heading-face-fn taxy) depth))
                                     (format " (%s%s)"
                                             (if (taxy-description taxy)
                                                 (concat (taxy-description taxy) " ")
@@ -124,12 +133,12 @@ which blank lines are inserted between sections at that level."
                                   (magit-insert-section-body
                                     (when (eq 'first items)
                                       (dolist (item (taxy-items taxy))
-                                        (insert-item item format-fn depth)))
+                                        (insert-item item format-fn (1+ depth))))
                                     (dolist (taxy (taxy-taxys taxy))
                                       (insert-taxy taxy (1+ depth)))
                                     (when (eq 'last items)
                                       (dolist (item (taxy-items taxy))
-                                        (insert-item item format-fn depth))))
+                                        (insert-item item format-fn (1+ depth)))))
                                   (when (<= depth blank-between-depth)
                                     (insert "\n"))))))
       (magit-insert-section (magit-section)
@@ -154,6 +163,48 @@ Default visibility function for
        (0 'hide)
        (_ 'show)))
     (_ nil)))
+
+(defun taxy-magit-section-format-items (columns formatters taxy)
+  "Return a cons (table . column-sizes) for COLUMNS, FORMATTERS, and TAXY.
+COLUMNS is a list of column names, each of which should have an
+associated formatting function in FORMATTERS.
+
+Table is a hash table keyed by item whose values are display
+strings.  Column-sizes is an alist whose keys are column names
+and values are the column width.  Each string is formatted
+according to `columns' and takes into account the width of all
+the items' values for each column."
+  (let ((table (make-hash-table))
+        column-sizes)
+    (cl-labels ((format-column
+                 (item depth column-name)
+                 (let* ((fn (alist-get column-name formatters nil nil #'equal))
+                        (value (funcall fn item depth))
+                        (current-column-size (or (map-elt column-sizes column-name) 0)))
+                   (setf (map-elt column-sizes column-name)
+                         (max current-column-size (1+ (length (format "%s" value)))))
+                   value))
+                (format-item
+                 (depth item) (puthash item
+                                       (cl-loop for column in columns
+                                                collect (format-column item depth column))
+                                       table))
+                (format-taxy (depth taxy)
+                             (dolist (item (taxy-items taxy))
+                               (format-item depth item))
+                             (dolist (taxy (taxy-taxys taxy))
+                               (format-taxy (1+ depth) taxy))))
+      (format-taxy 0 taxy)
+      ;; Now format each item's string using the column sizes.
+      (let* ((column-sizes (nreverse column-sizes))
+             (format-string (string-join (cl-loop for (_name . size) in column-sizes
+                                                  collect (format "%%-%ss" size))
+                                         " ")))
+        (maphash (lambda (item column-values)
+                   (puthash item (apply #'format format-string column-values)
+                            table))
+                 table)
+        (cons table column-sizes)))))
 
 ;;;; Footer
 
