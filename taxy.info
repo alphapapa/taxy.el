@@ -273,7 +273,7 @@ first taxy, i.e.  non-vowels.
    Oh, they’re out of order, now.  That won’t do.  Let’s fix that:
 
      (taxy-plain
-      (taxy-sort #'< #'string-to-char)
+      (taxy-sort #'string< #'identity)
       taxy)
 
    That’s better:
