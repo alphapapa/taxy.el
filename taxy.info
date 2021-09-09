@@ -273,8 +273,7 @@ first taxy, i.e.  non-vowels.
    Oh, they’re out of order, now.  That won’t do.  Let’s fix that:
 
      (taxy-plain
-      (taxy-sort #'string< #'identity)
-      taxy)
+      (taxy-sort #'string< #'identity lettery))
 
    That’s better:
 
@@ -1120,36 +1119,36 @@ Node: Top218
 Node: Examples1761
 Node: Numbery (starting basically)2080
 Node: Lettery (filling incrementally)7841
-Node: Sporty (understanding completely)10361
-Node: Applications16348
-Node: Installation16748
-Node: Usage17061
-Node: Dynamic taxys19198
-Node: Multi-level dynamic taxys21758
-Node: "Chains" of independent multi-level dynamic taxys23951
-Node: Reusable taxys26823
-Node: Threading macros30998
-Node: Modifying filled taxys31537
-Node: Magit section32355
-Node: Changelog33043
-Node: 06-pre33235
-Node: Additions33347
-Node: 0533671
-Node: Additions (1)33810
-Node: Fixes34916
-Node: 0435070
-Node: 0335292
-Node: Changes35421
-Node: Fixes (1)35784
-Node: 0236219
-Node: Changes (1)36388
-Node: Additions (2)36680
-Node: Fixes (2)37539
-Node: 0137793
-Node: Development37892
-Node: Copyright assignment38098
-Node: Credits38686
-Node: License38876
+Node: Sporty (understanding completely)10358
+Node: Applications16345
+Node: Installation16745
+Node: Usage17058
+Node: Dynamic taxys19195
+Node: Multi-level dynamic taxys21755
+Node: "Chains" of independent multi-level dynamic taxys23948
+Node: Reusable taxys26820
+Node: Threading macros30995
+Node: Modifying filled taxys31534
+Node: Magit section32352
+Node: Changelog33040
+Node: 06-pre33232
+Node: Additions33344
+Node: 0533668
+Node: Additions (1)33807
+Node: Fixes34913
+Node: 0435067
+Node: 0335289
+Node: Changes35418
+Node: Fixes (1)35781
+Node: 0236216
+Node: Changes (1)36385
+Node: Additions (2)36677
+Node: Fixes (2)37536
+Node: 0137790
+Node: Development37889
+Node: Copyright assignment38095
+Node: Credits38683
+Node: License38873
 
 End Tag Table
 

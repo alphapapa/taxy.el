@@ -202,8 +202,7 @@ Oh, they're out of order, now.  That won't do.  Let's fix that:
 
 #+BEGIN_SRC elisp :exports code :results code
   (taxy-plain
-   (taxy-sort #'string< #'identity)
-   taxy)
+   (taxy-sort #'string< #'identity lettery))
 #+END_SRC
 
 That's better:
