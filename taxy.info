@@ -251,7 +251,7 @@ first taxy, i.e.  non-vowels.
      ("Lettery" "A comprehensive taxonomy of letters."
       (("Vowels" "You know what those are."
         ("A" "E" "I"))
-       ("Consonants" "Well, if they aren't a vowel..."
+       ("Consonants" "Well, if they aren't vowels..."
         ("B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N"))))
 
    Oops, we forgot the letters after N!  Let’s add them, too:
@@ -267,7 +267,7 @@ first taxy, i.e.  non-vowels.
      ("Lettery" "A comprehensive taxonomy of letters."
       (("Vowels" "You know what those are."
         ("O" "U" "A" "E" "I"))
-       ("Consonants" "Well, if they aren't a vowel..."
+       ("Consonants" "Well, if they aren't vowels..."
         ("N" "P" "Q" "R" "S" "T" "V" "W" "X" "Y" "Z" "B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N"))))
 
    Oh, they’re out of order, now.  That won’t do.  Let’s fix that:
@@ -280,7 +280,7 @@ first taxy, i.e.  non-vowels.
      ("Lettery" "A comprehensive taxonomy of letters."
       (("Vowels" "You know what those are."
         ("A" "E" "I" "O" "U"))
-       ("Consonants" "Well, if they aren't a vowel..."
+       ("Consonants" "Well, if they aren't vowels..."
         ("B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N" "N" "P" "Q" "R" "S" "T" "V" "W" "X" "Y" "Z"))))
 
 
@@ -1119,36 +1119,36 @@ Node: Top218
 Node: Examples1761
 Node: Numbery (starting basically)2080
 Node: Lettery (filling incrementally)7841
-Node: Sporty (understanding completely)10358
-Node: Applications16345
-Node: Installation16745
-Node: Usage17058
-Node: Dynamic taxys19195
-Node: Multi-level dynamic taxys21755
-Node: "Chains" of independent multi-level dynamic taxys23948
-Node: Reusable taxys26820
-Node: Threading macros30995
-Node: Modifying filled taxys31534
-Node: Magit section32352
-Node: Changelog33040
-Node: 06-pre33232
-Node: Additions33344
-Node: 0533668
-Node: Additions (1)33807
-Node: Fixes34913
-Node: 0435067
-Node: 0335289
-Node: Changes35418
-Node: Fixes (1)35781
-Node: 0236216
-Node: Changes (1)36385
-Node: Additions (2)36677
-Node: Fixes (2)37536
-Node: 0137790
-Node: Development37889
-Node: Copyright assignment38095
-Node: Credits38683
-Node: License38873
+Node: Sporty (understanding completely)10355
+Node: Applications16342
+Node: Installation16742
+Node: Usage17055
+Node: Dynamic taxys19192
+Node: Multi-level dynamic taxys21752
+Node: "Chains" of independent multi-level dynamic taxys23945
+Node: Reusable taxys26817
+Node: Threading macros30992
+Node: Modifying filled taxys31531
+Node: Magit section32349
+Node: Changelog33037
+Node: 06-pre33229
+Node: Additions33341
+Node: 0533665
+Node: Additions (1)33804
+Node: Fixes34910
+Node: 0435064
+Node: 0335286
+Node: Changes35415
+Node: Fixes (1)35778
+Node: 0236213
+Node: Changes (1)36382
+Node: Additions (2)36674
+Node: Fixes (2)37533
+Node: 0137787
+Node: Development37886
+Node: Copyright assignment38092
+Node: Credits38680
+Node: License38870
 
 End Tag Table
 

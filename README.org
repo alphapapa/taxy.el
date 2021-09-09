@@ -174,7 +174,7 @@ That produces:
   ("Lettery" "A comprehensive taxonomy of letters."
    (("Vowels" "You know what those are."
      ("A" "E" "I"))
-    ("Consonants" "Well, if they aren't a vowel..."
+    ("Consonants" "Well, if they aren't vowels..."
      ("B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N"))))
 #+END_SRC
 
@@ -194,7 +194,7 @@ Which gives us:
   ("Lettery" "A comprehensive taxonomy of letters."
    (("Vowels" "You know what those are."
      ("O" "U" "A" "E" "I"))
-    ("Consonants" "Well, if they aren't a vowel..."
+    ("Consonants" "Well, if they aren't vowels..."
      ("N" "P" "Q" "R" "S" "T" "V" "W" "X" "Y" "Z" "B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N"))))
 #+END_SRC
 
@@ -211,7 +211,7 @@ That's better:
   ("Lettery" "A comprehensive taxonomy of letters."
    (("Vowels" "You know what those are."
      ("A" "E" "I" "O" "U"))
-    ("Consonants" "Well, if they aren't a vowel..."
+    ("Consonants" "Well, if they aren't vowels..."
      ("B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N" "N" "P" "Q" "R" "S" "T" "V" "W" "X" "Y" "Z"))))
 #+END_SRC
 
