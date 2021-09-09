@@ -1,4 +1,4 @@
-This is README.info, produced by makeinfo version 5.2 from README.texi.
+This is README.info, produced by makeinfo version 6.5 from README.texi.
 
 INFO-DIR-SECTION Emacs
 START-INFO-DIR-ENTRY
@@ -10,6 +10,24 @@ File: README.info,  Node: Top,  Next: Examples,  Up: (dir)
 
 taxy.el
 *******
+
+https://elpa.gnu.org/packages/taxy.svg
+(https://elpa.gnu.org/packages/taxy.html)
+
+   _Now, where did I put that..._
+
+   This library provides a programmable way to classify arbitrary
+objects into a hierarchical taxonomy.  (That’s a lot of fancy words to
+say that this lets you automatically put things in nested groups.)
+
+   Helpful features include:
+
+Dynamic taxonomies
+     Objects may be classified into hierarchies automatically defined at
+     runtime based on their attributes.
+Reusable taxonomies
+     Taxonomy definitions may be stored in variables and reused in other
+     taxonomies’ descendant groups.
 
 * Menu:
 
@@ -30,9 +48,6 @@ Examples
 * Sporty (understanding completely)::
 * Applications::
 
-
-
-
 Usage
 
 * Dynamic taxys::
@@ -44,60 +59,41 @@ Usage
 Dynamic taxys
 
 * Multi-level dynamic taxys::
-* "Chains" of independent, multi-level dynamic taxys: "Chains" of independent multi-level dynamic taxys. 
+* "Chains" of independent, multi-level dynamic taxys: "Chains" of independent multi-level dynamic taxys.
 
 Changelog
 
-* 0.6-pre: 06-pre. 
-* 0.5: 05. 
-* 0.4: 04. 
-* 0.3: 03. 
-* 0.2: 02. 
-* 0.1: 01. 
+* 0.6-pre: 06-pre.
+* 0.5: 05.
+* 0.4: 04.
+* 0.3: 03.
+* 0.2: 02.
+* 0.1: 01.
 
+0.6-pre
+
+* Additions::
 
 0.5
 
-* Additions::
+* Additions: Additions (1).
 * Fixes::
-
-
-
 
 0.3
 
 * Changes::
-* Fixes: Fixesx. 
-
-
+* Fixes: Fixes (1).
 
 0.2
 
-* Changes: Changesx. 
-* Additions: Additionsx. 
-* Fixes: Fixesxx. 
+* Changes: Changes (1).
+* Additions: Additions (2).
+* Fixes: Fixes (2).
 
 Development
 
 * Copyright assignment::
 
-<https://elpa.gnu.org/packages/taxy.svg>
-(https://elpa.gnu.org/packages/taxy.html)
-
-   _Now, where did I put that…_
-
-   This library provides a programmable way to classify arbitrary
-objects into a hierarchical taxonomy.  (That’s a lot of fancy words to
-say that this lets you automatically put things in nested groups.)
-
-   Helpful features include:
-
-‘Dynamic taxonomies’
-     Objects may be classified into hierarchies automatically defined at
-     runtime based on their attributes.
-‘Reusable taxonomies’
-     Taxonomy definitions may be stored in variables and reused in other
-     taxonomies’ descendant groups.
 
 
 File: README.info,  Node: Examples,  Next: Installation,  Prev: Top,  Up: Top
@@ -154,8 +150,8 @@ Let’s imagine a silly taxonomy of numbers below 100:
           (10 25 35 50 55 65 70 85 95))))))
 
    You might think about how to produce that by writing some imperative
-code, but taxy allows you to do so in a more declarative and functional
-manner:
+code, but ‘taxy’ allows you to do so in a more declarative and
+functional manner:
 
      (require 'taxy)
 
@@ -258,7 +254,7 @@ first taxy, i.e.  non-vowels.
        ("Consonants" "Well, if they aren't a vowel..."
         ("B" "C" "D" "F" "G" "H" "J" "K" "L" "M" "N"))))
 
-   Oops, we forgot the letters after N! Let’s add them, too:
+   Oops, we forgot the letters after N!  Let’s add them, too:
 
      (taxy-plain
       (taxy-fill (reverse
@@ -277,11 +273,8 @@ first taxy, i.e.  non-vowels.
    Oh, they’re out of order, now.  That won’t do.  Let’s fix that:
 
      (taxy-plain
-      (taxy-mapc* (lambda (taxy)
-                    (setf (taxy-items taxy)
-                          (cl-sort (taxy-items taxy) #'<
-                                   :key #'string-to-char)))
-        lettery))
+      (taxy-sort #'< #'string-to-char)
+      taxy)
 
    That’s better:
 
@@ -494,8 +487,8 @@ File: README.info,  Node: Installation,  Next: Usage,  Prev: Examples,  Up: Top
 2 Installation
 **************
 
-taxy is distributed in GNU ELPA (https://elpa.gnu.org/), which is
-available in Emacs by default.  Use M-x package-install RET taxy RET,
+‘taxy’ is distributed in GNU ELPA (https://elpa.gnu.org/), which is
+available in Emacs by default.  Use ‘M-x package-install RET taxy RET’,
 then ‘(require 'taxy)’ in your Elisp project.
 
 
@@ -556,7 +549,7 @@ File: README.info,  Node: Dynamic taxys,  Next: Reusable taxys,  Up: Usage
 
    • • 
    You may not always know in advance what taxonomy a set of objects
-fits into, so taxy lets you add taxys dynamically by using the ‘:take’
+fits into, so ‘taxy’ lets you add taxys dynamically by using the ‘:take’
 function to add a taxy when an object is "taken into" a parent taxy’s
 items.  For example, you could dynamically classify buffers by their
 major mode like so:
@@ -612,7 +605,7 @@ and it produces this taxonomy of buffers:
 * Menu:
 
 * Multi-level dynamic taxys::
-* "Chains" of independent, multi-level dynamic taxys: "Chains" of independent multi-level dynamic taxys. 
+* "Chains" of independent, multi-level dynamic taxys: "Chains" of independent multi-level dynamic taxys.
 
 
 File: README.info,  Node: Multi-level dynamic taxys,  Next: "Chains" of independent multi-level dynamic taxys,  Up: Dynamic taxys
@@ -749,8 +742,8 @@ File: README.info,  Node: Reusable taxys,  Next: Threading macros,  Prev: Dynami
 
 Since taxys are structs, they may be stored in variables and used in
 other structs (being sure to copy the root taxy with ‘taxy-emptied’
-before filling).  For example, this shows using taxy to classify Matrix
-rooms in Ement.el (https://github.com/alphapapa/ement.el):
+before filling).  For example, this shows using ‘taxy’ to classify
+Matrix rooms in Ement.el (https://github.com/alphapapa/ement.el):
 
      (defun ement-roomy-buffer (room)
        (alist-get 'buffer (ement-room-local room)))
@@ -870,14 +863,10 @@ items are sorted after filling, like so:
        (thread-last musicy-taxy
          taxy-emptied
          (taxy-fill files)
-         (taxy-mapc* (lambda (taxy)
-                       ;; Sort sub-taxys by their name.
-                       (setf (taxy-taxys taxy)
-                             (cl-sort (taxy-taxys taxy) #'string<
-                                      :key #'taxy-name))
-                       ;; Sort sub-taxys' items by name.
-                       (setf (taxy-items taxy)
-                             (cl-sort (taxy-items taxy) #'string<))))
+         ;; Sort sub-taxys by their name.
+         (taxy-sort* #'string< #'taxy-name)
+         ;; Sort sub-taxys' items by name.
+         (taxy-sort #'string< #'identity)
          taxy-magit-section-pp))
 
 
@@ -886,7 +875,7 @@ File: README.info,  Node: Magit section,  Prev: Modifying filled taxys,  Up: Usa
 3.5 Magit section
 =================
 
-Showing a taxy with magit-section is very easy:
+Showing a ‘taxy’ with ‘magit-section’ is very easy:
 
      (require 'taxy-magit-section)
 
@@ -898,8 +887,8 @@ Showing a taxy with magit-section is very easy:
 
    That shows a buffer like this:
 
-   Note that while taxy-magit-section.el is installed with the taxy
-package, the magit-section package is not automatically installed with
+   Note that while ‘taxy-magit-section.el’ is installed with the ‘taxy’
+package, the ‘magit-section’ package is not automatically installed with
 it.
 
 
@@ -910,12 +899,12 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 
 * Menu:
 
-* 0.6-pre: 06-pre. 
-* 0.5: 05. 
-* 0.4: 04. 
-* 0.3: 03. 
-* 0.2: 02. 
-* 0.1: 01. 
+* 0.6-pre: 06-pre.
+* 0.5: 05.
+* 0.4: 04.
+* 0.3: 03.
+* 0.2: 02.
+* 0.1: 01.
 
 
 File: README.info,  Node: 06-pre,  Next: 05,  Up: Changelog
@@ -923,7 +912,21 @@ File: README.info,  Node: 06-pre,  Next: 05,  Up: Changelog
 4.1 0.6-pre
 ===========
 
-Nothing new yet.
+* Menu:
+
+* Additions::
+
+
+File: README.info,  Node: Additions,  Up: 06-pre
+
+4.1.1 Additions
+---------------
+
+   • Sorting functions:
+        • ‘taxy-sort-items’ (alias: ‘taxy-sort’) sorts the items in a
+          taxy and its sub-taxys.
+        • ‘taxy-sort-taxys’ (alias: ‘taxy-sort*’) sorts a taxy’s
+          sub-taxys.
 
 
 File: README.info,  Node: 05,  Next: 04,  Prev: 06-pre,  Up: Changelog
@@ -933,11 +936,11 @@ File: README.info,  Node: 05,  Next: 04,  Prev: 06-pre,  Up: Changelog
 
 * Menu:
 
-* Additions::
+* Additions: Additions (1).
 * Fixes::
 
 
-File: README.info,  Node: Additions,  Next: Fixes,  Up: 05
+File: README.info,  Node: Additions (1),  Next: Fixes,  Up: 05
 
 4.2.1 Additions
 ---------------
@@ -959,7 +962,7 @@ File: README.info,  Node: Additions,  Next: Fixes,  Up: 05
    • New example ‘taxy-package-report’.
 
 
-File: README.info,  Node: Fixes,  Prev: Additions,  Up: 05
+File: README.info,  Node: Fixes,  Prev: Additions (1),  Up: 05
 
 4.2.2 Fixes
 -----------
@@ -984,21 +987,21 @@ File: README.info,  Node: 03,  Next: 02,  Prev: 04,  Up: Changelog
 * Menu:
 
 * Changes::
-* Fixes: Fixesx. 
+* Fixes: Fixes (1).
 
 
-File: README.info,  Node: Changes,  Next: Fixesx,  Up: 03
+File: README.info,  Node: Changes,  Next: Fixes (1),  Up: 03
 
 4.4.1 Changes
 -------------
 
-   • Within the ‘taxy’ struct and related functions, the term objects is
-     renamed to items, which is shorter and has the same meaning.  This
-     makes code a bit more concise (e.g.  ‘(taxy-objects taxy)’ becomes
-     ‘(taxy-items taxy)’).
+   • Within the ‘taxy’ struct and related functions, the term ‘objects’
+     is renamed to ‘items’, which is shorter and has the same meaning.
+     This makes code a bit more concise (e.g.  ‘(taxy-objects taxy)’
+     becomes ‘(taxy-items taxy)’).
 
 
-File: README.info,  Node: Fixesx,  Prev: Changes,  Up: 03
+File: README.info,  Node: Fixes (1),  Prev: Changes,  Up: 03
 
 4.4.2 Fixes
 -----------
@@ -1017,12 +1020,12 @@ File: README.info,  Node: 02,  Next: 01,  Prev: 03,  Up: Changelog
 
 * Menu:
 
-* Changes: Changesx. 
-* Additions: Additionsx. 
-* Fixes: Fixesxx. 
+* Changes: Changes (1).
+* Additions: Additions (2).
+* Fixes: Fixes (2).
 
 
-File: README.info,  Node: Changesx,  Next: Additionsx,  Up: 02
+File: README.info,  Node: Changes (1),  Next: Additions (2),  Up: 02
 
 4.5.1 Changes
 -------------
@@ -1032,7 +1035,7 @@ File: README.info,  Node: Changesx,  Next: Additionsx,  Up: 02
      reason to maintain two versions.
 
 
-File: README.info,  Node: Additionsx,  Next: Fixesxx,  Prev: Changesx,  Up: 02
+File: README.info,  Node: Additions (2),  Next: Fixes (2),  Prev: Changes (1),  Up: 02
 
 4.5.2 Additions
 ---------------
@@ -1047,10 +1050,10 @@ File: README.info,  Node: Additionsx,  Next: Fixesxx,  Prev: Changesx,  Up: 02
      now be a function or a list of functions (or a list of a list of
      functions, etc.).  Lists of functions create "chains" of
      independent, dynamic taxys descending from a single root taxy.  See
-     *note example: "Chains" of independent multi-level dynamic taxys.
+     .
 
 
-File: README.info,  Node: Fixesxx,  Prev: Additionsx,  Up: 02
+File: README.info,  Node: Fixes (2),  Prev: Additions (2),  Up: 02
 
 4.5.3 Fixes
 -----------
@@ -1089,7 +1092,7 @@ This package is part of GNU Emacs (https://www.gnu.org/software/emacs/),
 being distributed in GNU ELPA (https://elpa.gnu.org/).  Contributions to
 this project must follow GNU guidelines, which means that, as with other
 parts of Emacs, patches of more than a few lines must be accompanied by
-having assigned copyright for the contribution to the FSF. Contributors
+having assigned copyright for the contribution to the FSF.  Contributors
 who wish to do so may contact emacs-devel@gnu.org <emacs-devel@gnu.org>
 to request the assignment form.
 
@@ -1114,38 +1117,39 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1745
-Node: Numbery (starting basically)2064
-Node: Lettery (filling incrementally)7819
-Node: Sporty (understanding completely)10499
-Node: Applications16486
-Node: Installation16886
-Node: Usage17187
-Node: Dynamic taxys19324
-Node: Multi-level dynamic taxys21879
-Node: "Chains" of independent multi-level dynamic taxys24072
-Node: Reusable taxys26944
-Node: Threading macros31113
-Node: Modifying filled taxys31652
-Node: Magit section32735
-Node: Changelog33393
-Node: 06-pre33591
-Node: 0533697
-Node: Additions33822
-Node: Fixes34924
-Node: 0435074
-Node: 0335296
-Node: Changes35423
-Node: Fixesx35772
-Node: 0236204
-Node: Changesx36368
-Node: Additionsx36654
-Node: Fixesxx37569
-Node: 0137818
-Node: Development37917
-Node: Copyright assignment38123
-Node: Credits38710
-Node: License38900
+Node: Examples1761
+Node: Numbery (starting basically)2080
+Node: Lettery (filling incrementally)7841
+Node: Sporty (understanding completely)10361
+Node: Applications16348
+Node: Installation16748
+Node: Usage17061
+Node: Dynamic taxys19198
+Node: Multi-level dynamic taxys21758
+Node: "Chains" of independent multi-level dynamic taxys23951
+Node: Reusable taxys26823
+Node: Threading macros30998
+Node: Modifying filled taxys31537
+Node: Magit section32355
+Node: Changelog33043
+Node: 06-pre33235
+Node: Additions33347
+Node: 0533671
+Node: Additions (1)33810
+Node: Fixes34916
+Node: 0435070
+Node: 0335292
+Node: Changes35421
+Node: Fixes (1)35784
+Node: 0236219
+Node: Changes (1)36388
+Node: Additions (2)36680
+Node: Fixes (2)37539
+Node: 0137793
+Node: Development37892
+Node: Copyright assignment38098
+Node: Credits38686
+Node: License38876
 
 End Tag Table
 

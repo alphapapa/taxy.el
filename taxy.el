@@ -238,6 +238,31 @@ Includes items in TAXY's sub-taxys."
            sum (taxy-size sub-taxy) into total
            finally return (+ total (length (taxy-items taxy)))))
 
+(defun taxy-sort-items (pred key taxy)
+  "Sort TAXY's items by PRED and KEY.
+Sorts items in TAXY and its sub-taxys.  KEY is passed to
+`cl-sort', which see."
+  (declare (indent defun))
+  (taxy-mapc* (lambda (taxy)
+		(setf (taxy-items taxy)
+		      (cl-sort (taxy-items taxy)
+			       pred :key key)))
+    taxy))
+
+(defalias 'taxy-sort #'taxy-sort-items)
+
+(defun taxy-sort-taxys (pred key taxy)
+  "Sort TAXY's sub-taxys by PRED and KEY.
+KEY is passed to `cl-sort', which see."
+  (declare (indent defun))
+  (taxy-mapc* (lambda (taxy)
+		(setf (taxy-taxys taxy)
+		      (cl-sort (taxy-taxys taxy)
+			       pred :key key)))
+    taxy))
+
+(defalias 'taxy-sort* #'taxy-sort-taxys)
+
 ;;;; Footer
 
 (provide 'taxy)

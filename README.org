@@ -202,11 +202,8 @@ Oh, they're out of order, now.  That won't do.  Let's fix that:
 
 #+BEGIN_SRC elisp :exports code :results code
   (taxy-plain
-   (taxy-mapc* (lambda (taxy)
-                 (setf (taxy-items taxy)
-                       (cl-sort (taxy-items taxy) #'<
-                                :key #'string-to-char)))
-     lettery))
+   (taxy-sort #'< #'string-to-char)
+   taxy)
 #+END_SRC
 
 That's better:
@@ -738,14 +735,10 @@ Sometimes it's necessary to modify a taxy after filling it with objects, e.g. to
     (thread-last musicy-taxy
       taxy-emptied
       (taxy-fill files)
-      (taxy-mapc* (lambda (taxy)
-                    ;; Sort sub-taxys by their name.
-                    (setf (taxy-taxys taxy)
-                          (cl-sort (taxy-taxys taxy) #'string<
-                                   :key #'taxy-name))
-                    ;; Sort sub-taxys' items by name.
-                    (setf (taxy-items taxy)
-                          (cl-sort (taxy-items taxy) #'string<))))
+      ;; Sort sub-taxys by their name.
+      (taxy-sort* #'string< #'taxy-name)
+      ;; Sort sub-taxys' items by name.
+      (taxy-sort #'string< #'identity)
       taxy-magit-section-pp))
 #+END_SRC
 
@@ -776,7 +769,11 @@ Note that while =taxy-magit-section.el= is installed with the =taxy= package, th
 
 ** 0.6-pre
 
-Nothing new yet.
+*** Additions
+
++ Sorting functions:
+  + ~taxy-sort-items~ (alias: ~taxy-sort~) sorts the items in a taxy and its sub-taxys.
+  + ~taxy-sort-taxys~ (alias: ~taxy-sort*~) sorts a taxy's sub-taxys.
 
 ** 0.5
 
