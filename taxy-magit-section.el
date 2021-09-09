@@ -93,7 +93,7 @@ which blank lines are inserted between sections at that level."
   (let* ((magit-section-set-visibility-hook
           (cons #'taxy-magit-section-visibility magit-section-set-visibility-hook)))
     (cl-labels ((insert-item
-                 (item taxy format-fn depth)
+                 (item taxy depth)
                  (magit-insert-section (magit-section item)
                    (magit-insert-section-body
 		     ;; This is a tedious way to give the indent
@@ -103,8 +103,7 @@ which blank lines are inserted between sections at that level."
 		     ;; something was wrong about the properties, and
 		     ;; `magit-section' didn't navigate the sections
 		     ;; properly anymore.
-		     (let* (
-                            (formatted (funcall format-fn item))
+		     (let* ((formatted (funcall (taxy-magit-section-format-fn taxy) item))
 			    (indent-size (if (or (not taxy-magit-section-insert-indent-items)
 						 (< depth 0))
 					     0
@@ -117,10 +116,6 @@ which blank lines are inserted between sections at that level."
 		       (insert indent-string formatted "\n")))))
                 (insert-taxy
                  (taxy depth) (let ((magit-section-set-visibility-hook magit-section-set-visibility-hook)
-                                    (format-fn (cl-typecase taxy
-                                                 (taxy-magit-section
-                                                  (taxy-magit-section-format-fn taxy))
-                                                 (t (lambda (o) (format "%s" o)))))
                                     (taxy-magit-section-heading-indent (taxy-magit-section-heading-indent taxy))
                                     (taxy-magit-section-item-indent (taxy-magit-section-item-indent taxy)))
                                 (cl-typecase taxy
@@ -142,12 +137,12 @@ which blank lines are inserted between sections at that level."
                                   (magit-insert-section-body
                                     (when (eq 'first items)
                                       (dolist (item (taxy-items taxy))
-                                        (insert-item item taxy format-fn depth)))
+                                        (insert-item item taxy depth)))
                                     (dolist (taxy (taxy-taxys taxy))
                                       (insert-taxy taxy (1+ depth)))
                                     (when (eq 'last items)
                                       (dolist (item (taxy-items taxy))
-                                        (insert-item item taxy format-fn depth))))
+                                        (insert-item item taxy depth))))
                                   (when (<= depth blank-between-depth)
                                     (insert "\n"))))))
       (magit-insert-section (magit-section)
