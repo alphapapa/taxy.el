@@ -263,6 +263,47 @@ KEY is passed to `cl-sort', which see."
 
 (defalias 'taxy-sort* #'taxy-sort-taxys)
 
+;;;; Defining key functions
+
+;; Utilities to define key functions and helpers in a standard way.
+
+(defmacro taxy-define-key-definer (name variable prefix docstring)
+  "Define a macro NAME that defines a key-function-defining macro.
+The defined macro, having string DOCSTRING, associates the
+defined key functions with their aliases in an alist stored in
+symbol VARIABLE.  The defined key functions are named having
+string PREFIX, which will have a hyphen appended to it.  The key
+functions take one or more arguments, the first of which is the
+item being tested, bound within the function to `item'."
+  ;; Example docstring:
+
+  ;;   "Define a `taxy-org-ql-view' key function by NAME having BODY taking ARGS.
+  ;; Within BODY, `element' is bound to the `org-element' element
+  ;; being tested.
+
+  ;; Defines a function named `taxy-org-ql--predicate-NAME', and adds
+  ;; an entry to `taxy-org-ql-view-keys' mapping NAME to the new
+  ;; function symbol."
+  (declare (indent defun))
+  ;; I'm not sure why it's necessary to bind the variable in the first
+  ;; level of the expansion here, but double-unquoting the variable in
+  ;; the defined macro's form leaves the second comma in place, which
+  ;; breaks the second expansion, and this works around that.
+  `(let ((variable ',variable))
+     (defvar ,variable nil
+       ,(format "Alist mapping key aliases to key functions defined with `%s'."
+		name))
+     (defmacro ,name (name args &rest body)
+       ,docstring
+       (declare (indent defun)
+		(debug (&define symbolp listp &rest def-form)))
+       (let* ((fn-symbol (intern (format "%s-%s" ,prefix name)))
+	      (fn `(lambda (item ,@args)
+		     ,@body)))
+	 `(progn
+	    (fset ',fn-symbol ,fn)
+	    (setf (map-elt ,variable ',name) ',fn-symbol))))))
+
 ;;;; Footer
 
 (provide 'taxy)
