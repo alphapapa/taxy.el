@@ -168,6 +168,82 @@ Default visibility function for
        (_ 'show)))
     (_ nil)))
 
+;;;; Column-based formatting
+
+;; Column-based, or "table"?
+
+;; TODO: Probably, this belongs in a separate library, since it's not
+;; directly related to using taxy or magit-section.  Maybe it could be
+;; called something like `flextab' (or, keeping with the theme,
+;; `tabley').
+
+;;;;; Macros
+
+(cl-defmacro taxy-magit-section-define-column-definer (prefix &key columns-variable-docstring)
+  "FIXME: Docstring."
+  (let* ((definer-name (intern (format "%s-define-column" prefix)))
+	 (definer-docstring (format "Define a column formatting function with NAME.
+NAME should be a string.  BODY should return a string or nil.  In
+the BODY, `item' is bound to the item being formatted, and `depth' is
+bound to the item's depth in the hierarchy.
+
+PLIST may be a plist setting the following options:
+
+  `:face' is a face applied to the string.
+
+  `:max-width' defines a customization option for the column's
+  maximum width with the specified value as its default: an
+  integer limits the width, while nil does not."))
+	 (columns-variable-name (intern (format "%s-columns" prefix)))
+	 (columns-variable-docstring (or columns-variable-docstring
+					 (format "Columns defined by `%s'."
+						 definer-name)))
+	 (column-formatters-variable-name (intern (format "%s-column-formatters" prefix)))
+	 (column-formatters-variable-docstring (format "Column formatters defined by `%s'."
+						       definer-name)))
+    ;; TODO: Add defined columns to customization type for the columns-variable.
+    `(let ((columns-variable ',columns-variable-name)
+	   (column-formatters-variable ',column-formatters-variable-name))
+       (defvar ,columns-variable-name nil
+	 ,columns-variable-docstring)
+       (defvar ,column-formatters-variable-name nil
+	 ,column-formatters-variable-docstring)
+       (defmacro ,definer-name (name plist &rest body)
+	 ,definer-docstring
+	 (declare (indent defun))
+	 (cl-check-type name string)
+	 (pcase-let* ((fn-name (intern (concat ,prefix "-column-format-" (downcase name))))
+		      ((map (:face face) (:max-width max-width)) plist)
+		      (max-width-variable (intern (concat ,prefix "-" name "-max-width")))
+		      (max-width-docstring (format "Maximum width of the %s column." name)))
+	   `(progn
+	      ,(when (plist-member plist :max-width)
+		 `(defcustom ,max-width-variable
+		    ,max-width
+		    ,max-width-docstring
+		    :type '(choice (integer :tag "Maximum width")
+				   (const :tag "Unlimited width" nil))))
+	      (defun ,fn-name (item depth)
+		(if-let ((string (progn ,@body)))
+		    (progn
+		      ,(when max-width
+			 `(when ,max-width-variable
+			    (setf string (truncate-string-to-width string ,max-width-variable nil nil "…"))))
+		      ,(when face
+			 ;; Faces are not defined until load time, while this checks type at expansion
+			 ;; time, so we can only test that the argument is a symbol, not a face.
+			 (cl-check-type face symbol ":face must be a face symbol")
+			 `(setf string (propertize string 'face ',face)))
+		      string)
+		  ""))
+	      (setf (map-elt ,column-formatters-variable ,name) #',fn-name)
+	      (unless (member ,name (get ',columns-variable 'standard-value))
+		(setf (get ',columns-variable 'standard-value)
+		      (append (get ',columns-variable 'standard-value)
+			      (list ,name))))))))))
+
+;;;;; Functions
+
 ;; MAYBE: Consider using spaces with `:align-to', rather than formatting strings with indentation, as used by `epkg'
 ;; (see <https://github.com/emacscollective/epkg/blob/edf8c009066360af61caedf67a2482eaa19481b0/epkg-desc.el#L363>).
 ;; I'm not sure which would perform better; I guess that with many lines, redisplay might take longer to use the
