@@ -291,6 +291,27 @@ the items' values for each column."
                  table)
         (cons table column-sizes)))))
 
+(defun taxy-magit-section-format-header (column-sizes formatters)
+  "Return header string for COLUMN-SIZES and FORMATTERS.
+COLUMN-SIZES should be the CDR of the cell returned by
+`taxy-magit-section-format-items'.  FORMATTERS should be the
+variable passed to that function, which see."
+  (let* ((first-column-name (caar column-sizes))
+	 (first-column-alist (alist-get first-column-name formatters nil nil #'equal))
+	 (first-column-align (pcase-exhaustive (alist-get 'align first-column-alist)
+			       ((or `nil 'left) "-")
+			       ('right ""))))
+    (concat (format (format " %%%s%ss"
+			    first-column-align (cdar column-sizes))
+		    (caar column-sizes))
+	    (cl-loop for (name . size) in (cdr column-sizes)
+		     for column-alist = (alist-get name formatters nil nil #'equal)
+		     for align = (pcase-exhaustive (alist-get 'align column-alist)
+				   ((or `nil 'left) "-")
+				   ('right ""))
+		     for spec = (format " %%%s%ss" align size)
+		     concat (format spec name)))))
+
 ;;;; Footer
 
 (provide 'taxy-magit-section)
