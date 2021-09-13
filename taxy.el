@@ -263,9 +263,11 @@ KEY is passed to `cl-sort', which see."
 
 (defalias 'taxy-sort* #'taxy-sort-taxys)
 
-;;;; Defining key functions
+;;;; Key functions
 
-;; Utilities to define key functions and helpers in a standard way.
+;; Utilities to define key and take functions in a standard way.
+
+;; TODO: Document these.
 
 (defmacro taxy-define-key-definer (name variable prefix docstring)
   "Define a macro NAME that defines a key-function-defining macro.
@@ -303,6 +305,47 @@ item being tested, bound within the function to `item'."
 	 `(progn
 	    (fset ',fn-symbol ,fn)
 	    (setf (map-elt ,variable ',name) ',fn-symbol))))))
+
+(defun taxy-make-take-function (keys aliases)
+  "Return a `taxy' \"take\" function for KEYS.
+Each of KEYS should be a function alias defined in ALIASES, or a
+list of such KEY-FNS (recursively, ad infinitum, approximately).
+ALIASES should be an alist mapping aliases to functions (such as
+defined with a definer defined by `taxy-define-key-definer')."
+  (let ((macrolets (cl-loop for (name . fn) in aliases
+                            collect `(,name ',fn))))
+    (cl-labels ((expand-form
+                 ;; Is using (cadr (macroexpand-all ...)) really better than `eval'?
+                 (form) (cadr (macroexpand-all
+                               `(cl-symbol-macrolet (,@macrolets)
+                                  ,form))))
+                (quote-fn
+                 (fn) (pcase fn
+                        ((pred symbolp) (expand-form fn))
+                        (`(,(and (or 'and 'or 'not) boolean) . ,(and args (map :name :keys)))
+                         ;; Well, that pcase expression isn't confusing at all...  ;)
+                         ;;  (cl-assert name t "Boolean key functions require a NAME")
+                         ;;  (cl-assert keys t "Boolean key functions require KEYS")
+                         `(lambda (buffer)
+                            (when (cl-loop for fn in ',(mapcar #'quote-fn (or keys args))
+                                           ,(pcase boolean
+                                              ('and 'always)
+                                              ('or 'thereis)
+                                              ('not 'never))
+                                           (funcall fn buffer))
+                              (or ,name ""))))
+                        (`(,(and (pred symbolp) fn)
+                           . ,(and args (guard (cl-typecase (car args)
+                                                 ((or keyword (and atom (not symbol)))
+                                                  t)))))
+                         ;; Key with args: replace with a lambda that
+                         ;; calls that key's function with given args.
+                         `(lambda (element)
+                            (,(expand-form fn) element ,@args)))
+                        ((pred listp) (mapcar #'quote-fn fn)))))
+      (setf keys (mapcar #'quote-fn keys))
+      `(lambda (item taxy)
+         (taxy-take-keyed ',keys item taxy)))))
 
 ;;;; Footer
 
