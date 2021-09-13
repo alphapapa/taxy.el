@@ -213,9 +213,9 @@ PLIST may be a plist setting the following options:
     ;; TODO: Add defined columns to customization type for the columns-variable.
     `(let ((columns-variable ',columns-variable-name)
 	   (column-formatters-variable ',column-formatters-variable-name))
-       (defvar ,level-indent-variable-name nil
+       (defvar ,level-indent-variable-name 0
 	 ,level-indent-docstring)
-       (defvar ,item-indent-variable-name nil
+       (defvar ,item-indent-variable-name 0
 	 ,item-indent-docstring)
        (defvar ,columns-variable-name nil
 	 ,columns-variable-docstring)
@@ -230,7 +230,7 @@ PLIST may be a plist setting the following options:
 		      (level-indent-variable-name ',level-indent-variable-name)
 		      (item-indent-variable-name ',item-indent-variable-name)
 		      ((map (:face face) (:max-width max-width)) plist)
-		      (max-width-variable (intern (concat ,prefix "-" name "-max-width")))
+		      (max-width-variable (intern (concat ,prefix "-column-" name "-max-width")))
 		      (max-width-docstring (format "Maximum width of the %s column." name)))
 	   `(progn
 	      ,(when (plist-member plist :max-width)
