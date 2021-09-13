@@ -197,10 +197,10 @@ PLIST may be a plist setting the following options:
   `:max-width' defines a customization option for the column's
   maximum width with the specified value as its default: an
   integer limits the width, while nil does not."))
-	 (level-indent-variable-name (intern (format "%s-taxy-level-indent" prefix)))
+	 (level-indent-variable-name (intern (format "%s-level-indent" prefix)))
 	 (level-indent-docstring (format "Indentation applied to each level of depth for `%s' columns."
 					 prefix))
-	 (item-indent-variable-name (intern (format "%s-taxy-item-indent" prefix)))
+	 (item-indent-variable-name (intern (format "%s-item-indent" prefix)))
 	 (item-indent-docstring (format "Indentation applied to each item for `%s' columns."
 					prefix))
 	 (columns-variable-name (intern (format "%s-columns" prefix)))

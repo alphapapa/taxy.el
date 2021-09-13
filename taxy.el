@@ -300,8 +300,9 @@ item being tested, bound within the function to `item'."
        (declare (indent defun)
 		(debug (&define symbolp listp &rest def-form)))
        (let* ((fn-symbol (intern (format "%s-%s" ,prefix name)))
-	      (fn `(lambda (item ,@args)
-		     ,@body)))
+	      (fn `(cl-function
+		    (lambda (item ,@args)
+		      ,@body))))
 	 `(progn
 	    (fset ',fn-symbol ,fn)
 	    (setf (map-elt ,variable ',name) ',fn-symbol))))))
