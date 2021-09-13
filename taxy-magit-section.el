@@ -189,11 +189,20 @@ bound to the item's depth in the hierarchy.
 
 PLIST may be a plist setting the following options:
 
+  `:align' may be `left' or `right' to align the column
+  accordingly.
+
   `:face' is a face applied to the string.
 
   `:max-width' defines a customization option for the column's
   maximum width with the specified value as its default: an
   integer limits the width, while nil does not."))
+	 (level-indent-variable-name (intern (format "%s-taxy-level-indent" prefix)))
+	 (level-indent-docstring (format "Indentation applied to each level of depth for `%s' columns."
+					 prefix))
+	 (item-indent-variable-name (intern (format "%s-taxy-item-indent" prefix)))
+	 (item-indent-docstring (format "Indentation applied to each item for `%s' columns."
+					prefix))
 	 (columns-variable-name (intern (format "%s-columns" prefix)))
 	 (columns-variable-docstring (or columns-variable-docstring
 					 (format "Columns defined by `%s'."
@@ -204,6 +213,10 @@ PLIST may be a plist setting the following options:
     ;; TODO: Add defined columns to customization type for the columns-variable.
     `(let ((columns-variable ',columns-variable-name)
 	   (column-formatters-variable ',column-formatters-variable-name))
+       (defvar ,level-indent-variable-name nil
+	 ,level-indent-docstring)
+       (defvar ,item-indent-variable-name nil
+	 ,item-indent-docstring)
        (defvar ,columns-variable-name nil
 	 ,columns-variable-docstring)
        (defvar ,column-formatters-variable-name nil
@@ -213,6 +226,9 @@ PLIST may be a plist setting the following options:
 	 (declare (indent defun))
 	 (cl-check-type name string)
 	 (pcase-let* ((fn-name (intern (concat ,prefix "-column-format-" (downcase name))))
+		      (columns-variable-name ',columns-variable-name)
+		      (level-indent-variable-name ',level-indent-variable-name)
+		      (item-indent-variable-name ',item-indent-variable-name)
 		      ((map (:face face) (:max-width max-width)) plist)
 		      (max-width-variable (intern (concat ,prefix "-" name "-max-width")))
 		      (max-width-docstring (format "Maximum width of the %s column." name)))
@@ -234,9 +250,18 @@ PLIST may be a plist setting the following options:
 			 ;; time, so we can only test that the argument is a symbol, not a face.
 			 (cl-check-type face symbol ":face must be a face symbol")
 			 `(setf string (propertize string 'face ',face)))
+		      (when (equal ,name (car ,columns-variable-name))
+			;; First column: apply indentation.
+			(let ((indentation (make-string (+ (* depth ,level-indent-variable-name)
+							   ,item-indent-variable-name)
+							? )))
+			  (setf string (concat indentation string))))
 		      string)
 		  ""))
-	      (setf (map-elt ,column-formatters-variable ,name) #',fn-name)
+	      (setf (alist-get 'formatter (alist-get ,name ,column-formatters-variable nil nil #'equal))
+		    #',fn-name)
+	      (setf (alist-get 'align (alist-get ,name ,column-formatters-variable nil nil #'equal))
+		    ,(plist-get plist :align))
 	      (unless (member ,name (get ',columns-variable 'standard-value))
 		(setf (get ',columns-variable 'standard-value)
 		      (append (get ',columns-variable 'standard-value)
@@ -260,36 +285,45 @@ and values are the column width.  Each string is formatted
 according to `columns' and takes into account the width of all
 the items' values for each column."
   (let ((table (make-hash-table))
-        column-sizes)
+	column-aligns column-sizes)
     (cl-labels ((format-column
-                 (item depth column-name)
-                 (let* ((fn (alist-get column-name formatters nil nil #'equal))
-                        (value (funcall fn item depth))
-                        (current-column-size (or (map-elt column-sizes column-name) 0)))
-                   (setf (map-elt column-sizes column-name)
-                         (max current-column-size (1+ (length (format "%s" value)))))
-                   value))
-                (format-item
-                 (depth item) (puthash item
-                                       (cl-loop for column in columns
-                                                collect (format-column item depth column))
-                                       table))
-                (format-taxy (depth taxy)
-                             (dolist (item (taxy-items taxy))
-                               (format-item depth item))
-                             (dolist (taxy (taxy-taxys taxy))
-                               (format-taxy (1+ depth) taxy))))
+		 (item depth column-name)
+		 (let* ((column-alist (alist-get column-name formatters nil nil #'equal))
+			(fn (alist-get 'formatter column-alist))
+			(value (funcall fn item depth))
+			(current-column-size (or (map-elt column-sizes column-name) 0)))
+		   (setf (map-elt column-sizes column-name)
+			 (max current-column-size (1+ (length (format "%s" value)))))
+		   (setf (map-elt column-aligns column-name)
+			 (or (alist-get 'align column-alist)
+			     'left))
+		   value))
+		(format-item
+		 (depth item) (puthash item
+				       (cl-loop for column in columns
+						collect (format-column item depth column))
+				       table))
+		(format-taxy (depth taxy)
+			     (dolist (item (taxy-items taxy))
+			       (format-item depth item))
+			     (dolist (taxy (taxy-taxys taxy))
+			       (format-taxy (1+ depth) taxy))))
       (format-taxy 0 taxy)
       ;; Now format each item's string using the column sizes.
       (let* ((column-sizes (nreverse column-sizes))
-             (format-string (string-join (cl-loop for (_name . size) in column-sizes
-                                                  collect (format "%%-%ss" size))
-                                         " ")))
-        (maphash (lambda (item column-values)
-                   (puthash item (apply #'format format-string column-values)
-                            table))
-                 table)
-        (cons table column-sizes)))))
+	     (format-string
+	      (string-join
+	       (cl-loop for (name . size) in column-sizes
+			for align = (pcase-exhaustive (alist-get name column-aligns nil nil #'equal)
+				      ((or `nil 'left) "-")
+				      ('right ""))
+			collect (format "%%%s%ss" align size))
+	       " ")))
+	(maphash (lambda (item column-values)
+		   (puthash item (apply #'format format-string column-values)
+			    table))
+		 table)
+	(cons table column-sizes)))))
 
 (defun taxy-magit-section-format-header (column-sizes formatters)
   "Return header string for COLUMN-SIZES and FORMATTERS.
