@@ -295,7 +295,7 @@ the items' values for each column."
 			(value (funcall fn item depth))
 			(current-column-size (or (map-elt column-sizes column-name) 0)))
 		   (setf (map-elt column-sizes column-name)
-			 (max current-column-size (1+ (length (format "%s" value)))))
+			 (max current-column-size (string-width value)))
 		   (setf (map-elt column-aligns column-name)
 			 (or (alist-get 'align column-alist)
 			     'left))
