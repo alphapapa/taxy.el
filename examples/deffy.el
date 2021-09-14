@@ -191,25 +191,25 @@ buffer."
 
 ;;;###autoload
 (cl-defun deffy-buffer (&optional (buffer (current-buffer))
-				   &key (display-buffer-action
-					 (when current-prefix-arg
-					   '(display-buffer-in-side-window
-					     (side . right)
-					     (window-parameters
-					      (window-side . right)
-					      (no-delete-other-windows . t))))))
+				  &key (display-buffer-action
+					(when current-prefix-arg
+					  '(display-buffer-in-side-window
+					    (side . right)
+					    (window-parameters
+					     (window-side . right)
+					     (no-delete-other-windows . t))))))
   "Show an Deffy view for BUFFER.
 Interactively, with prefix, display in dedicated side window."
   (interactive)
   (deffy :files (list (buffer-file-name buffer))
-	  :keys (remove 'file deffy-taxy-default-keys)
-	  :display-buffer-action display-buffer-action))
+    :keys (remove 'file deffy-taxy-default-keys)
+    :display-buffer-action display-buffer-action))
 
 (defun deffy-revert (_ignore-auto _noconfirm)
   "Revert current Deffy buffer."
   (interactive)
   (deffy :display-buffer-action (or deffy-display-buffer-action
-				     '((display-buffer-same-window)))))
+				    '((display-buffer-same-window)))))
 
 (defun deffy-goto-form ()
   "Go to form at point."
