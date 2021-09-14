@@ -211,6 +211,9 @@ Interactively, with prefix, display in dedicated side window."
    (list (current-buffer)
 	 :display-buffer-action (when current-prefix-arg
 				  deffy-side-window-action)))
+  (unless (buffer-file-name buffer)
+    (user-error "Buffer is not file-backed: %S.  See command `deffy-project'"
+		buffer))
   (deffy :files (list (buffer-file-name buffer))
     :keys (remove 'file deffy-taxy-default-keys)
     :display-buffer-action display-buffer-action))
