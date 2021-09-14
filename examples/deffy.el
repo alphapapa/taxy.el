@@ -112,6 +112,18 @@
 (defvar-local deffy-display-buffer-action nil
   "Last-used display-buffer-action in the current Deffy buffer.")
 
+;;;; Options
+
+(defcustom deffy-side-window-action
+  '(display-buffer-in-side-window
+    (side . right)
+    (window-parameters
+     (window-side . right)
+     (no-delete-other-windows . t)))
+  "`display-buffer' action used when displaying Deffy buffer in a side window.
+See Info node `(elisp)Displaying Buffers in Side Windows'."
+  :type 'sexp)
+
 ;;;; Commands
 
 ;;;###autoload
@@ -190,17 +202,15 @@ buffer."
       (pop-to-buffer buffer-name display-buffer-action))))
 
 ;;;###autoload
-(cl-defun deffy-buffer (&optional (buffer (current-buffer))
-				  &key (display-buffer-action
-					(when current-prefix-arg
-					  '(display-buffer-in-side-window
-					    (side . right)
-					    (window-parameters
-					     (window-side . right)
-					     (no-delete-other-windows . t))))))
+(cl-defun deffy-buffer
+    (&optional (buffer (current-buffer))
+	       &key display-buffer-action)
   "Show an Deffy view for BUFFER.
 Interactively, with prefix, display in dedicated side window."
-  (interactive)
+  (interactive
+   (list (current-buffer)
+	 :display-buffer-action (when current-prefix-arg
+				  deffy-side-window-action)))
   (deffy :files (list (buffer-file-name buffer))
     :keys (remove 'file deffy-taxy-default-keys)
     :display-buffer-action display-buffer-action))
