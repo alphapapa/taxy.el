@@ -20,14 +20,16 @@
 
 ;;; Commentary:
 
-;; 
+;; This library provides commands that show top-level forms and
+;; definitions found in an Emacs Lisp project or buffer, organized by
+;; file and type.
 
 ;;; Code:
 
 (require 'taxy-magit-section)
 
 (defgroup elispy nil
-  "Show an overview of symbols defined in an Emacs Lisp project."
+  "Show an overview of definitions in an Emacs Lisp project or buffer."
   :group 'emacs-lisp-mode)
 
 ;;;; Keys
@@ -172,10 +174,9 @@ buffer."
 		       (taxy-sort #'string< #'form-name)))
 	       (taxy-magit-section-insert-indent-items nil)
 	       (inhibit-read-only t)
-	       format-cons)
-	  (setf format-cons (taxy-magit-section-format-items
-			     elispy-columns elispy-column-formatters taxy)
-		format-table (car format-cons)
+	       (format-cons (taxy-magit-section-format-items
+			     elispy-columns elispy-column-formatters taxy)))
+	  (setf format-table (car format-cons)
 		column-sizes (cdr format-cons)
 		header-line-format (taxy-magit-section-format-header
 				    column-sizes elispy-column-formatters))
