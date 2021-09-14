@@ -213,10 +213,12 @@ PLIST may be a plist setting the following options:
     ;; TODO: Add defined columns to customization type for the columns-variable.
     `(let ((columns-variable ',columns-variable-name)
 	   (column-formatters-variable ',column-formatters-variable-name))
-       (defvar ,level-indent-variable-name 0
-	 ,level-indent-docstring)
-       (defvar ,item-indent-variable-name 0
-	 ,item-indent-docstring)
+       (defcustom ,level-indent-variable-name 2
+	 ,level-indent-docstring
+	 :type 'integer)
+       (defcustom ,item-indent-variable-name 2
+	 ,item-indent-docstring
+	 :type 'integer)
        (defvar ,columns-variable-name nil
 	 ,columns-variable-docstring)
        (defvar ,column-formatters-variable-name nil
