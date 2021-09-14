@@ -179,6 +179,8 @@ Default visibility function for
 
 ;;;;; Macros
 
+;; TODO: Document this.
+
 (cl-defmacro taxy-magit-section-define-column-definer (prefix &key columns-variable-docstring)
   "FIXME: Docstring."
   (let* ((definer-name (intern (format "%s-define-column" prefix)))
@@ -276,6 +278,8 @@ PLIST may be a plist setting the following options:
 ;; I'm not sure which would perform better; I guess that with many lines, redisplay might take longer to use the
 ;; display properties for alignment than just having pre-aligned lines of text.
 
+;; TODO: Document this.
+
 (defun taxy-magit-section-format-items (columns formatters taxy)
   "Return a cons (table . column-sizes) for COLUMNS, FORMATTERS, and TAXY.
 COLUMNS is a list of column names, each of which should have an
@@ -327,6 +331,7 @@ the items' values for each column."
 		 table)
 	(cons table column-sizes)))))
 
+;; TODO: Document this.
 (defun taxy-magit-section-format-header (column-sizes formatters)
   "Return header string for COLUMN-SIZES and FORMATTERS.
 COLUMN-SIZES should be the CDR of the cell returned by
