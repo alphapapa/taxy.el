@@ -259,6 +259,8 @@ Interactively, with prefix, display in dedicated side window."
 
 (defvar bookmark-make-record-function)
 
+;; FIXME: Also save and use files list.
+
 (defun deffy--bookmark-make-record ()
   "Return a bookmark record for current Deffy buffer."
   (list (concat "Deffy: %s" deffy-directory)
