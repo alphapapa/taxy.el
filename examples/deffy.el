@@ -232,10 +232,10 @@ Interactively, with prefix, display in dedicated side window."
 
 (defun deffy-RET ()
   (interactive)
-  (cl-typecase (oref (magit-current-section) value)
+  (cl-etypecase (oref (magit-current-section) value)
+    (deffy-def (call-interactively #'deffy-goto-form))
     (taxy-magit-section (call-interactively #'magit-section-cycle))
-    (null nil)
-    (t (call-interactively #'deffy-goto-form))))
+    (null nil)))
 
 (define-derived-mode deffy-mode magit-section-mode "Deffy"
   :global nil
