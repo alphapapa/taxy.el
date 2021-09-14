@@ -218,16 +218,15 @@ Interactively, with prefix, display in dedicated side window."
     :keys (remove 'file deffy-taxy-default-keys)
     :display-buffer-action display-buffer-action))
 
-(cl-defun deffy-project
-    (&optional (project (or (project-current)
-			    (cons 'transient default-directory)))
-	       &key display-buffer-action)
+(cl-defun deffy-project (&optional project &key display-buffer-action)
   "Show an Deffy view for PROJECT.
 Interactively, with prefix, display in dedicated side window."
   (interactive
    (list nil :display-buffer-action (when current-prefix-arg
 				      deffy-side-window-action)))
-  (deffy :project project
+  (deffy :project (or project
+		      (project-current)
+		      (cons 'transient default-directory))
     :display-buffer-action display-buffer-action))
 
 (defun deffy-revert (_ignore-auto _noconfirm)
