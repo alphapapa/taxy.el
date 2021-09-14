@@ -1,4 +1,4 @@
-;;; elispy.el --- Show symbols defined in an Elisp project  -*- lexical-binding: t; -*-
+;;; deffy.el --- Show definitions in an Elisp project/buffer  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  Free Software Foundation, Inc.
 
@@ -28,19 +28,19 @@
 
 (require 'taxy-magit-section)
 
-(defgroup elispy nil
+(defgroup deffy nil
   "Show an overview of definitions in an Emacs Lisp project or buffer."
   :group 'emacs-lisp-mode)
 
 ;;;; Keys
 
-(taxy-define-key-definer elispy-define-key elispy-keys "elispy"
+(taxy-define-key-definer deffy-define-key deffy-keys "deffy"
   "FIXME: Docstring.")
 
-(elispy-define-key file ()
-  (file-relative-name (plist-get item :file) elispy-directory))
+(deffy-define-key file ()
+  (file-relative-name (plist-get item :file) deffy-directory))
 
-(elispy-define-key type ()
+(deffy-define-key type ()
   (let* ((form (plist-get item :form))
 	 (type (pcase form
 		 (`(,(or 'defun 'cl-defun) . ,_)
@@ -56,24 +56,24 @@
     (when type
       (format "%s" type))))
 
-(defvar elispy-taxy-default-keys
+(defvar deffy-taxy-default-keys
   '(type file))
 
 ;;;; Columns
 
-(taxy-magit-section-define-column-definer "elispy")
+(taxy-magit-section-define-column-definer "deffy")
 
-(elispy-define-column "Definition" (:max-width 45 :face font-lock-function-name-face)
+(deffy-define-column "Definition" (:max-width 45 :face font-lock-function-name-face)
   (let ((form-defines (pcase-exhaustive (cadr (plist-get item :form))
 			((and (pred atom) it) it)
 			(`(quote ,it) it)
 			(`(,it . ,_) it))))
     (format "%s" form-defines)))
 
-(elispy-define-column "Type" (:max-width 25 :face font-lock-type-face)
+(deffy-define-column "Type" (:max-width 25 :face font-lock-type-face)
   (format "%s" (car (plist-get item :form))))
 
-(elispy-define-column "Docstring" (:max-width nil :face font-lock-doc-face)
+(deffy-define-column "Docstring" (:max-width nil :face font-lock-doc-face)
   (when-let ((docstring
 	      (pcase (plist-get item :form)
 		(`(,(or 'defun 'cl-defun 'defmacro 'cl-defmacro) ,_name ,_args
@@ -86,36 +86,36 @@
 		 (cl-find-if #'stringp (plist-get item :form))))))
     (replace-regexp-in-string "\n" "  " docstring)))
 
-(unless elispy-columns
+(unless deffy-columns
   ;; TODO: Automate this or document it
-  (setq-default elispy-columns
-		(get 'elispy-columns 'standard-value)))
+  (setq-default deffy-columns
+		(get 'deffy-columns 'standard-value)))
 
 ;;;; Variables
 
-(defvar elispy-mode-map
+(defvar deffy-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "RET") #'elispy-RET)
-    (define-key map [mouse-1] #'elispy-mouse-1)
+    (define-key map (kbd "RET") #'deffy-RET)
+    (define-key map [mouse-1] #'deffy-mouse-1)
     map))
 
-(defvar-local elispy-directory nil
+(defvar-local deffy-directory nil
   "Directory relative to which filenames should be expanded.")
 
-(defvar-local elispy-files nil
-  "Files shown in the current Elispy buffer.")
+(defvar-local deffy-files nil
+  "Files shown in the current Deffy buffer.")
 
-(defvar-local elispy-display-buffer-action nil
-  "Last-used display-buffer-action in the current Elispy buffer.")
+(defvar-local deffy-display-buffer-action nil
+  "Last-used display-buffer-action in the current Deffy buffer.")
 
 ;;;; Commands
 
 ;;;###autoload
-(cl-defun elispy (&key (project (or (project-current)
+(cl-defun deffy (&key (project (or (project-current)
 				    (cons 'transient default-directory)))
-		       (keys elispy-taxy-default-keys)
-		       (files elispy-files)
-		       (buffer-name (format "*Elispy: %s*"
+		       (keys deffy-taxy-default-keys)
+		       (files deffy-files)
+		       (buffer-name (format "*Deffy: %s*"
 					    (if files
 						(string-join (mapcar #'file-relative-name files) ", ")
 					      (file-name-nondirectory
@@ -127,8 +127,8 @@ buffer."
   (interactive (list :files (when current-prefix-arg
 			      (list (buffer-file-name)))
 		     :keys (if current-prefix-arg
-			       (remove 'file elispy-taxy-default-keys)
-			     elispy-taxy-default-keys)))
+			       (remove 'file deffy-taxy-default-keys)
+			     deffy-taxy-default-keys)))
   (let (format-table column-sizes)
     (cl-labels (;; (heading-face
 		;;  (depth) (list :inherit (list 'bufler-group (bufler-level-face depth))))
@@ -140,7 +140,7 @@ buffer."
 			 (apply #'make-taxy-magit-section
 				:make #'make-fn
 				:format-fn #'format-item
-				:heading-indent elispy-level-indent
+				:heading-indent deffy-level-indent
 				:visibility-fn visibility-fn
 				;; :heading-face-fn #'heading-face
 				args))
@@ -149,37 +149,37 @@ buffer."
       (when (get-buffer buffer-name)
 	(kill-buffer buffer-name))
       (with-current-buffer (get-buffer-create buffer-name)
-	(elispy-mode)
-	(setq-local elispy-taxy-default-keys keys
-		    elispy-directory (project-root project)
-		    elispy-files files
-		    elispy-display-buffer-action display-buffer-action
-		    default-directory elispy-directory)
+	(deffy-mode)
+	(setq-local deffy-taxy-default-keys keys
+		    deffy-directory (project-root project)
+		    deffy-files files
+		    deffy-display-buffer-action display-buffer-action
+		    default-directory deffy-directory)
 	(setf files (cl-reduce #'cl-remove-if-not (list #'elisp-file-p #'file-visible-p)
 			       :initial-value (or files (project-files project))
 			       :from-end t))
 	(cl-assert files nil "No files to show")
-	(let* ((forms (apply #'append (mapcar #'elispy--file-forms files)))
+	(let* ((forms (apply #'append (mapcar #'deffy--file-forms files)))
 	       (taxy (thread-last
 			 (make-fn
-			  :name "Elispy"
+			  :name "Deffy"
 			  :description (format "Definitions in %s:"
 					       (if files
 						   (string-join (mapcar #'file-relative-name files) ", ")
 						 (file-name-nondirectory
 						  (directory-file-name (project-root project)))))
-			  :take (taxy-make-take-function keys elispy-keys))
+			  :take (taxy-make-take-function keys deffy-keys))
 		       (taxy-fill forms)
 		       (taxy-sort* #'string< #'taxy-name)
 		       (taxy-sort #'string< #'form-name)))
 	       (taxy-magit-section-insert-indent-items nil)
 	       (inhibit-read-only t)
 	       (format-cons (taxy-magit-section-format-items
-			     elispy-columns elispy-column-formatters taxy)))
+			     deffy-columns deffy-column-formatters taxy)))
 	  (setf format-table (car format-cons)
 		column-sizes (cdr format-cons)
 		header-line-format (taxy-magit-section-format-header
-				    column-sizes elispy-column-formatters))
+				    column-sizes deffy-column-formatters))
 	  (save-excursion
 	    (taxy-magit-section-insert taxy :items 'last
 	      ;; :blank-between-depth bufler-taxy-blank-between-depth
@@ -187,7 +187,7 @@ buffer."
       (pop-to-buffer buffer-name display-buffer-action))))
 
 ;;;###autoload
-(cl-defun elispy-buffer (&optional (buffer (current-buffer))
+(cl-defun deffy-buffer (&optional (buffer (current-buffer))
 				   &key (display-buffer-action
 					 (when current-prefix-arg
 					   '(display-buffer-in-side-window
@@ -195,20 +195,20 @@ buffer."
 					     (window-parameters
 					      (window-side . right)
 					      (no-delete-other-windows . t))))))
-  "Show an Elispy view for BUFFER.
+  "Show an Deffy view for BUFFER.
 Interactively, with prefix, display in dedicated side window."
   (interactive)
-  (elispy :files (list (buffer-file-name buffer))
-	  :keys (remove 'file elispy-taxy-default-keys)
+  (deffy :files (list (buffer-file-name buffer))
+	  :keys (remove 'file deffy-taxy-default-keys)
 	  :display-buffer-action display-buffer-action))
 
-(defun elispy-revert (_ignore-auto _noconfirm)
-  "Revert current Elispy buffer."
+(defun deffy-revert (_ignore-auto _noconfirm)
+  "Revert current Deffy buffer."
   (interactive)
-  (elispy :display-buffer-action (or elispy-display-buffer-action
+  (deffy :display-buffer-action (or deffy-display-buffer-action
 				     '((display-buffer-same-window)))))
 
-(defun elispy-goto-form ()
+(defun deffy-goto-form ()
   "Go to form at point."
   (interactive)
   (pcase-let* (((map :file :pos) (oref (magit-current-section) value)))
@@ -222,26 +222,26 @@ Interactively, with prefix, display in dedicated side window."
     (goto-char pos)
     (backward-sexp 1)))
 
-(defun elispy-mouse-1 (event)
+(defun deffy-mouse-1 (event)
   (interactive "e")
   (mouse-set-point event)
-  (call-interactively #'elispy-RET))
+  (call-interactively #'deffy-RET))
 
-(defun elispy-RET ()
+(defun deffy-RET ()
   (interactive)
   (cl-typecase (oref (magit-current-section) value)
     (taxy-magit-section (call-interactively #'magit-section-cycle))
     (null nil)
-    (t (call-interactively #'elispy-goto-form))))
+    (t (call-interactively #'deffy-goto-form))))
 
-(define-derived-mode elispy-mode magit-section-mode "Elispy"
+(define-derived-mode deffy-mode magit-section-mode "Deffy"
   :global nil
-  (setq-local bookmark-make-record-function #'elispy--bookmark-make-record
-	      revert-buffer-function #'elispy-revert))
+  (setq-local bookmark-make-record-function #'deffy--bookmark-make-record
+	      revert-buffer-function #'deffy-revert))
 
 ;;;; Functions
 
-(cl-defun elispy--file-forms (file)
+(cl-defun deffy--file-forms (file)
   "Return forms defined in FILE."
   (with-temp-buffer
     (save-excursion
@@ -256,17 +256,18 @@ Interactively, with prefix, display in dedicated side window."
 
 (defvar bookmark-make-record-function)
 
-(defun elispy--bookmark-make-record ()
-  "Return a bookmark record for current Elispy buffer."
-  (list (concat "Elispy: %s" elispy-directory)
-	(cons 'directory elispy-directory)
-	(cons 'handler #'elispy--bookmark-handler)))
+(defun deffy--bookmark-make-record ()
+  "Return a bookmark record for current Deffy buffer."
+  (list (concat "Deffy: %s" deffy-directory)
+	(cons 'directory deffy-directory)
+	(cons 'handler #'deffy--bookmark-handler)))
 
-(defun elispy--bookmark-handler (record)
-  "Show Elispy buffer for bookmark RECORD."
+(defun deffy--bookmark-handler (record)
+  "Show Deffy buffer for bookmark RECORD."
   (pcase-let* ((`(,_ . ,(map directory)) record))
-    (elispy :project (project-current nil directory))
+    (deffy :project (project-current nil directory))
     (current-buffer)))
 
-(provide 'elispy)
-;;; elispy.el ends here
+(provide 'deffy)
+
+;;; deffy.el ends here
