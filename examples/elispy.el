@@ -103,8 +103,12 @@
 (defvar-local elispy-files nil
   "Files shown in the current Elispy buffer.")
 
+(defvar-local elispy-display-buffer-action nil
+  "Last-used display-buffer-action in the current Elispy buffer.")
+
 ;;;; Commands
 
+;;;###autoload
 (cl-defun elispy (&key (project (or (project-current)
 				    (cons 'transient default-directory)))
 		       (keys elispy-taxy-default-keys)
@@ -127,13 +131,14 @@ buffer."
     (cl-labels (;; (heading-face
 		;;  (depth) (list :inherit (list 'bufler-group (bufler-level-face depth))))
 		(elisp-file-p (file) (string-match-p (rx ".el" (optional ".gz") eos) file))
-		(file-visible-p (file) (not (string-match-p (rx bos ".") file)))
+		(file-visible-p
+		 (file) (not (string-match-p (rx bos ".") (file-name-nondirectory file))))
 		(format-item (item) (gethash item format-table))
 		(make-fn (&rest args)
 			 (apply #'make-taxy-magit-section
 				:make #'make-fn
 				:format-fn #'format-item
-				:heading-indent elispy-taxy-level-indent
+				:heading-indent elispy-level-indent
 				:visibility-fn visibility-fn
 				;; :heading-face-fn #'heading-face
 				args))
@@ -146,6 +151,7 @@ buffer."
 	(setq-local elispy-taxy-default-keys keys
 		    elispy-directory (project-root project)
 		    elispy-files files
+		    elispy-display-buffer-action display-buffer-action
 		    default-directory elispy-directory)
 	(setf files (cl-reduce #'cl-remove-if-not (list #'elisp-file-p #'file-visible-p)
 			       :initial-value (or files (project-files project))
@@ -165,32 +171,53 @@ buffer."
 		       (taxy-sort* #'string< #'taxy-name)
 		       (taxy-sort #'string< #'form-name)))
 	       (taxy-magit-section-insert-indent-items nil)
+	       (inhibit-read-only t)
 	       format-cons)
 	  (setf format-cons (taxy-magit-section-format-items
 			     elispy-columns elispy-column-formatters taxy)
 		format-table (car format-cons)
 		column-sizes (cdr format-cons)
-		;; NOTE: The first column is handled differently.
-		header-line-format (taxy-magit-section-format-header column-sizes elispy-column-formatters))
-	  (let ((inhibit-read-only t))
-	    (save-excursion
-	      (taxy-magit-section-insert taxy :items 'last
-		;; :initial-depth bufler-taxy-initial-depth
-		;; :blank-between-depth bufler-taxy-blank-between-depth
-		)))))
+		header-line-format (taxy-magit-section-format-header
+				    column-sizes elispy-column-formatters))
+	  (save-excursion
+	    (taxy-magit-section-insert taxy :items 'last
+	      ;; :blank-between-depth bufler-taxy-blank-between-depth
+	      :initial-depth bufler-taxy-initial-depth))))
       (pop-to-buffer buffer-name display-buffer-action))))
+
+;;;###autoload
+(cl-defun elispy-buffer (&optional (buffer (current-buffer))
+				   &key (display-buffer-action
+					 (when current-prefix-arg
+					   '(display-buffer-in-side-window
+					     (side . right)
+					     (window-parameters
+					      (window-side . right)
+					      (no-delete-other-windows . t))))))
+  "Show an Elispy view for BUFFER.
+Interactively, with prefix, display in dedicated side window."
+  (interactive)
+  (elispy :files (list (buffer-file-name buffer))
+	  :keys (remove 'file elispy-taxy-default-keys)
+	  :display-buffer-action display-buffer-action))
 
 (defun elispy-revert (_ignore-auto _noconfirm)
   "Revert current Elispy buffer."
   (interactive)
-  (elispy :display-buffer-action '((display-buffer-same-window))))
+  (elispy :display-buffer-action (or elispy-display-buffer-action
+				     '((display-buffer-same-window)))))
 
 (defun elispy-goto-form ()
   "Go to form at point."
   (interactive)
   (pcase-let* (((map :file :pos) (oref (magit-current-section) value)))
-    (pop-to-buffer (or (find-buffer-visiting file)
-		       (find-file-noselect file)))
+    (pop-to-buffer
+     (or (find-buffer-visiting file)
+	 (find-file-noselect file))
+     ;; FIXME: Uncomment this when <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=50576> is fixed.
+     ;; `(display-buffer-in-previous-window
+     ;;   (previous-window . ,(previous-window)))
+     )
     (goto-char pos)
     (backward-sexp 1)))
 
