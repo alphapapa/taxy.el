@@ -28,6 +28,10 @@
 
 (require 'taxy-magit-section)
 
+(cl-defstruct deffy-def
+  ;; Okay, the name of this struct is silly, but at least it's concise.
+  file pos form)
+
 (defgroup deffy nil
   "Show an overview of definitions in an Emacs Lisp project or buffer."
   :group 'emacs-lisp-mode)
@@ -38,21 +42,21 @@
   "FIXME: Docstring.")
 
 (deffy-define-key file ()
-  (file-relative-name (plist-get item :file) deffy-directory))
+  (file-relative-name (deffy-def-file item) deffy-directory))
 
 (deffy-define-key type ()
-  (let* ((form (plist-get item :form))
-	 (type (pcase form
-		 (`(,(or 'defun 'cl-defun) . ,_)
-		  (if (cl-find-if (lambda (form)
-				    (pcase form
-				      (`(interactive . ,_) t)))
-				  form)
-		      'command
-		    'function))
-		 (`(,(or 'defmacro 'cl-defmacro) . ,_)
-		  'macro)
-		 (`(,car . ,_) car))))
+  (pcase-let* (((cl-struct deffy-def form) item)
+	       (type (pcase form
+		       (`(,(or 'defun 'cl-defun) . ,_)
+			(if (cl-find-if (lambda (form)
+					  (pcase form
+					    (`(interactive . ,_) t)))
+					form)
+			    'command
+			  'function))
+		       (`(,(or 'defmacro 'cl-defmacro) . ,_)
+			'macro)
+		       (`(,car . ,_) car))))
     (when type
       (format "%s" type))))
 
@@ -64,18 +68,18 @@
 (taxy-magit-section-define-column-definer "deffy")
 
 (deffy-define-column "Definition" (:max-width 45 :face font-lock-function-name-face)
-  (let ((form-defines (pcase-exhaustive (cadr (plist-get item :form))
+  (let ((form-defines (pcase-exhaustive (cadr (deffy-def-form item))
 			((and (pred atom) it) it)
 			(`(quote ,it) it)
 			(`(,it . ,_) it))))
     (format "%s" form-defines)))
 
 (deffy-define-column "Type" (:max-width 25 :face font-lock-type-face)
-  (format "%s" (car (plist-get item :form))))
+  (format "%s" (car (deffy-def-form item))))
 
 (deffy-define-column "Docstring" (:max-width nil :face font-lock-doc-face)
   (when-let ((docstring
-	      (pcase (plist-get item :form)
+	      (pcase (deffy-def-form item)
 		(`(,(or 'defun 'cl-defun 'defmacro 'cl-defmacro) ,_name ,_args
 		   ,(and (pred stringp) docstring) . ,_)
 		 docstring)
@@ -83,7 +87,7 @@
 		   ,(and (pred stringp) docstring) . ,_)
 		 docstring)
 		(_ ;; Use the first string found, if any.
-		 (cl-find-if #'stringp (plist-get item :form))))))
+		 (cl-find-if #'stringp (deffy-def-form item))))))
     (replace-regexp-in-string "\n" "  " docstring)))
 
 (unless deffy-columns
@@ -112,15 +116,15 @@
 
 ;;;###autoload
 (cl-defun deffy (&key (project (or (project-current)
-				    (cons 'transient default-directory)))
-		       (keys deffy-taxy-default-keys)
-		       (files deffy-files)
-		       (buffer-name (format "*Deffy: %s*"
-					    (if files
-						(string-join (mapcar #'file-relative-name files) ", ")
-					      (file-name-nondirectory
-					       (directory-file-name (project-root project))))))
-		       visibility-fn display-buffer-action)
+				   (cons 'transient default-directory)))
+		      (keys deffy-taxy-default-keys)
+		      (files deffy-files)
+		      (buffer-name (format "*Deffy: %s*"
+					   (if files
+					       (string-join (mapcar #'file-relative-name files) ", ")
+					     (file-name-nondirectory
+					      (directory-file-name (project-root project))))))
+		      visibility-fn display-buffer-action)
   "Show definitions defined in PROJECT or FILES.
 Interactively, with PREFIX, show only definitions in current
 buffer."
@@ -144,8 +148,7 @@ buffer."
 				:visibility-fn visibility-fn
 				;; :heading-face-fn #'heading-face
 				args))
-		(form-name
-		 (form) (format "%s" (cl-second (plist-get form :form)))))
+		(def-name (def) (format "%s" (cl-second (deffy-def-form def)))))
       (when (get-buffer buffer-name)
 	(kill-buffer buffer-name))
       (with-current-buffer (get-buffer-create buffer-name)
@@ -171,7 +174,7 @@ buffer."
 			  :take (taxy-make-take-function keys deffy-keys))
 		       (taxy-fill forms)
 		       (taxy-sort* #'string< #'taxy-name)
-		       (taxy-sort #'string< #'form-name)))
+		       (taxy-sort #'string< #'def-name)))
 	       (taxy-magit-section-insert-indent-items nil)
 	       (inhibit-read-only t)
 	       (format-cons (taxy-magit-section-format-items
@@ -183,7 +186,7 @@ buffer."
 	  (save-excursion
 	    (taxy-magit-section-insert taxy :items 'last
 	      ;; :blank-between-depth bufler-taxy-blank-between-depth
-	      :initial-depth bufler-taxy-initial-depth))))
+	      :initial-depth 0))))
       (pop-to-buffer buffer-name display-buffer-action))))
 
 ;;;###autoload
@@ -211,7 +214,7 @@ Interactively, with prefix, display in dedicated side window."
 (defun deffy-goto-form ()
   "Go to form at point."
   (interactive)
-  (pcase-let* (((map :file :pos) (oref (magit-current-section) value)))
+  (pcase-let* (((cl-struct deffy-def file pos) (oref (magit-current-section) value)))
     (pop-to-buffer
      (or (find-buffer-visiting file)
 	 (find-file-noselect file))
@@ -250,7 +253,7 @@ Interactively, with prefix, display in dedicated side window."
 			  (read (current-buffer)))
 	     while form
 	     when (listp form)
-	     collect (list :file file :pos (point) :form form))))
+	     collect (make-deffy-def :file file :pos (point) :form form))))
 
 ;;;;; Bookmark support
 
