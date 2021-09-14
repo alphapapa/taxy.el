@@ -214,13 +214,14 @@ Interactively, with prefix, display in dedicated side window."
 (defun deffy-goto-form ()
   "Go to form at point."
   (interactive)
-  (pcase-let* (((cl-struct deffy-def file pos) (oref (magit-current-section) value)))
+  (pcase-let (((cl-struct deffy-def file pos)
+	       (oref (magit-current-section) value)))
     (pop-to-buffer
      (or (find-buffer-visiting file)
 	 (find-file-noselect file))
      ;; FIXME: Uncomment this when <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=50576> is fixed.
      ;; `(display-buffer-in-previous-window
-     ;;   (previous-window . ,(previous-window)))
+     ;;   (previous-window . ,(get-mru-window)))
      )
     (goto-char pos)
     (backward-sexp 1)))
