@@ -73,6 +73,7 @@ this does not disable indentation of section headings.")
   ;; performance, since slot accessors can't be optimized).
   (visibility-fn #'taxy-magit-section-visibility)
   (heading-face-fn (lambda (_depth) 'magit-section-heading))
+  ;; TODO: Rename heading-indent slot to level-indent.
   (heading-indent 2)
   (item-indent 2)
   (format-fn #'prin1-to-string))
@@ -281,9 +282,8 @@ PLIST may be a plist setting the following options:
 ;; I'm not sure which would perform better; I guess that with many lines, redisplay might take longer to use the
 ;; display properties for alignment than just having pre-aligned lines of text.
 
-;; TODO: Document this.
-
 (defun taxy-magit-section-format-items (columns formatters taxy)
+  ;; TODO: Document this.
   "Return a cons (table . column-sizes) for COLUMNS, FORMATTERS, and TAXY.
 COLUMNS is a list of column names, each of which should have an
 associated formatting function in FORMATTERS.
@@ -334,8 +334,8 @@ the items' values for each column."
 		 table)
 	(cons table column-sizes)))))
 
-;; TODO: Document this.
 (defun taxy-magit-section-format-header (column-sizes formatters)
+  ;; TODO: Document this.
   "Return header string for COLUMN-SIZES and FORMATTERS.
 COLUMN-SIZES should be the CDR of the cell returned by
 `taxy-magit-section-format-items'.  FORMATTERS should be the
