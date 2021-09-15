@@ -1,5 +1,6 @@
 #+TITLE: taxy.el Notes
 
+
 * Ideas
 
 ** Useful functions from [[id:8d9adb33-3f14-4667-a03e-bd5c6656d178][taxonomy Python package]]
@@ -12,3 +13,74 @@ It's specifically intended for biological taxonomies, but some of the functions 
 :PROPERTIES:
 :ID:       8d9adb33-3f14-4667-a03e-bd5c6656d178
 :END:
+
+* Checklists
+
+Copied from =org-ql=.
+
+** Commits
+:PROPERTIES:
+:ID:       d8d7b88e-5737-437e-af76-2253f8340de3
+:END:
+
+To complete before and after pushing any commit.
+
+*** Additions
+
+When committing an additional feature:
+
++  [ ] Make WIP branch
++  [ ] Check repo for closing issues
++  [ ] Check magit-todos list of items branched from master
++  [ ] Lint
++  [ ] Test
+     -  [ ] Locally
+     -  [ ] On different Emacs versions with GitHub CI (very important)
++  [ ] Update docs
++  [ ] Update changelog
+     -  [ ] Mention closing issues (optionally)
++  [ ] Commit
+     -  [ ] Mention closing issues in commit message
++  [ ] Merge to master
++  [ ] Push master
++  [ ] Close related tasks in this file
++  [ ] Delete WIP branch
+
+*** Fixes
+
+When committing a fix:
+
++  [ ] Check repo for closing issues
++  [ ] Check magit-todos list of items branched from master
++  [ ] Lint
++  [ ] Test
+     -  [ ] Locally
+     -  [ ] On different Emacs versions with GitHub CI (very important)
++  [ ] Update changelog
+     -  [ ] Mention changes
+     -  [ ] Mention closing issues
++  [ ] Commit
+     -  [ ] Mention closing issues in commit message
++  [ ] Push
++  [ ] Close related tasks in this file
+
+** Release template
+
++  [ ] Make WIP branch
++  [ ] =Meta= pre-release commit
+     -  [ ] Update version numbers
+          +  [ ] =taxy.el=
+          +  [ ] =README.org=
++  [ ] Complete [[id:d8d7b88e-5737-437e-af76-2253f8340de3][commit checklist]]
++  [ ] Changelog entry
++  [ ] Merge to stable branch
+     -  [ ] Non-fast-forward merge WIP branch into stable branch
+     -  [ ] Tag and sign merge commit
++  [ ] Push stable branch
++  [ ] Push tags
++  [ ] Merge to master or make stable branch
++  [ ] Push master/stable
++  [ ] Delete WIP branch
+
+** Archive
+
