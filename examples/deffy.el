@@ -284,18 +284,17 @@ Interactively, with prefix, display in dedicated side window."
 
 (defvar bookmark-make-record-function)
 
-;; FIXME: Also save and use files list.
-
 (defun deffy--bookmark-make-record ()
   "Return a bookmark record for current Deffy buffer."
   (list (concat "Deffy: %s" deffy-directory)
 	(cons 'directory deffy-directory)
+	(cons 'files deffy-files)
 	(cons 'handler #'deffy--bookmark-handler)))
 
 (defun deffy--bookmark-handler (record)
   "Show Deffy buffer for bookmark RECORD."
-  (pcase-let* ((`(,_ . ,(map directory)) record))
-    (deffy :project (project-current nil directory))
+  (pcase-let* ((`(,_ . ,(map directory files)) record))
+    (deffy :files files :project (project-current nil directory))
     (current-buffer)))
 
 (provide 'deffy)
