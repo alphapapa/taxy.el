@@ -338,7 +338,8 @@ defined with a definer defined by `taxy-define-key-definer')."
                            . ,(and args (guard (pcase (car args)
                                                  ((or (pred keywordp)
                                                       (and (pred atom)
-                                                           (pred (not symbolp)))
+                                                           ;; SOMEDAY: Use (not symbolp) when depending on Emacs 28.1.
+                                                           (pred (lambda (it) (not (symbolp it)))))
 						      `(quote ,_))
                                                   t)))))
                          ;; Key with args: replace with a lambda that
