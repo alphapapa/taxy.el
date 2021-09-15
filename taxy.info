@@ -482,8 +482,10 @@ File: README.info,  Node: Applications,  Prev: Sporty (understanding completely)
 ================
 
 Some example applications may be found in the examples directory
-(examples/README.org):
+(examples/):
 
+   • Deffy shows top-level definitions and forms in an Elisp project or
+     file:
    • Diredy rearranges a Dired buffer into groups by file size and type:
    • Musicy shows a music library with tracks categorized by genre,
      artist, year, album, etc:
@@ -1276,36 +1278,36 @@ Node: Numbery (starting basically)2404
 Node: Lettery (filling incrementally)8165
 Node: Sporty (understanding completely)10679
 Node: Applications16666
-Node: Installation17066
-Node: Usage17379
-Node: Reusable taxys19516
-Node: Threading macros23669
-Node: Modifying filled taxys24208
-Node: Dynamic taxys25026
-Node: Multi-level dynamic taxys27675
-Node: "Chains" of independent multi-level dynamic taxys29868
-Node: Defining a classification domain-specific language32799
-Node: Magit section36962
-Node: Changelog37641
-Node: 07-pre37844
-Node: 0637950
-Node: Additions38065
-Node: 0539411
-Node: Additions (1)39546
-Node: Fixes40652
-Node: 0440806
-Node: 0341028
-Node: Changes41157
-Node: Fixes (1)41520
-Node: 0241955
-Node: Changes (1)42124
-Node: Additions (2)42416
-Node: Fixes (2)43275
-Node: 0143529
-Node: Development43628
-Node: Copyright assignment43834
-Node: Credits44422
-Node: License44612
+Node: Installation17141
+Node: Usage17454
+Node: Reusable taxys19591
+Node: Threading macros23744
+Node: Modifying filled taxys24283
+Node: Dynamic taxys25101
+Node: Multi-level dynamic taxys27750
+Node: "Chains" of independent multi-level dynamic taxys29943
+Node: Defining a classification domain-specific language32874
+Node: Magit section37037
+Node: Changelog37716
+Node: 07-pre37919
+Node: 0638025
+Node: Additions38140
+Node: 0539486
+Node: Additions (1)39621
+Node: Fixes40727
+Node: 0440881
+Node: 0341103
+Node: Changes41232
+Node: Fixes (1)41595
+Node: 0242030
+Node: Changes (1)42199
+Node: Additions (2)42491
+Node: Fixes (2)43350
+Node: 0143604
+Node: Development43703
+Node: Copyright assignment43909
+Node: Credits44497
+Node: License44687
 
 End Tag Table
 

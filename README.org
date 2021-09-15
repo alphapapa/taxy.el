@@ -410,8 +410,10 @@ Ah, now I understand.
 
 ** Applications
 
-Some example applications may be found in the [[file:examples/README.org][examples directory]]:
+Some example applications may be found in the [[file:examples/][examples directory]]:
 
++  Deffy shows top-level definitions and forms in an Elisp project or file:
+   [[images/deffy.png]]
 +  Diredy rearranges a Dired buffer into groups by file size and type:
    [[images/diredy.png]]
 +  Musicy shows a music library with tracks categorized by genre, artist, year, album, etc:
