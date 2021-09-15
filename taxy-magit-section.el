@@ -180,10 +180,23 @@ Default visibility function for
 
 ;;;;; Macros
 
-;; TODO: Document this.
-
 (cl-defmacro taxy-magit-section-define-column-definer (prefix &key columns-variable-docstring)
-  "FIXME: Docstring."
+  "Define a column-defining macro.
+The macro is named \"PREFIX-define-column\".
+
+These customization options are defined, which are to be used in
+a `taxy-magit-section' in its `:heading-indent' and
+`:item-indent' slots, respectively:
+
+  - PREFIX-level-indent
+  - PREFIX-item-indent
+
+As well as these variables, which are to be passed to
+`taxy-magit-section-format-items':
+
+  - PREFIX-columns
+  - PREFIX-column-formatters"
+  ;; TODO: Document this.
   (let* ((definer-name (intern (format "%s-define-column" prefix)))
 	 (definer-docstring (format "Define a column formatting function with NAME.
 NAME should be a string.  BODY should return a string or nil.  In
