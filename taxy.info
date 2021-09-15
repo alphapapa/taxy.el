@@ -50,10 +50,10 @@ Examples
 
 Usage
 
-* Dynamic taxys::
 * Reusable taxys::
 * Threading macros::
 * Modifying filled taxys::
+* Dynamic taxys::
 * Magit section::
 
 Dynamic taxys
@@ -535,16 +535,151 @@ replace items in a taxy with, e.g.  a more useful representation.
 
 * Menu:
 
-* Dynamic taxys::
 * Reusable taxys::
 * Threading macros::
 * Modifying filled taxys::
+* Dynamic taxys::
 * Magit section::
 
 
-File: README.info,  Node: Dynamic taxys,  Next: Reusable taxys,  Up: Usage
+File: README.info,  Node: Reusable taxys,  Next: Threading macros,  Up: Usage
 
-3.1 Dynamic taxys
+3.1 Reusable taxys
+==================
+
+Since taxys are structs, they may be stored in variables and used in
+other structs (being sure to copy the root taxy with ‘taxy-emptied’
+before filling).  For example, this shows using ‘taxy’ to classify
+Matrix rooms in Ement.el (https://github.com/alphapapa/ement.el):
+
+     (defun ement-roomy-buffer (room)
+       (alist-get 'buffer (ement-room-local room)))
+
+     (defvar ement-roomy-unread
+       (make-taxy :name "Unread"
+                  :predicate (lambda (room)
+                               (buffer-modified-p (ement-roomy-buffer room)))))
+
+     (defvar ement-roomy-opened
+       (make-taxy :name "Opened"
+                  :description "Rooms with buffers"
+                  :predicate #'ement-roomy-buffer
+                  :taxys (list ement-roomy-unread
+                               (make-taxy))))
+
+     (defvar ement-roomy-closed
+       (make-taxy :name "Closed"
+                  :description "Rooms without buffers"
+                  :predicate (lambda (room)
+                               (not (ement-roomy-buffer room)))))
+
+     (defvar ement-roomy
+       (make-taxy
+        :name "Ement Rooms"
+        :taxys (list (make-taxy
+                      :name "Direct"
+                      :description "Direct messaging rooms"
+                      :predicate (lambda (room)
+                                   (ement-room--direct-p room ement-session))
+                      :taxys (list ement-roomy-opened
+                                   ement-roomy-closed))
+                     (make-taxy
+                      :name "Non-direct"
+                      :description "Group chat rooms"
+                      :taxys (list ement-roomy-opened
+                                   ement-roomy-closed)))))
+
+   Note how the taxys defined in the first three variables are used in
+subsequent taxys.  As well, the ‘ement-roomy-opened’ taxy has an
+"anonymous" taxy, which collects any rooms that aren’t collected by its
+sibling taxy (otherwise those objects would be collected into the
+parent, "Opened" taxy, which may not always be the most useful way to
+present the objects).
+
+   Using those defined taxys, we then fill the ‘ement-roomy’ taxy with
+all of the rooms in the user’s session, and then use ‘taxy-mapcar’ to
+replace the room structs with useful representations for display:
+
+     (taxy-plain
+      (taxy-mapcar (lambda (room)
+                     (list (ement-room--room-display-name room)
+                           (ement-room-id room)))
+        (taxy-fill (ement-session-rooms ement-session)
+                   (taxy-emptied ement-roomy))))
+
+   This produces:
+
+     ("Ement Rooms"
+      (("Direct" "Direct messaging rooms"
+        (("Opened" "Rooms with buffers"
+          (("Unread"
+            (("Lars Ingebrigtsen" "!nope:gnus.org")))))
+         ("Closed" "Rooms without buffers"
+          (("John Wiegley" "!not-really:newartisans.com")
+           ("Eli Zaretskii" "!im-afraid-not:gnu.org")))))
+       ("Non-direct" "Group chat rooms"
+        (("Opened" "Rooms with buffers"
+          (("Unread"
+            (("Emacs" "!WfZsmtnxbxTdoYPkaT:greyface.org")
+             ("#emacs" "!KuaCUVGoCiunYyKEpm:libera.chat")))
+           ;; The non-unread buffers in the "anonymous" taxy.
+           ((("magit/magit" "!HZYimOcmEAsAxOcgpE:gitter.im")
+             ("Ement.el" "!NicAJNwJawmHrEhqZs:matrix.org")
+             ("#emacsconf" "!UjTTDnYmSAslLTtMCF:libera.chat")
+             ("Emacs Matrix Client" "!ZrZoyXEyFrzcBZKNis:matrix.org")
+             ("org-mode" "!rUhEinythPhVTdddsb:matrix.org")
+             ("This Week in Matrix (TWIM)" "!xYvNcQPhnkrdUmYczI:matrix.org")))))
+         ("Closed" "Rooms without buffers"
+          (("#matrix-spec" "!NasysSDfxKxZBzJJoE:matrix.org")
+           ("#commonlisp" "!IiGsrmKRHzpupHRaKS:libera.chat")
+           ("Matrix HQ" "!OGEhHVWSdvArJzumhm:matrix.org")
+           ("#lisp" "!czLxhhEegTEGNKUBgo:libera.chat")
+           ("Emacs" "!gLamGIXTWBaDFfhEeO:matrix.org")
+           ("#matrix-dev:matrix.org" "!jxlRxnrZCsjpjDubDX:matrix.org")))))))
+
+
+File: README.info,  Node: Threading macros,  Next: Modifying filled taxys,  Prev: Reusable taxys,  Up: Usage
+
+3.2 Threading macros
+====================
+
+If you happen to like macros, ‘taxy’ works well with threading (i.e.
+‘thread-last’ or ‘->>’):
+
+     (thread-last ement-roomy
+       taxy-emptied
+       (taxy-fill (ement-session-rooms ement-session))
+       (taxy-mapcar (lambda (room)
+                      (list (ement-room--room-display-name room)
+                            (ement-room-id room))))
+       taxy-plain)
+
+
+File: README.info,  Node: Modifying filled taxys,  Next: Dynamic taxys,  Prev: Threading macros,  Up: Usage
+
+3.3 Modifying filled taxys
+==========================
+
+Sometimes it’s necessary to modify a taxy after filling it with objects,
+e.g.  to sort the items and/or the sub-taxys.  For this, use the
+function ‘taxy-mapc-taxys’ (a.k.a.  ‘taxy-mapc*’).  For example, in the
+sample application musicy.el (examples/musicy.el), the taxys and their
+items are sorted after filling, like so:
+
+     (defun musicy-files (files)
+       (thread-last musicy-taxy
+         taxy-emptied
+         (taxy-fill files)
+         ;; Sort sub-taxys by their name.
+         (taxy-sort* #'string< #'taxy-name)
+         ;; Sort sub-taxys' items by name.
+         (taxy-sort #'string< #'identity)
+         taxy-magit-section-pp))
+
+
+File: README.info,  Node: Dynamic taxys,  Next: Magit section,  Prev: Modifying filled taxys,  Up: Usage
+
+3.4 Dynamic taxys
 =================
 
    • • • 
@@ -611,7 +746,7 @@ and it produces this taxonomy of buffers:
 
 File: README.info,  Node: Multi-level dynamic taxys,  Next: "Chains" of independent multi-level dynamic taxys,  Up: Dynamic taxys
 
-3.1.1 Multi-level dynamic taxys
+3.4.1 Multi-level dynamic taxys
 -------------------------------
 
 Of course, the point of taxonomies is that they aren’t restricted to a
@@ -666,7 +801,7 @@ directory.
 
 File: README.info,  Node: "Chains" of independent multi-level dynamic taxys,  Next: Defining a classification domain-specific language,  Prev: Multi-level dynamic taxys,  Up: Dynamic taxys
 
-3.1.2 "Chains" of independent, multi-level dynamic taxys
+3.4.2 "Chains" of independent, multi-level dynamic taxys
 --------------------------------------------------------
 
 _Naming things is hard._
@@ -738,7 +873,7 @@ use:
 
 File: README.info,  Node: Defining a classification domain-specific language,  Prev: "Chains" of independent multi-level dynamic taxys,  Up: Dynamic taxys
 
-3.1.3 Defining a classification domain-specific language
+3.4.3 Defining a classification domain-specific language
 --------------------------------------------------------
 
 When writing a larger Taxy-based application, it may be necessary to
@@ -855,142 +990,7 @@ function so that users can pass their own list of keys:
           ("Soccer" "Tennis" "Football" "Baseball"))))))
 
 
-File: README.info,  Node: Reusable taxys,  Next: Threading macros,  Prev: Dynamic taxys,  Up: Usage
-
-3.2 Reusable taxys
-==================
-
-Since taxys are structs, they may be stored in variables and used in
-other structs (being sure to copy the root taxy with ‘taxy-emptied’
-before filling).  For example, this shows using ‘taxy’ to classify
-Matrix rooms in Ement.el (https://github.com/alphapapa/ement.el):
-
-     (defun ement-roomy-buffer (room)
-       (alist-get 'buffer (ement-room-local room)))
-
-     (defvar ement-roomy-unread
-       (make-taxy :name "Unread"
-                  :predicate (lambda (room)
-                               (buffer-modified-p (ement-roomy-buffer room)))))
-
-     (defvar ement-roomy-opened
-       (make-taxy :name "Opened"
-                  :description "Rooms with buffers"
-                  :predicate #'ement-roomy-buffer
-                  :taxys (list ement-roomy-unread
-                               (make-taxy))))
-
-     (defvar ement-roomy-closed
-       (make-taxy :name "Closed"
-                  :description "Rooms without buffers"
-                  :predicate (lambda (room)
-                               (not (ement-roomy-buffer room)))))
-
-     (defvar ement-roomy
-       (make-taxy
-        :name "Ement Rooms"
-        :taxys (list (make-taxy
-                      :name "Direct"
-                      :description "Direct messaging rooms"
-                      :predicate (lambda (room)
-                                   (ement-room--direct-p room ement-session))
-                      :taxys (list ement-roomy-opened
-                                   ement-roomy-closed))
-                     (make-taxy
-                      :name "Non-direct"
-                      :description "Group chat rooms"
-                      :taxys (list ement-roomy-opened
-                                   ement-roomy-closed)))))
-
-   Note how the taxys defined in the first three variables are used in
-subsequent taxys.  As well, the ‘ement-roomy-opened’ taxy has an
-"anonymous" taxy, which collects any rooms that aren’t collected by its
-sibling taxy (otherwise those objects would be collected into the
-parent, "Opened" taxy, which may not always be the most useful way to
-present the objects).
-
-   Using those defined taxys, we then fill the ‘ement-roomy’ taxy with
-all of the rooms in the user’s session, and then use ‘taxy-mapcar’ to
-replace the room structs with useful representations for display:
-
-     (taxy-plain
-      (taxy-mapcar (lambda (room)
-                     (list (ement-room--room-display-name room)
-                           (ement-room-id room)))
-        (taxy-fill (ement-session-rooms ement-session)
-                   (taxy-emptied ement-roomy))))
-
-   This produces:
-
-     ("Ement Rooms"
-      (("Direct" "Direct messaging rooms"
-        (("Opened" "Rooms with buffers"
-          (("Unread"
-            (("Lars Ingebrigtsen" "!nope:gnus.org")))))
-         ("Closed" "Rooms without buffers"
-          (("John Wiegley" "!not-really:newartisans.com")
-           ("Eli Zaretskii" "!im-afraid-not:gnu.org")))))
-       ("Non-direct" "Group chat rooms"
-        (("Opened" "Rooms with buffers"
-          (("Unread"
-            (("Emacs" "!WfZsmtnxbxTdoYPkaT:greyface.org")
-             ("#emacs" "!KuaCUVGoCiunYyKEpm:libera.chat")))
-           ;; The non-unread buffers in the "anonymous" taxy.
-           ((("magit/magit" "!HZYimOcmEAsAxOcgpE:gitter.im")
-             ("Ement.el" "!NicAJNwJawmHrEhqZs:matrix.org")
-             ("#emacsconf" "!UjTTDnYmSAslLTtMCF:libera.chat")
-             ("Emacs Matrix Client" "!ZrZoyXEyFrzcBZKNis:matrix.org")
-             ("org-mode" "!rUhEinythPhVTdddsb:matrix.org")
-             ("This Week in Matrix (TWIM)" "!xYvNcQPhnkrdUmYczI:matrix.org")))))
-         ("Closed" "Rooms without buffers"
-          (("#matrix-spec" "!NasysSDfxKxZBzJJoE:matrix.org")
-           ("#commonlisp" "!IiGsrmKRHzpupHRaKS:libera.chat")
-           ("Matrix HQ" "!OGEhHVWSdvArJzumhm:matrix.org")
-           ("#lisp" "!czLxhhEegTEGNKUBgo:libera.chat")
-           ("Emacs" "!gLamGIXTWBaDFfhEeO:matrix.org")
-           ("#matrix-dev:matrix.org" "!jxlRxnrZCsjpjDubDX:matrix.org")))))))
-
-
-File: README.info,  Node: Threading macros,  Next: Modifying filled taxys,  Prev: Reusable taxys,  Up: Usage
-
-3.3 Threading macros
-====================
-
-If you happen to like macros, ‘taxy’ works well with threading (i.e.
-‘thread-last’ or ‘->>’):
-
-     (thread-last ement-roomy
-       taxy-emptied
-       (taxy-fill (ement-session-rooms ement-session))
-       (taxy-mapcar (lambda (room)
-                      (list (ement-room--room-display-name room)
-                            (ement-room-id room))))
-       taxy-plain)
-
-
-File: README.info,  Node: Modifying filled taxys,  Next: Magit section,  Prev: Threading macros,  Up: Usage
-
-3.4 Modifying filled taxys
-==========================
-
-Sometimes it’s necessary to modify a taxy after filling it with objects,
-e.g.  to sort the items and/or the sub-taxys.  For this, use the
-function ‘taxy-mapc-taxys’ (a.k.a.  ‘taxy-mapc*’).  For example, in the
-sample application musicy.el (examples/musicy.el), the taxys and their
-items are sorted after filling, like so:
-
-     (defun musicy-files (files)
-       (thread-last musicy-taxy
-         taxy-emptied
-         (taxy-fill files)
-         ;; Sort sub-taxys by their name.
-         (taxy-sort* #'string< #'taxy-name)
-         ;; Sort sub-taxys' items by name.
-         (taxy-sort #'string< #'identity)
-         taxy-magit-section-pp))
-
-
-File: README.info,  Node: Magit section,  Prev: Modifying filled taxys,  Up: Usage
+File: README.info,  Node: Magit section,  Prev: Dynamic taxys,  Up: Usage
 
 3.5 Magit section
 =================
@@ -1253,33 +1253,33 @@ Node: Sporty (understanding completely)10410
 Node: Applications16397
 Node: Installation16797
 Node: Usage17110
-Node: Dynamic taxys19247
-Node: Multi-level dynamic taxys21866
-Node: "Chains" of independent multi-level dynamic taxys24059
-Node: Defining a classification domain-specific language26990
-Node: Reusable taxys31152
-Node: Threading macros35327
-Node: Modifying filled taxys35866
-Node: Magit section36684
-Node: Changelog37372
-Node: 06-pre37564
-Node: Additions37676
-Node: 0538514
-Node: Additions (1)38653
-Node: Fixes39759
-Node: 0439913
-Node: 0340135
-Node: Changes40264
-Node: Fixes (1)40627
-Node: 0241062
-Node: Changes (1)41231
-Node: Additions (2)41523
-Node: Fixes (2)42382
-Node: 0142636
-Node: Development42735
-Node: Copyright assignment42941
-Node: Credits43529
-Node: License43719
+Node: Reusable taxys19247
+Node: Threading macros23400
+Node: Modifying filled taxys23939
+Node: Dynamic taxys24757
+Node: Multi-level dynamic taxys27406
+Node: "Chains" of independent multi-level dynamic taxys29599
+Node: Defining a classification domain-specific language32530
+Node: Magit section36692
+Node: Changelog37371
+Node: 06-pre37563
+Node: Additions37675
+Node: 0538513
+Node: Additions (1)38652
+Node: Fixes39758
+Node: 0439912
+Node: 0340134
+Node: Changes40263
+Node: Fixes (1)40626
+Node: 0241061
+Node: Changes (1)41230
+Node: Additions (2)41522
+Node: Fixes (2)42381
+Node: 0142635
+Node: Development42734
+Node: Copyright assignment42940
+Node: Credits43528
+Node: License43718
 
 End Tag Table
 
