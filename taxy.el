@@ -336,8 +336,11 @@ defined with a definer defined by `taxy-define-key-definer')."
                                            (funcall fn buffer))
                               (or ,name ""))))
                         (`(,(and (pred symbolp) fn)
-                           . ,(and args (guard (cl-typecase (car args)
-                                                 ((or keyword (and atom (not symbol)))
+                           . ,(and args (guard (pcase (car args)
+                                                 ((or (pred keywordp)
+                                                      (and (pred atom)
+                                                           (pred (not symbolp)))
+						      `(quote ,_))
                                                   t)))))
                          ;; Key with args: replace with a lambda that
                          ;; calls that key's function with given args.
