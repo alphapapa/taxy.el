@@ -212,7 +212,6 @@ PLIST may be a plist setting the following options:
 	 (column-formatters-variable-name (intern (format "%s-column-formatters" prefix)))
 	 (column-formatters-variable-docstring (format "Column formatters defined by `%s'."
 						       definer-name)))
-    ;; TODO: Add defined columns to customization type for the columns-variable.
     `(let ((columns-variable ',columns-variable-name)
 	   (column-formatters-variable ',column-formatters-variable-name))
        (defcustom ,level-indent-variable-name 2
@@ -266,10 +265,14 @@ PLIST may be a plist setting the following options:
 		    #',fn-name)
 	      (setf (alist-get 'align (alist-get ,name ,column-formatters-variable nil nil #'equal))
 		    ,(plist-get plist :align))
+	      ;; Add column to the columns-variable's standard value.
 	      (unless (member ,name (get ',columns-variable 'standard-value))
 		(setf (get ',columns-variable 'standard-value)
 		      (append (get ',columns-variable 'standard-value)
-			      (list ,name))))))))))
+			      (list ,name))))
+	      ;; Add column to the columns-variable's custom type.
+	      (cl-pushnew ,name (get ',columns-variable 'custom-type)
+			  :test #'equal)))))))
 
 ;;;;; Functions
 
