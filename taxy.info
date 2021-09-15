@@ -1062,6 +1062,9 @@ File: README.info,  Node: Additions,  Up: 06-pre
           indentation to each item.  (Used to disable that behavior when
           items are pre-indented strings, e.g.  as formatted by
           ‘taxy-magit-section-format-items’.)
+   • Example application ‘deffy’, which shows an overview of top-level
+     definitions and forms in an Elisp project or file.  (Likely to be
+     published as a separate package later.)
 
 
 File: README.info,  Node: 05,  Next: 04,  Prev: 06-pre,  Up: Changelog
@@ -1270,22 +1273,22 @@ Node: Magit section36693
 Node: Changelog37372
 Node: 06-pre37564
 Node: Additions37676
-Node: 0538833
-Node: Additions (1)38972
-Node: Fixes40078
-Node: 0440232
-Node: 0340454
-Node: Changes40583
-Node: Fixes (1)40946
-Node: 0241381
-Node: Changes (1)41550
-Node: Additions (2)41842
-Node: Fixes (2)42701
-Node: 0142955
-Node: Development43054
-Node: Copyright assignment43260
-Node: Credits43848
-Node: License44038
+Node: 0539026
+Node: Additions (1)39165
+Node: Fixes40271
+Node: 0440425
+Node: 0340647
+Node: Changes40776
+Node: Fixes (1)41139
+Node: 0241574
+Node: Changes (1)41743
+Node: Additions (2)42035
+Node: Fixes (2)42894
+Node: 0143148
+Node: Development43247
+Node: Copyright assignment43453
+Node: Credits44041
+Node: License44231
 
 End Tag Table
 

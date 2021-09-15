@@ -892,6 +892,7 @@ Note that while =taxy-magit-section.el= is installed with the =taxy= package, th
 + Table-like, column-based formatting system for ~taxy-magit-section~:
   + Function ~taxy-magit-section-format-items~, which formats items by columns.
   + Variable ~taxy-magit-section-insert-indent-items~, which controls whether ~taxy-magit-section-insert~ applies indentation to each item.  (Used to disable that behavior when items are pre-indented strings, e.g. as formatted by ~taxy-magit-section-format-items~.)
++ Example application =deffy=, which shows an overview of top-level definitions and forms in an Elisp project or file.  (Likely to be published as a separate package later.)
 
 ** 0.5
 
