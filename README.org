@@ -16,6 +16,8 @@ Helpful features include:
 
 +  Dynamic taxonomies :: Objects may be classified into hierarchies automatically defined at runtime based on their attributes.
 +  Reusable taxonomies :: Taxonomy definitions may be stored in variables and reused in other taxonomies' descendant groups.
++  Classification domain-specific language :: Easily define a custom DSL used to classify items dynamically (which can be extended by users).
++  Flexible table view :: Based on =magit-section=, with easily defined columns (also extendable by users).
 
 * Contents                                                         :noexport:
 :PROPERTIES:
