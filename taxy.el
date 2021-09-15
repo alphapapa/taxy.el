@@ -321,7 +321,8 @@ defined with a definer defined by `taxy-define-key-definer')."
                 (quote-fn
                  (fn) (pcase fn
                         ((pred symbolp) (expand-form fn))
-                        (`(,(and (or 'and 'or 'not) boolean) . ,(and args (map :name :keys)))
+                        (`(,(and (or 'and 'or 'not) boolean)
+                           . ,(and args (map (:name name) (:keys keys))))
                          ;; Well, that pcase expression isn't confusing at all...  ;)
                          ;;  (cl-assert name t "Boolean key functions require a NAME")
                          ;;  (cl-assert keys t "Boolean key functions require KEYS")
