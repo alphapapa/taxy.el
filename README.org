@@ -456,6 +456,7 @@ To return a taxy in a more human-readable format (with only relevant fields incl
 :CONTENTS:
 - [[#multi-level-dynamic-taxys][Multi-level dynamic taxys]]
 - [[#chains-of-independent-multi-level-dynamic-taxys]["Chains" of independent, multi-level dynamic taxys]]
+- [[#defining-a-classification-domain-specific-language][Defining a classification domain-specific language]]
 :END:
 
 You may not always know in advance what taxonomy a set of objects fits into, so =taxy= lets you add taxys dynamically by using the ~:take~ function to add a taxy when an object is "taken into" a parent taxy's items.  For example, you could dynamically classify buffers by their major mode like so:
@@ -622,6 +623,118 @@ Now let's fill the taxy with the sports and format it:
       (non-disc
        ("Soccer" "Tennis" "Football" "Baseball"))))))
 #+END_SRC
+
+*** Defining a classification domain-specific language
+
+When writing a larger Taxy-based application, it may be necessary to define a number of key functions that would be unwieldy to manage in a ~cl-labels~ form.  For this case, Taxy provides the macro ~taxy-define-key-definer~ to easily define Taxy key functions in an application library.  Those functions are then passed to the function ~taxy-make-take-function~ at runtime, along with a list of keys being used to classify items.  Using these allows key functions to be defined in top-level forms, and it allows an application to be extended by users' defining additional key functions in their configuration.
+
+Extending the previous ~sporty~ example, let's redefine its key functions using ~taxy-define-key-definer~:
+
+#+begin_src elisp :exports code :results silent :lexical t
+  (taxy-define-key-definer sporty-define-key
+    sporty-keys "sporty"
+    "Define a `sporty' key function.")
+
+  (sporty-define-key disc-based ()
+    (if (member 'disc (sport-uses item))
+        "Disc-based"
+      "Non-disc-based"))
+
+  (sporty-define-key uses (&optional thing)
+    (pcase thing
+      (`nil (sport-uses item))
+      (_ (when (cl-typecase (sport-uses item)
+                 (symbol (equal thing (sport-uses item)))
+                 (list (member thing (sport-uses item))))
+           thing))))
+
+  (sporty-define-key venue (&optional place)
+    (pcase place
+      (`nil (sport-venue item))
+      (_ (when (equal place (sport-venue item))
+           (sport-venue item)))))
+#+end_src
+
+Now we'll define the default keys to use when classifying items.  This list is equivalent to the one passed to ~taxy-take-keyed~ in the previous, "Chains" example.
+
+#+begin_src elisp :exports code :results silent :lexical t
+  (defvar sporty-default-keys
+    '(
+      ((venue 'outdoor)
+       disc-based)
+
+      ((venue 'indoor)
+       (uses 'ball)
+       (uses 'disc)
+       (uses 'glove)
+       (uses 'racket))))
+#+end_src
+
+Finally, rather than using a pre-made taxy struct, we make one at runtime, making the ~:take~ function with ~taxy-make-take-function~.
+
+#+begin_src elisp :exports both :results code :lexical t
+  (let ((taxy (make-taxy
+               :name "Sporty (DSL)"
+               :take (taxy-make-take-function sporty-default-keys
+                                              sporty-keys))))
+    (thread-last taxy
+      (taxy-fill sports)
+      (taxy-mapcar #'sport-name)
+      taxy-plain))
+#+end_src
+
+Which gives us:
+
+#+RESULTS:
+#+begin_src elisp
+  ("Sporty (DSL)"
+   ((indoor
+     ((ball
+       ("Volleyball" "Basketball")
+       ((glove
+         ("Handball"))
+        (racket
+         ("Racquetball"))))))
+    (outdoor
+     (("Disc-based"
+       ("Ultimate" "Disc golf"))
+      ("Non-disc-based"
+       ("Soccer" "Tennis" "Football" "Baseball"))))))
+#+end_src
+
+As you can see, the result is the same as that in the previous example, but we've defined a kind of DSL for grouping sports in a modular, extendable way.
+
+This also allows the grouping keys to be easily changed at runtime, producing a different result.  For example, we could group sports by, first, whether they use a ball, and then by venue.  Let's do this in a function so that users can pass their own list of keys:
+
+#+begin_src elisp :exports both :results code :lexical t
+  (cl-defun sporty-classify (sports &key (keys sporty-default-keys))
+    (declare (indent defun))
+    (let* ((taxy (make-taxy
+                  :name "Sporty (DSL)"
+                  :take (taxy-make-take-function keys
+                                                 sporty-keys))))
+      (thread-last taxy
+        (taxy-fill sports)
+        (taxy-mapcar #'sport-name)
+        taxy-plain)))
+
+  (sporty-classify sports
+    :keys '((uses 'ball) venue))
+#+end_src
+
+And this produces:
+
+#+RESULTS:
+#+begin_src elisp
+  ("Sporty (DSL)"
+   ((outdoor
+     ("Ultimate" "Disc golf"))
+    (ball
+     ((indoor
+       ("Volleyball" "Handball" "Racquetball" "Basketball"))
+      (outdoor
+       ("Soccer" "Tennis" "Football" "Baseball"))))))
+#+end_src
 
 ** Reusable taxys
 

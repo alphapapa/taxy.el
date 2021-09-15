@@ -267,8 +267,6 @@ KEY is passed to `cl-sort', which see."
 
 ;; Utilities to define key and take functions in a standard way.
 
-;; TODO: Document these.
-
 (defmacro taxy-define-key-definer (name variable prefix docstring)
   "Define a macro NAME that defines a key-function-defining macro.
 The defined macro, having string DOCSTRING, associates the

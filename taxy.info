@@ -60,6 +60,7 @@ Dynamic taxys
 
 * Multi-level dynamic taxys::
 * "Chains" of independent, multi-level dynamic taxys: "Chains" of independent multi-level dynamic taxys.
+* Defining a classification domain-specific language::
 
 Changelog
 
@@ -546,7 +547,7 @@ File: README.info,  Node: Dynamic taxys,  Next: Reusable taxys,  Up: Usage
 3.1 Dynamic taxys
 =================
 
-   • • 
+   • • • 
    You may not always know in advance what taxonomy a set of objects
 fits into, so ‘taxy’ lets you add taxys dynamically by using the ‘:take’
 function to add a taxy when an object is "taken into" a parent taxy’s
@@ -605,6 +606,7 @@ and it produces this taxonomy of buffers:
 
 * Multi-level dynamic taxys::
 * "Chains" of independent, multi-level dynamic taxys: "Chains" of independent multi-level dynamic taxys.
+* Defining a classification domain-specific language::
 
 
 File: README.info,  Node: Multi-level dynamic taxys,  Next: "Chains" of independent multi-level dynamic taxys,  Up: Dynamic taxys
@@ -662,7 +664,7 @@ directory.
             (#<buffer taxy-magit-section.el> #<buffer taxy.el<taxy.el> #<buffer scratch.el>))))))))
 
 
-File: README.info,  Node: "Chains" of independent multi-level dynamic taxys,  Prev: Multi-level dynamic taxys,  Up: Dynamic taxys
+File: README.info,  Node: "Chains" of independent multi-level dynamic taxys,  Next: Defining a classification domain-specific language,  Prev: Multi-level dynamic taxys,  Up: Dynamic taxys
 
 3.1.2 "Chains" of independent, multi-level dynamic taxys
 --------------------------------------------------------
@@ -731,6 +733,125 @@ use:
         ((disc
           ("Ultimate" "Disc golf"))
          (non-disc
+          ("Soccer" "Tennis" "Football" "Baseball"))))))
+
+
+File: README.info,  Node: Defining a classification domain-specific language,  Prev: "Chains" of independent multi-level dynamic taxys,  Up: Dynamic taxys
+
+3.1.3 Defining a classification domain-specific language
+--------------------------------------------------------
+
+When writing a larger Taxy-based application, it may be necessary to
+define a number of key functions that would be unwieldy to manage in a
+‘cl-labels’ form.  For this case, Taxy provides the macro
+‘taxy-define-key-definer’ to easily define Taxy key functions in an
+application library.  Those functions are then passed to the function
+‘taxy-make-take-function’ at runtime, along with a list of keys being
+used to classify items.  Using these allows key functions to be defined
+in top-level forms, and it allows an application to be extended by
+users’ defining additional key functions in their configuration.
+
+   Extending the previous ‘sporty’ example, let’s redefine its key
+functions using ‘taxy-define-key-definer’:
+
+     (taxy-define-key-definer sporty-define-key
+       sporty-keys "sporty"
+       "Define a `sporty' key function.")
+
+     (sporty-define-key disc-based ()
+       (if (member 'disc (sport-uses item))
+           "Disc-based"
+         "Non-disc-based"))
+
+     (sporty-define-key uses (&optional thing)
+       (pcase thing
+         (`nil (sport-uses item))
+         (_ (when (cl-typecase (sport-uses item)
+                    (symbol (equal thing (sport-uses item)))
+                    (list (member thing (sport-uses item))))
+              thing))))
+
+     (sporty-define-key venue (&optional place)
+       (pcase place
+         (`nil (sport-venue item))
+         (_ (when (equal place (sport-venue item))
+              (sport-venue item)))))
+
+   Now we’ll define the default keys to use when classifying items.
+This list is equivalent to the one passed to ‘taxy-take-keyed’ in the
+previous, "Chains" example.
+
+     (defvar sporty-default-keys
+       '(
+         ((venue 'outdoor)
+          disc-based)
+
+         ((venue 'indoor)
+          (uses 'ball)
+          (uses 'disc)
+          (uses 'glove)
+          (uses 'racket))))
+
+   Finally, rather than using a pre-made taxy struct, we make one at
+runtime, making the ‘:take’ function with ‘taxy-make-take-function’.
+
+     (let ((taxy (make-taxy
+                  :name "Sporty (DSL)"
+                  :take (taxy-make-take-function sporty-default-keys
+                                                 sporty-keys))))
+       (thread-last taxy
+         (taxy-fill sports)
+         (taxy-mapcar #'sport-name)
+         taxy-plain))
+
+   Which gives us:
+
+     ("Sporty (DSL)"
+      ((indoor
+        ((ball
+          ("Volleyball" "Basketball")
+          ((glove
+            ("Handball"))
+           (racket
+            ("Racquetball"))))))
+       (outdoor
+        (("Disc-based"
+          ("Ultimate" "Disc golf"))
+         ("Non-disc-based"
+          ("Soccer" "Tennis" "Football" "Baseball"))))))
+
+   As you can see, the result is the same as that in the previous
+example, but we’ve defined a kind of DSL for grouping sports in a
+modular, extendable way.
+
+   This also allows the grouping keys to be easily changed at runtime,
+producing a different result.  For example, we could group sports by,
+first, whether they use a ball, and then by venue.  Let’s do this in a
+function so that users can pass their own list of keys:
+
+     (cl-defun sporty-classify (sports &key (keys sporty-default-keys))
+       (declare (indent defun))
+       (let* ((taxy (make-taxy
+                     :name "Sporty (DSL)"
+                     :take (taxy-make-take-function keys
+                                                    sporty-keys))))
+         (thread-last taxy
+           (taxy-fill sports)
+           (taxy-mapcar #'sport-name)
+           taxy-plain)))
+
+     (sporty-classify sports
+       :keys '((uses 'ball) venue))
+
+   And this produces:
+
+     ("Sporty (DSL)"
+      ((outdoor
+        ("Ultimate" "Disc golf"))
+       (ball
+        ((indoor
+          ("Volleyball" "Handball" "Racquetball" "Basketball"))
+         (outdoor
           ("Soccer" "Tennis" "Football" "Baseball"))))))
 
 
@@ -1125,39 +1246,40 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1761
-Node: Numbery (starting basically)2080
-Node: Lettery (filling incrementally)7841
-Node: Sporty (understanding completely)10355
-Node: Applications16342
-Node: Installation16742
-Node: Usage17055
-Node: Dynamic taxys19192
-Node: Multi-level dynamic taxys21752
-Node: "Chains" of independent multi-level dynamic taxys23945
-Node: Reusable taxys26817
-Node: Threading macros30992
-Node: Modifying filled taxys31531
-Node: Magit section32349
-Node: Changelog33037
-Node: 06-pre33229
-Node: Additions33341
-Node: 0534179
-Node: Additions (1)34318
-Node: Fixes35424
-Node: 0435578
-Node: 0335800
-Node: Changes35929
-Node: Fixes (1)36292
-Node: 0236727
-Node: Changes (1)36896
-Node: Additions (2)37188
-Node: Fixes (2)38047
-Node: 0138301
-Node: Development38400
-Node: Copyright assignment38606
-Node: Credits39194
-Node: License39384
+Node: Examples1816
+Node: Numbery (starting basically)2135
+Node: Lettery (filling incrementally)7896
+Node: Sporty (understanding completely)10410
+Node: Applications16397
+Node: Installation16797
+Node: Usage17110
+Node: Dynamic taxys19247
+Node: Multi-level dynamic taxys21866
+Node: "Chains" of independent multi-level dynamic taxys24059
+Node: Defining a classification domain-specific language26990
+Node: Reusable taxys31152
+Node: Threading macros35327
+Node: Modifying filled taxys35866
+Node: Magit section36684
+Node: Changelog37372
+Node: 06-pre37564
+Node: Additions37676
+Node: 0538514
+Node: Additions (1)38653
+Node: Fixes39759
+Node: 0439913
+Node: 0340135
+Node: Changes40264
+Node: Fixes (1)40627
+Node: 0241062
+Node: Changes (1)41231
+Node: Additions (2)41523
+Node: Fixes (2)42382
+Node: 0142636
+Node: Development42735
+Node: Copyright assignment42941
+Node: Credits43529
+Node: License43719
 
 End Tag Table
 
