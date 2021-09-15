@@ -172,10 +172,10 @@ Default visibility function for
 
 ;; Column-based, or "table"?
 
-;; TODO: Probably, this belongs in a separate library, since it's not
-;; directly related to using taxy or magit-section.  Maybe it could be
-;; called something like `flextab' (or, keeping with the theme,
-;; `tabley').
+;; MAYBE: Move this to a separate library, since it's not directly
+;; related to using taxy or magit-section.  Maybe it could be called
+;; something like `flextab' (or, keeping with the theme, `tabley').
+;; But see also <https://github.com/kiwanami/emacs-ctable>.
 
 ;;;;; Macros
 
