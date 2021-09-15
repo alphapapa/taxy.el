@@ -2,6 +2,12 @@
 
 Some example applcations using ~taxy~.
 
+* Deffy
+
+=deffy= shows definitions and top-level forms in an Elisp project or file.
+
+[[../images/deffy.png]]
+
 * Diredy
 
 [[file:diredy.el][Diredy]] rearranges a Dired buffer, grouping files and directories by their size and MIME type.  Use it like:
