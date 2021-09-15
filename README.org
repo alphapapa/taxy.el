@@ -886,6 +886,9 @@ Note that while =taxy-magit-section.el= is installed with the =taxy= package, th
 + Sorting functions:
   + ~taxy-sort-items~ (alias: ~taxy-sort~) sorts the items in a taxy and its sub-taxys.
   + ~taxy-sort-taxys~ (alias: ~taxy-sort*~) sorts a taxy's sub-taxys.
++ Defining classification domain-specific languages:
+  + Macro ~taxy-define-key-definer~ defines a key-function-defining macro.
+  + Function ~taxy-make-take-function~ makes a ~:take~ function using a list of key functions and a set of classification keys.
 + Table-like, column-based formatting system for ~taxy-magit-section~:
   + Function ~taxy-magit-section-format-items~, which formats items by columns.
   + Variable ~taxy-magit-section-insert-indent-items~, which controls whether ~taxy-magit-section-insert~ applies indentation to each item.  (Used to disable that behavior when items are pre-indented strings, e.g. as formatted by ~taxy-magit-section-format-items~.)
