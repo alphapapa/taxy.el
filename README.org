@@ -744,7 +744,7 @@ Now let's fill the taxy with the sports and format it:
 
 *** Defining a classification domain-specific language
 
-When writing a larger Taxy-based application, it may be necessary to define a number of key functions that would be unwieldy to manage in a ~cl-labels~ form.  For this case, Taxy provides the macro ~taxy-define-key-definer~ to easily define Taxy key functions in an application library.  Those functions are then passed to the function ~taxy-make-take-function~ at runtime, along with a list of keys being used to classify items.  Using these allows key functions to be defined in top-level forms, and it allows an application to be extended by users' defining additional key functions in their configuration.
+When writing a larger Taxy-based application, it may be necessary to define a number of key functions that would be unwieldy to manage in a ~cl-labels~ form.  For this case, Taxy provides the macro ~taxy-define-key-definer~ to easily define Taxy key functions in an application library.  Those functions are then passed to the function ~taxy-make-take-function~ at runtime, along with a list of keys being used to classify items.  Using these allows key functions to be defined in top-level forms, and it allows an application to be extended by users by defining additional key functions in their configurations.
 
 Extending the previous ~sporty~ example, let's redefine its key functions using ~taxy-define-key-definer~:
 

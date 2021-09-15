@@ -883,8 +883,8 @@ define a number of key functions that would be unwieldy to manage in a
 application library.  Those functions are then passed to the function
 ‘taxy-make-take-function’ at runtime, along with a list of keys being
 used to classify items.  Using these allows key functions to be defined
-in top-level forms, and it allows an application to be extended by
-users’ defining additional key functions in their configuration.
+in top-level forms, and it allows an application to be extended by users
+by defining additional key functions in their configurations.
 
    Extending the previous ‘sporty’ example, let’s redefine its key
 functions using ‘taxy-define-key-definer’:
@@ -1260,26 +1260,26 @@ Node: Dynamic taxys24757
 Node: Multi-level dynamic taxys27406
 Node: "Chains" of independent multi-level dynamic taxys29599
 Node: Defining a classification domain-specific language32530
-Node: Magit section36692
-Node: Changelog37371
-Node: 06-pre37563
-Node: Additions37675
-Node: 0538513
-Node: Additions (1)38652
-Node: Fixes39758
-Node: 0439912
-Node: 0340134
-Node: Changes40263
-Node: Fixes (1)40626
-Node: 0241061
-Node: Changes (1)41230
-Node: Additions (2)41522
-Node: Fixes (2)42381
-Node: 0142635
-Node: Development42734
-Node: Copyright assignment42940
-Node: Credits43528
-Node: License43718
+Node: Magit section36693
+Node: Changelog37372
+Node: 06-pre37564
+Node: Additions37676
+Node: 0538514
+Node: Additions (1)38653
+Node: Fixes39759
+Node: 0439913
+Node: 0340135
+Node: Changes40264
+Node: Fixes (1)40627
+Node: 0241062
+Node: Changes (1)41231
+Node: Additions (2)41523
+Node: Fixes (2)42382
+Node: 0142636
+Node: Development42735
+Node: Copyright assignment42941
+Node: Credits43529
+Node: License43719
 
 End Tag Table
 
