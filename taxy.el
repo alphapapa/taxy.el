@@ -263,6 +263,92 @@ KEY is passed to `cl-sort', which see."
 
 (defalias 'taxy-sort* #'taxy-sort-taxys)
 
+;;;; Key functions
+
+;; Utilities to define key and take functions in a standard way.
+
+(defmacro taxy-define-key-definer (name variable prefix docstring)
+  "Define a macro NAME that defines a key-function-defining macro.
+The defined macro, having string DOCSTRING, associates the
+defined key functions with their aliases in an alist stored in
+symbol VARIABLE.  The defined key functions are named having
+string PREFIX, which will have a hyphen appended to it.  The key
+functions take one or more arguments, the first of which is the
+item being tested, bound within the function to `item'."
+  ;; Example docstring:
+
+  ;;   "Define a `taxy-org-ql-view' key function by NAME having BODY taking ARGS.
+  ;; Within BODY, `element' is bound to the `org-element' element
+  ;; being tested.
+
+  ;; Defines a function named `taxy-org-ql--predicate-NAME', and adds
+  ;; an entry to `taxy-org-ql-view-keys' mapping NAME to the new
+  ;; function symbol."
+  (declare (indent defun))
+  ;; I'm not sure why it's necessary to bind the variable in the first
+  ;; level of the expansion here, but double-unquoting the variable in
+  ;; the defined macro's form leaves the second comma in place, which
+  ;; breaks the second expansion, and this works around that.
+  `(let ((variable ',variable))
+     (defvar ,variable nil
+       ,(format "Alist mapping key aliases to key functions defined with `%s'."
+		name))
+     (defmacro ,name (name args &rest body)
+       ,docstring
+       (declare (indent defun)
+		(debug (&define symbolp listp &rest def-form)))
+       (let* ((fn-symbol (intern (format "%s-%s" ,prefix name)))
+	      (fn `(cl-function
+		    (lambda (item ,@args)
+		      ,@body))))
+	 `(progn
+	    (fset ',fn-symbol ,fn)
+	    (setf (map-elt ,variable ',name) ',fn-symbol))))))
+
+(defun taxy-make-take-function (keys aliases)
+  "Return a `taxy' \"take\" function for KEYS.
+Each of KEYS should be a function alias defined in ALIASES, or a
+list of such KEY-FNS (recursively, ad infinitum, approximately).
+ALIASES should be an alist mapping aliases to functions (such as
+defined with a definer defined by `taxy-define-key-definer')."
+  (let ((macrolets (cl-loop for (name . fn) in aliases
+                            collect `(,name ',fn))))
+    (cl-labels ((expand-form
+                 ;; Is using (cadr (macroexpand-all ...)) really better than `eval'?
+                 (form) (cadr (macroexpand-all
+                               `(cl-symbol-macrolet (,@macrolets)
+                                  ,form))))
+                (quote-fn
+                 (fn) (pcase fn
+                        ((pred symbolp) (expand-form fn))
+                        (`(,(and (or 'and 'or 'not) boolean) . ,(and args (map :name :keys)))
+                         ;; Well, that pcase expression isn't confusing at all...  ;)
+                         ;;  (cl-assert name t "Boolean key functions require a NAME")
+                         ;;  (cl-assert keys t "Boolean key functions require KEYS")
+                         `(lambda (buffer)
+                            (when (cl-loop for fn in ',(mapcar #'quote-fn (or keys args))
+                                           ,(pcase boolean
+                                              ('and 'always)
+                                              ('or 'thereis)
+                                              ('not 'never))
+                                           (funcall fn buffer))
+                              (or ,name ""))))
+                        (`(,(and (pred symbolp) fn)
+                           . ,(and args (guard (pcase (car args)
+                                                 ((or (pred keywordp)
+                                                      (and (pred atom)
+                                                           (pred (not symbolp)))
+						      `(quote ,_))
+                                                  t)))))
+                         ;; Key with args: replace with a lambda that
+                         ;; calls that key's function with given args.
+                         `(lambda (element)
+                            (,(expand-form fn) element ,@args)))
+                        ((pred listp) (mapcar #'quote-fn fn)))))
+      (setf keys (mapcar #'quote-fn keys))
+      `(lambda (item taxy)
+         (taxy-take-keyed ',keys item taxy)))))
+
 ;;;; Footer
 
 (provide 'taxy)

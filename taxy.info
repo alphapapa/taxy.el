@@ -50,16 +50,17 @@ Examples
 
 Usage
 
-* Dynamic taxys::
 * Reusable taxys::
 * Threading macros::
 * Modifying filled taxys::
+* Dynamic taxys::
 * Magit section::
 
 Dynamic taxys
 
 * Multi-level dynamic taxys::
 * "Chains" of independent, multi-level dynamic taxys: "Chains" of independent multi-level dynamic taxys.
+* Defining a classification domain-specific language::
 
 Changelog
 
@@ -534,209 +535,16 @@ replace items in a taxy with, e.g.  a more useful representation.
 
 * Menu:
 
-* Dynamic taxys::
 * Reusable taxys::
 * Threading macros::
 * Modifying filled taxys::
+* Dynamic taxys::
 * Magit section::
 
 
-File: README.info,  Node: Dynamic taxys,  Next: Reusable taxys,  Up: Usage
+File: README.info,  Node: Reusable taxys,  Next: Threading macros,  Up: Usage
 
-3.1 Dynamic taxys
-=================
-
-   • • 
-   You may not always know in advance what taxonomy a set of objects
-fits into, so ‘taxy’ lets you add taxys dynamically by using the ‘:take’
-function to add a taxy when an object is "taken into" a parent taxy’s
-items.  For example, you could dynamically classify buffers by their
-major mode like so:
-
-     (defun buffery-major-mode (buffer)
-       (buffer-local-value 'major-mode buffer))
-
-     (defvar buffery
-       (make-taxy
-        :name "Buffers"
-        :taxys (list
-                (make-taxy
-                 :name "Modes"
-                 :take (apply-partially #'taxy-take-keyed (list #'buffery-major-mode))))))
-
-     ;; Note the use of `taxy-emptied' to avoid mutating the original taxy definition.
-     (taxy-plain
-      (taxy-fill (buffer-list)
-                 (taxy-emptied buffery)))
-
-   The taxy’s ‘:take’ function is set to the ‘taxy-take-keyed’ function,
-partially applied with the ‘buffery-major-mode’ function as its list of
-‘key-fns’ (‘taxy-fill’ supplies the buffer and the taxy as arguments),
-and it produces this taxonomy of buffers:
-
-     ("Buffers"
-      (("Modes"
-        ((magit-process-mode
-          (#<buffer magit-process: taxy.el> #<buffer magit-process: > #<buffer magit-process: notes>))
-         (messages-buffer-mode
-          (#<buffer *Messages*>))
-         (special-mode
-          (#<buffer *Warnings*> #<buffer *elfeed-log*>))
-         (dired-mode
-          (#<buffer ement.el<emacs>>))
-         (Custom-mode
-          (#<buffer *Customize Apropos*>))
-         (fundamental-mode
-          (#<buffer  *helm candidates:Bookmarks*> #<buffer *Backtrace*>))
-         (magit-diff-mode
-          (#<buffer magit-diff: taxy.el> #<buffer magit-diff: notes> #<buffer magit-diff: ement.el>))
-         (compilation-mode
-          (#<buffer *compilation*> #<buffer *Compile-Log*>))
-         (Info-mode
-          (#<buffer  *helm info temp buffer*> #<buffer *info*>))
-         (help-mode
-          (#<buffer *Help*>))
-         (emacs-lisp-mode
-          (#<buffer ement.el<ement.el>> #<buffer ement-room-list.el> #<buffer *scratch*>
-                    #<buffer ement-room.el> #<buffer init.el> #<buffer bufler.el>
-                    #<buffer dash.el> #<buffer *Pp Eval Output*> #<buffer taxy.el> #<buffer scratch.el>))))))
-
-* Menu:
-
-* Multi-level dynamic taxys::
-* "Chains" of independent, multi-level dynamic taxys: "Chains" of independent multi-level dynamic taxys.
-
-
-File: README.info,  Node: Multi-level dynamic taxys,  Next: "Chains" of independent multi-level dynamic taxys,  Up: Dynamic taxys
-
-3.1.1 Multi-level dynamic taxys
--------------------------------
-
-Of course, the point of taxonomies is that they aren’t restricted to a
-single level of depth, so you may also use the function
-‘taxy-take-keyed’ to dynamically make multi-level taxys.
-
-   Expanding on the previous example, we use ‘cl-labels’ to define
-functions which are used in the taxy’s definition, which are used in the
-‘:take’ function, which calls ‘taxy-take-keyed’ (rather than using
-‘apply-partially’ like in the previous example, we use a lambda
-function, which performs better than partially applied functions).  Then
-when the taxy is filled, a multi-level hierarchy is created dynamically,
-organizing buffers first by their directory, and then by mode in each
-directory.
-
-     (defvar buffery
-       (cl-labels ((buffer-mode (buffer) (buffer-local-value 'major-mode buffer))
-                   (buffer-directory (buffer) (buffer-local-value 'default-directory buffer)))
-         (make-taxy
-          :name "Buffers"
-          :taxys (list
-                  (make-taxy
-                   :name "Directories"
-                   :take (lambda (item taxy)
-                           (taxy-take-keyed (list #'buffer-directory #'buffer-mode) item taxy)))))))
-
-     (taxy-plain
-      (taxy-fill (buffer-list)
-                 (taxy-emptied buffery)))
-
-   That produces a list like:
-
-     ("Buffers"
-      (("Directories"
-        (("~/src/emacs/ement.el/"
-          ((dired-mode
-            (#<buffer ement.el<emacs>))
-           (emacs-lisp-mode
-            (#<buffer ement.el<ement.el> #<buffer ement-room-list.el> #<buffer ement-room.el>))
-           (magit-diff-mode
-            (#<buffer magit-diff: ement.el>))))
-         ("~/src/emacs/taxy.el/"
-          ((dired-mode
-            (#<buffer taxy.el<emacs>))
-           (Info-mode
-            (#<buffer *info*>))
-           (magit-status-mode
-            (#<buffer magit: taxy.el>))
-           (emacs-lisp-mode
-            (#<buffer taxy-magit-section.el> #<buffer taxy.el<taxy.el> #<buffer scratch.el>))))))))
-
-
-File: README.info,  Node: "Chains" of independent multi-level dynamic taxys,  Prev: Multi-level dynamic taxys,  Up: Dynamic taxys
-
-3.1.2 "Chains" of independent, multi-level dynamic taxys
---------------------------------------------------------
-
-_Naming things is hard._
-
-   Going a step further, each element in the ‘taxy-take-keyed’
-function’s ‘KEY-FNS’ argument may be a list of functions (or a list of
-lists of functions, etc.), which creates a "chain" of "independent"
-dynamic taxys.  Each such chain may be said to "short-circuit" the
-filling process in that, when an object is "taken" by the first key
-function in a chain, the object is not "offered" to other functions
-outside that chain.  This allows each dynamic sub-taxy to have its own
-set of sub-taxys, rather than sharing the same "global" set.  In effect,
-this creates multiple, unique taxonomies that share a single root taxy.
-
-   Building on the ‘sporty’ example, let’s define a taxy in which
-outdoor sports are classified only by whether they involve a disc, but
-indoor sports are additionally classified by whatever equipment they may
-use:
-
-     (defvar sporty-dynamic
-       (cl-macrolet ((in (needle haystack)
-                         `(lambda (item)
-                            (when (member ,needle (funcall ,haystack item))
-                              ,needle))))
-         (cl-labels ((outdoor-p
-                      (sport) (when (eq 'outdoor (sport-venue sport))
-                                "Outdoor"))
-                     (indoor-p
-                      (sport) (when (eq 'indoor (sport-venue sport))
-                                "Indoor"))
-                     (disc-p
-                      (sport) (if (funcall (in 'disc 'sport-uses) sport)
-                                  'disc
-                                'non-disc)))
-           (make-taxy
-            :name "Sporty (dynamic)"
-            :take (lambda (item taxy)
-                    (taxy-take-keyed
-                      (list (list #'outdoor-p #'disc-p)
-                            (list #'indoor-p
-                                  (in 'ball 'sport-uses)
-                                  (in 'disc 'sport-uses)
-                                  (in 'glove 'sport-uses)
-                                  (in 'racket 'sport-uses)))
-                      item taxy))))))
-
-   Now let’s fill the taxy with the sports and format it:
-
-     (thread-last sporty-dynamic
-       taxy-emptied
-       (taxy-fill sports)
-       (taxy-mapcar #'sport-name)
-       taxy-plain)
-
-     ("Sporty (dynamic)"
-      (("Indoor"
-        ((ball
-          ("Volleyball" "Basketball")
-          ((glove
-            ("Handball"))
-           (racket
-            ("Racquetball"))))))
-       ("Outdoor"
-        ((disc
-          ("Ultimate" "Disc golf"))
-         (non-disc
-          ("Soccer" "Tennis" "Football" "Baseball"))))))
-
-
-File: README.info,  Node: Reusable taxys,  Next: Threading macros,  Prev: Dynamic taxys,  Up: Usage
-
-3.2 Reusable taxys
+3.1 Reusable taxys
 ==================
 
 Since taxys are structs, they may be stored in variables and used in
@@ -832,7 +640,7 @@ replace the room structs with useful representations for display:
 
 File: README.info,  Node: Threading macros,  Next: Modifying filled taxys,  Prev: Reusable taxys,  Up: Usage
 
-3.3 Threading macros
+3.2 Threading macros
 ====================
 
 If you happen to like macros, ‘taxy’ works well with threading (i.e.
@@ -847,9 +655,9 @@ If you happen to like macros, ‘taxy’ works well with threading (i.e.
        taxy-plain)
 
 
-File: README.info,  Node: Modifying filled taxys,  Next: Magit section,  Prev: Threading macros,  Up: Usage
+File: README.info,  Node: Modifying filled taxys,  Next: Dynamic taxys,  Prev: Threading macros,  Up: Usage
 
-3.4 Modifying filled taxys
+3.3 Modifying filled taxys
 ==========================
 
 Sometimes it’s necessary to modify a taxy after filling it with objects,
@@ -869,7 +677,320 @@ items are sorted after filling, like so:
          taxy-magit-section-pp))
 
 
-File: README.info,  Node: Magit section,  Prev: Modifying filled taxys,  Up: Usage
+File: README.info,  Node: Dynamic taxys,  Next: Magit section,  Prev: Modifying filled taxys,  Up: Usage
+
+3.4 Dynamic taxys
+=================
+
+   • • • 
+   You may not always know in advance what taxonomy a set of objects
+fits into, so ‘taxy’ lets you add taxys dynamically by using the ‘:take’
+function to add a taxy when an object is "taken into" a parent taxy’s
+items.  For example, you could dynamically classify buffers by their
+major mode like so:
+
+     (defun buffery-major-mode (buffer)
+       (buffer-local-value 'major-mode buffer))
+
+     (defvar buffery
+       (make-taxy
+        :name "Buffers"
+        :taxys (list
+                (make-taxy
+                 :name "Modes"
+                 :take (apply-partially #'taxy-take-keyed (list #'buffery-major-mode))))))
+
+     ;; Note the use of `taxy-emptied' to avoid mutating the original taxy definition.
+     (taxy-plain
+      (taxy-fill (buffer-list)
+                 (taxy-emptied buffery)))
+
+   The taxy’s ‘:take’ function is set to the ‘taxy-take-keyed’ function,
+partially applied with the ‘buffery-major-mode’ function as its list of
+‘key-fns’ (‘taxy-fill’ supplies the buffer and the taxy as arguments),
+and it produces this taxonomy of buffers:
+
+     ("Buffers"
+      (("Modes"
+        ((magit-process-mode
+          (#<buffer magit-process: taxy.el> #<buffer magit-process: > #<buffer magit-process: notes>))
+         (messages-buffer-mode
+          (#<buffer *Messages*>))
+         (special-mode
+          (#<buffer *Warnings*> #<buffer *elfeed-log*>))
+         (dired-mode
+          (#<buffer ement.el<emacs>>))
+         (Custom-mode
+          (#<buffer *Customize Apropos*>))
+         (fundamental-mode
+          (#<buffer  *helm candidates:Bookmarks*> #<buffer *Backtrace*>))
+         (magit-diff-mode
+          (#<buffer magit-diff: taxy.el> #<buffer magit-diff: notes> #<buffer magit-diff: ement.el>))
+         (compilation-mode
+          (#<buffer *compilation*> #<buffer *Compile-Log*>))
+         (Info-mode
+          (#<buffer  *helm info temp buffer*> #<buffer *info*>))
+         (help-mode
+          (#<buffer *Help*>))
+         (emacs-lisp-mode
+          (#<buffer ement.el<ement.el>> #<buffer ement-room-list.el> #<buffer *scratch*>
+                    #<buffer ement-room.el> #<buffer init.el> #<buffer bufler.el>
+                    #<buffer dash.el> #<buffer *Pp Eval Output*> #<buffer taxy.el> #<buffer scratch.el>))))))
+
+* Menu:
+
+* Multi-level dynamic taxys::
+* "Chains" of independent, multi-level dynamic taxys: "Chains" of independent multi-level dynamic taxys.
+* Defining a classification domain-specific language::
+
+
+File: README.info,  Node: Multi-level dynamic taxys,  Next: "Chains" of independent multi-level dynamic taxys,  Up: Dynamic taxys
+
+3.4.1 Multi-level dynamic taxys
+-------------------------------
+
+Of course, the point of taxonomies is that they aren’t restricted to a
+single level of depth, so you may also use the function
+‘taxy-take-keyed’ to dynamically make multi-level taxys.
+
+   Expanding on the previous example, we use ‘cl-labels’ to define
+functions which are used in the taxy’s definition, which are used in the
+‘:take’ function, which calls ‘taxy-take-keyed’ (rather than using
+‘apply-partially’ like in the previous example, we use a lambda
+function, which performs better than partially applied functions).  Then
+when the taxy is filled, a multi-level hierarchy is created dynamically,
+organizing buffers first by their directory, and then by mode in each
+directory.
+
+     (defvar buffery
+       (cl-labels ((buffer-mode (buffer) (buffer-local-value 'major-mode buffer))
+                   (buffer-directory (buffer) (buffer-local-value 'default-directory buffer)))
+         (make-taxy
+          :name "Buffers"
+          :taxys (list
+                  (make-taxy
+                   :name "Directories"
+                   :take (lambda (item taxy)
+                           (taxy-take-keyed (list #'buffer-directory #'buffer-mode) item taxy)))))))
+
+     (taxy-plain
+      (taxy-fill (buffer-list)
+                 (taxy-emptied buffery)))
+
+   That produces a list like:
+
+     ("Buffers"
+      (("Directories"
+        (("~/src/emacs/ement.el/"
+          ((dired-mode
+            (#<buffer ement.el<emacs>))
+           (emacs-lisp-mode
+            (#<buffer ement.el<ement.el> #<buffer ement-room-list.el> #<buffer ement-room.el>))
+           (magit-diff-mode
+            (#<buffer magit-diff: ement.el>))))
+         ("~/src/emacs/taxy.el/"
+          ((dired-mode
+            (#<buffer taxy.el<emacs>))
+           (Info-mode
+            (#<buffer *info*>))
+           (magit-status-mode
+            (#<buffer magit: taxy.el>))
+           (emacs-lisp-mode
+            (#<buffer taxy-magit-section.el> #<buffer taxy.el<taxy.el> #<buffer scratch.el>))))))))
+
+
+File: README.info,  Node: "Chains" of independent multi-level dynamic taxys,  Next: Defining a classification domain-specific language,  Prev: Multi-level dynamic taxys,  Up: Dynamic taxys
+
+3.4.2 "Chains" of independent, multi-level dynamic taxys
+--------------------------------------------------------
+
+_Naming things is hard._
+
+   Going a step further, each element in the ‘taxy-take-keyed’
+function’s ‘KEY-FNS’ argument may be a list of functions (or a list of
+lists of functions, etc.), which creates a "chain" of "independent"
+dynamic taxys.  Each such chain may be said to "short-circuit" the
+filling process in that, when an object is "taken" by the first key
+function in a chain, the object is not "offered" to other functions
+outside that chain.  This allows each dynamic sub-taxy to have its own
+set of sub-taxys, rather than sharing the same "global" set.  In effect,
+this creates multiple, unique taxonomies that share a single root taxy.
+
+   Building on the ‘sporty’ example, let’s define a taxy in which
+outdoor sports are classified only by whether they involve a disc, but
+indoor sports are additionally classified by whatever equipment they may
+use:
+
+     (defvar sporty-dynamic
+       (cl-macrolet ((in (needle haystack)
+                         `(lambda (item)
+                            (when (member ,needle (funcall ,haystack item))
+                              ,needle))))
+         (cl-labels ((outdoor-p
+                      (sport) (when (eq 'outdoor (sport-venue sport))
+                                "Outdoor"))
+                     (indoor-p
+                      (sport) (when (eq 'indoor (sport-venue sport))
+                                "Indoor"))
+                     (disc-p
+                      (sport) (if (funcall (in 'disc 'sport-uses) sport)
+                                  'disc
+                                'non-disc)))
+           (make-taxy
+            :name "Sporty (dynamic)"
+            :take (lambda (item taxy)
+                    (taxy-take-keyed
+                      (list (list #'outdoor-p #'disc-p)
+                            (list #'indoor-p
+                                  (in 'ball 'sport-uses)
+                                  (in 'disc 'sport-uses)
+                                  (in 'glove 'sport-uses)
+                                  (in 'racket 'sport-uses)))
+                      item taxy))))))
+
+   Now let’s fill the taxy with the sports and format it:
+
+     (thread-last sporty-dynamic
+       taxy-emptied
+       (taxy-fill sports)
+       (taxy-mapcar #'sport-name)
+       taxy-plain)
+
+     ("Sporty (dynamic)"
+      (("Indoor"
+        ((ball
+          ("Volleyball" "Basketball")
+          ((glove
+            ("Handball"))
+           (racket
+            ("Racquetball"))))))
+       ("Outdoor"
+        ((disc
+          ("Ultimate" "Disc golf"))
+         (non-disc
+          ("Soccer" "Tennis" "Football" "Baseball"))))))
+
+
+File: README.info,  Node: Defining a classification domain-specific language,  Prev: "Chains" of independent multi-level dynamic taxys,  Up: Dynamic taxys
+
+3.4.3 Defining a classification domain-specific language
+--------------------------------------------------------
+
+When writing a larger Taxy-based application, it may be necessary to
+define a number of key functions that would be unwieldy to manage in a
+‘cl-labels’ form.  For this case, Taxy provides the macro
+‘taxy-define-key-definer’ to easily define Taxy key functions in an
+application library.  Those functions are then passed to the function
+‘taxy-make-take-function’ at runtime, along with a list of keys being
+used to classify items.  Using these allows key functions to be defined
+in top-level forms, and it allows an application to be extended by users
+by defining additional key functions in their configurations.
+
+   Extending the previous ‘sporty’ example, let’s redefine its key
+functions using ‘taxy-define-key-definer’:
+
+     (taxy-define-key-definer sporty-define-key
+       sporty-keys "sporty"
+       "Define a `sporty' key function.")
+
+     (sporty-define-key disc-based ()
+       (if (member 'disc (sport-uses item))
+           "Disc-based"
+         "Non-disc-based"))
+
+     (sporty-define-key uses (&optional thing)
+       (pcase thing
+         (`nil (sport-uses item))
+         (_ (when (cl-typecase (sport-uses item)
+                    (symbol (equal thing (sport-uses item)))
+                    (list (member thing (sport-uses item))))
+              thing))))
+
+     (sporty-define-key venue (&optional place)
+       (pcase place
+         (`nil (sport-venue item))
+         (_ (when (equal place (sport-venue item))
+              (sport-venue item)))))
+
+   Now we’ll define the default keys to use when classifying items.
+This list is equivalent to the one passed to ‘taxy-take-keyed’ in the
+previous, "Chains" example.
+
+     (defvar sporty-default-keys
+       '(
+         ((venue 'outdoor)
+          disc-based)
+
+         ((venue 'indoor)
+          (uses 'ball)
+          (uses 'disc)
+          (uses 'glove)
+          (uses 'racket))))
+
+   Finally, rather than using a pre-made taxy struct, we make one at
+runtime, making the ‘:take’ function with ‘taxy-make-take-function’.
+
+     (let ((taxy (make-taxy
+                  :name "Sporty (DSL)"
+                  :take (taxy-make-take-function sporty-default-keys
+                                                 sporty-keys))))
+       (thread-last taxy
+         (taxy-fill sports)
+         (taxy-mapcar #'sport-name)
+         taxy-plain))
+
+   Which gives us:
+
+     ("Sporty (DSL)"
+      ((indoor
+        ((ball
+          ("Volleyball" "Basketball")
+          ((glove
+            ("Handball"))
+           (racket
+            ("Racquetball"))))))
+       (outdoor
+        (("Disc-based"
+          ("Ultimate" "Disc golf"))
+         ("Non-disc-based"
+          ("Soccer" "Tennis" "Football" "Baseball"))))))
+
+   As you can see, the result is the same as that in the previous
+example, but we’ve defined a kind of DSL for grouping sports in a
+modular, extendable way.
+
+   This also allows the grouping keys to be easily changed at runtime,
+producing a different result.  For example, we could group sports by,
+first, whether they use a ball, and then by venue.  Let’s do this in a
+function so that users can pass their own list of keys:
+
+     (cl-defun sporty-classify (sports &key (keys sporty-default-keys))
+       (declare (indent defun))
+       (let* ((taxy (make-taxy
+                     :name "Sporty (DSL)"
+                     :take (taxy-make-take-function keys
+                                                    sporty-keys))))
+         (thread-last taxy
+           (taxy-fill sports)
+           (taxy-mapcar #'sport-name)
+           taxy-plain)))
+
+     (sporty-classify sports
+       :keys '((uses 'ball) venue))
+
+   And this produces:
+
+     ("Sporty (DSL)"
+      ((outdoor
+        ("Ultimate" "Disc golf"))
+       (ball
+        ((indoor
+          ("Volleyball" "Handball" "Racquetball" "Basketball"))
+         (outdoor
+          ("Soccer" "Tennis" "Football" "Baseball"))))))
+
+
+File: README.info,  Node: Magit section,  Prev: Dynamic taxys,  Up: Usage
 
 3.5 Magit section
 =================
@@ -926,6 +1047,24 @@ File: README.info,  Node: Additions,  Up: 06-pre
           taxy and its sub-taxys.
         • ‘taxy-sort-taxys’ (alias: ‘taxy-sort*’) sorts a taxy’s
           sub-taxys.
+   • Defining classification domain-specific languages:
+        • Macro ‘taxy-define-key-definer’ defines a
+          key-function-defining macro.
+        • Function ‘taxy-make-take-function’ makes a ‘:take’ function
+          using a list of key functions and a set of classification
+          keys.
+   • Table-like, column-based formatting system for
+     ‘taxy-magit-section’:
+        • Function ‘taxy-magit-section-format-items’, which formats
+          items by columns.
+        • Variable ‘taxy-magit-section-insert-indent-items’, which
+          controls whether ‘taxy-magit-section-insert’ applies
+          indentation to each item.  (Used to disable that behavior when
+          items are pre-indented strings, e.g.  as formatted by
+          ‘taxy-magit-section-format-items’.)
+   • Example application ‘deffy’, which shows an overview of top-level
+     definitions and forms in an Elisp project or file.  (Likely to be
+     published as a separate package later.)
 
 
 File: README.info,  Node: 05,  Next: 04,  Prev: 06-pre,  Up: Changelog
@@ -1116,39 +1255,40 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples1761
-Node: Numbery (starting basically)2080
-Node: Lettery (filling incrementally)7841
-Node: Sporty (understanding completely)10355
-Node: Applications16342
-Node: Installation16742
-Node: Usage17055
-Node: Dynamic taxys19192
-Node: Multi-level dynamic taxys21752
-Node: "Chains" of independent multi-level dynamic taxys23945
-Node: Reusable taxys26817
-Node: Threading macros30992
-Node: Modifying filled taxys31531
-Node: Magit section32349
-Node: Changelog33037
-Node: 06-pre33229
-Node: Additions33341
-Node: 0533665
-Node: Additions (1)33804
-Node: Fixes34910
-Node: 0435064
-Node: 0335286
-Node: Changes35415
-Node: Fixes (1)35778
-Node: 0236213
-Node: Changes (1)36382
-Node: Additions (2)36674
-Node: Fixes (2)37533
-Node: 0137787
-Node: Development37886
-Node: Copyright assignment38092
-Node: Credits38680
-Node: License38870
+Node: Examples1816
+Node: Numbery (starting basically)2135
+Node: Lettery (filling incrementally)7896
+Node: Sporty (understanding completely)10410
+Node: Applications16397
+Node: Installation16797
+Node: Usage17110
+Node: Reusable taxys19247
+Node: Threading macros23400
+Node: Modifying filled taxys23939
+Node: Dynamic taxys24757
+Node: Multi-level dynamic taxys27406
+Node: "Chains" of independent multi-level dynamic taxys29599
+Node: Defining a classification domain-specific language32530
+Node: Magit section36693
+Node: Changelog37372
+Node: 06-pre37564
+Node: Additions37676
+Node: 0539026
+Node: Additions (1)39165
+Node: Fixes40271
+Node: 0440425
+Node: 0340647
+Node: Changes40776
+Node: Fixes (1)41139
+Node: 0241574
+Node: Changes (1)41743
+Node: Additions (2)42035
+Node: Fixes (2)42894
+Node: 0143148
+Node: Development43247
+Node: Copyright assignment43453
+Node: Credits44041
+Node: License44231
 
 End Tag Table
 
