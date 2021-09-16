@@ -26,6 +26,9 @@
 
 ;;; Code:
 
+(require 'map)
+
+(require 'taxy)
 (require 'taxy-magit-section)
 
 (cl-defstruct deffy-def
