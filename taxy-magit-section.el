@@ -27,6 +27,8 @@
 
 ;;;; Requirements
 
+(require 'map)
+
 (require 'taxy)
 (require 'magit-section)
 
