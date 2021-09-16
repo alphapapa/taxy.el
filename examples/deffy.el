@@ -164,8 +164,8 @@ buffer."
 				;; :heading-face-fn #'heading-face
 				args))
 		(def-name (def) (format "%s" (cl-second (deffy-def-form def)))))
-      (when (get-buffer buffer-name)
-	(kill-buffer buffer-name))
+      ;; (when (get-buffer buffer-name)
+      ;;   (kill-buffer buffer-name))
       (with-current-buffer (get-buffer-create buffer-name)
 	(deffy-mode)
 	(setq-local deffy-taxy-default-keys keys
@@ -198,6 +198,8 @@ buffer."
 		column-sizes (cdr format-cons)
 		header-line-format (taxy-magit-section-format-header
 				    column-sizes deffy-column-formatters))
+          (delete-all-overlays)
+          (erase-buffer)
 	  (save-excursion
 	    (taxy-magit-section-insert taxy :items 'last
 	      ;; :blank-between-depth bufler-taxy-blank-between-depth
