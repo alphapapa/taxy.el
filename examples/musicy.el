@@ -21,9 +21,10 @@
 
 ;;; Commentary:
 
-;; This is a sample application using `taxi'.  It uses the "mediainfo"
-;; program to get info about audio files, but any function could be
-;; swapped into its place (e.g. one that retrieved data from MPD).
+;; This is a sample application using `taxy'.  It uses the "mediainfo"
+;; program to get metadata of about audio files, but any function
+;; could be swapped into its place (e.g. one that retrieved data from
+;; MPD).
 
 ;;; Code:
 
@@ -85,7 +86,7 @@
      :name "Musicy"
      :taxys (list (make-taxy
                    :name "Genres"
-                   :take (apply-partially #'taxy-take-keyed*
+                   :take (apply-partially #'taxy-take-keyed
                                           (list #'genre #'artist #'year #'album #'track-string)))))))
 
 ;;;; Customization
@@ -103,13 +104,8 @@
   (thread-last musicy-taxy
     taxy-emptied
     (taxy-fill files)
-    (taxy-mapc* (lambda (taxy)
-                  (setf (taxy-taxys taxy)
-                        (cl-sort (taxy-taxys taxy) #'string<
-                                 :key #'taxy-name))
-                  (setf (taxy-items taxy)
-                        (cl-sort (taxy-items taxy) #'string<))))
-    ;;  taxy-plain
+    (taxy-sort #'string< #'taxy-name)
+    (taxy-sort* #'string< #'taxy-name)    
     taxy-magit-section-pp))
 
 ;;;; Functions
