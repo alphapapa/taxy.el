@@ -885,7 +885,9 @@ Note that while =taxy-magit-section.el= is installed with the =taxy= package, th
 
 ** 0.7-pre
 
-Nothing new yet.
+*** Additions
+
++  Function ~taxy-flatten~ returns a list of the items in a taxy and its sub-taxys.
 
 ** 0.6
 

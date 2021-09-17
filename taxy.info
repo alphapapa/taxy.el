@@ -78,13 +78,17 @@ Changelog
 * 0.2: 02.
 * 0.1: 01.
 
-0.6
+0.7-pre
 
 * Additions::
 
-0.5
+0.6
 
 * Additions: Additions (1).
+
+0.5
+
+* Additions: Additions (2).
 * Fixes::
 
 0.3
@@ -95,7 +99,7 @@ Changelog
 0.2
 
 * Changes: Changes (1).
-* Additions: Additions (2).
+* Additions: Additions (3).
 * Fixes: Fixes (2).
 
 Development
@@ -1042,7 +1046,18 @@ File: README.info,  Node: 07-pre,  Next: 06,  Up: Changelog
 4.1 0.7-pre
 ===========
 
-Nothing new yet.
+* Menu:
+
+* Additions::
+
+
+File: README.info,  Node: Additions,  Up: 07-pre
+
+4.1.1 Additions
+---------------
+
+   • Function ‘taxy-flatten’ returns a list of the items in a taxy and
+     its sub-taxys.
 
 
 File: README.info,  Node: 06,  Next: 05,  Prev: 07-pre,  Up: Changelog
@@ -1052,10 +1067,10 @@ File: README.info,  Node: 06,  Next: 05,  Prev: 07-pre,  Up: Changelog
 
 * Menu:
 
-* Additions::
+* Additions: Additions (1).
 
 
-File: README.info,  Node: Additions,  Up: 06
+File: README.info,  Node: Additions (1),  Up: 06
 
 4.2.1 Additions
 ---------------
@@ -1092,11 +1107,11 @@ File: README.info,  Node: 05,  Next: 04,  Prev: 06,  Up: Changelog
 
 * Menu:
 
-* Additions: Additions (1).
+* Additions: Additions (2).
 * Fixes::
 
 
-File: README.info,  Node: Additions (1),  Next: Fixes,  Up: 05
+File: README.info,  Node: Additions (2),  Next: Fixes,  Up: 05
 
 4.3.1 Additions
 ---------------
@@ -1118,7 +1133,7 @@ File: README.info,  Node: Additions (1),  Next: Fixes,  Up: 05
    • New example ‘taxy-package-report’.
 
 
-File: README.info,  Node: Fixes,  Prev: Additions (1),  Up: 05
+File: README.info,  Node: Fixes,  Prev: Additions (2),  Up: 05
 
 4.3.2 Fixes
 -----------
@@ -1177,11 +1192,11 @@ File: README.info,  Node: 02,  Next: 01,  Prev: 03,  Up: Changelog
 * Menu:
 
 * Changes: Changes (1).
-* Additions: Additions (2).
+* Additions: Additions (3).
 * Fixes: Fixes (2).
 
 
-File: README.info,  Node: Changes (1),  Next: Additions (2),  Up: 02
+File: README.info,  Node: Changes (1),  Next: Additions (3),  Up: 02
 
 4.6.1 Changes
 -------------
@@ -1191,7 +1206,7 @@ File: README.info,  Node: Changes (1),  Next: Additions (2),  Up: 02
      reason to maintain two versions.
 
 
-File: README.info,  Node: Additions (2),  Next: Fixes (2),  Prev: Changes (1),  Up: 02
+File: README.info,  Node: Additions (3),  Next: Fixes (2),  Prev: Changes (1),  Up: 02
 
 4.6.2 Additions
 ---------------
@@ -1209,7 +1224,7 @@ File: README.info,  Node: Additions (2),  Next: Fixes (2),  Prev: Changes (1),  
      .
 
 
-File: README.info,  Node: Fixes (2),  Prev: Additions (2),  Up: 02
+File: README.info,  Node: Fixes (2),  Prev: Additions (3),  Up: 02
 
 4.6.3 Fixes
 -----------
@@ -1273,41 +1288,42 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples2085
-Node: Numbery (starting basically)2404
-Node: Lettery (filling incrementally)8165
-Node: Sporty (understanding completely)10679
-Node: Applications16666
-Node: Installation17141
-Node: Usage17454
-Node: Reusable taxys19591
-Node: Threading macros23744
-Node: Modifying filled taxys24283
-Node: Dynamic taxys25101
-Node: Multi-level dynamic taxys27750
-Node: "Chains" of independent multi-level dynamic taxys29943
-Node: Defining a classification domain-specific language32874
-Node: Magit section37037
-Node: Changelog37716
-Node: 07-pre37919
-Node: 0638025
-Node: Additions38140
-Node: 0539486
-Node: Additions (1)39621
-Node: Fixes40727
-Node: 0440881
-Node: 0341103
-Node: Changes41232
-Node: Fixes (1)41595
-Node: 0242030
-Node: Changes (1)42199
-Node: Additions (2)42491
-Node: Fixes (2)43350
-Node: 0143604
-Node: Development43703
-Node: Copyright assignment43909
-Node: Credits44497
-Node: License44687
+Node: Examples2123
+Node: Numbery (starting basically)2442
+Node: Lettery (filling incrementally)8203
+Node: Sporty (understanding completely)10717
+Node: Applications16704
+Node: Installation17179
+Node: Usage17492
+Node: Reusable taxys19629
+Node: Threading macros23782
+Node: Modifying filled taxys24321
+Node: Dynamic taxys25139
+Node: Multi-level dynamic taxys27788
+Node: "Chains" of independent multi-level dynamic taxys29981
+Node: Defining a classification domain-specific language32912
+Node: Magit section37075
+Node: Changelog37754
+Node: 07-pre37957
+Node: Additions38069
+Node: 0638252
+Node: Additions (1)38381
+Node: 0539731
+Node: Additions (2)39866
+Node: Fixes40972
+Node: 0441126
+Node: 0341348
+Node: Changes41477
+Node: Fixes (1)41840
+Node: 0242275
+Node: Changes (1)42444
+Node: Additions (3)42736
+Node: Fixes (2)43595
+Node: 0143849
+Node: Development43948
+Node: Copyright assignment44154
+Node: Credits44742
+Node: License44932
 
 End Tag Table
 

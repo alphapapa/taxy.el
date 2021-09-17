@@ -112,6 +112,13 @@ when reusing taxy definitions."
         (taxy-taxys taxy) (mapcar #'taxy-emptied (taxy-taxys taxy)))
   taxy)
 
+(defun taxy-flatten (taxy)
+  ;; TODO: Document this function.
+  "Return a list of items in TAXY and its sub-taxys."
+  (append (taxy-items taxy)
+          (cl-loop for taxy in (taxy-taxys taxy)
+                   append (taxy-flatten taxy))))
+
 (defun taxy-mapcar-items (fn taxy)
   "Return copy of TAXY, having replaced its items with the value of FN on each.
 Replaces every item in TAXY and its descendants.  Useful to
