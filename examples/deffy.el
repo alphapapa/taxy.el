@@ -41,8 +41,11 @@
 
 ;;;; Keys
 
-(taxy-define-key-definer deffy-define-key deffy-keys "deffy"
-  "FIXME: Docstring.")
+(cl-eval-when (compile load eval)
+  ;; I don't understand why using `cl-eval-when' is necessary, but it
+  ;; seems to be.
+  (taxy-define-key-definer deffy-define-key deffy-keys "deffy"
+                           "FIXME: Docstring."))
 
 (deffy-define-key file ()
   (file-relative-name (deffy-def-file item) deffy-directory))
@@ -68,7 +71,10 @@
 
 ;;;; Columns
 
-(taxy-magit-section-define-column-definer "deffy")
+(cl-eval-when (compile load eval)
+  ;; I don't understand why using `cl-eval-when' is necessary, but it
+  ;; seems to be.
+  (taxy-magit-section-define-column-definer "deffy"))
 
 (deffy-define-column "Definition" (:max-width 45 :face font-lock-function-name-face)
   (let ((form-defines (pcase-exhaustive (cadr (deffy-def-form item))
