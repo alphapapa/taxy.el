@@ -45,8 +45,9 @@
 (cl-eval-when (compile load eval)
   ;; I don't understand why using `cl-eval-when' is necessary, but it
   ;; seems to be.
-  (taxy-define-key-definer deffy-define-key deffy-keys "deffy"
-                           "FIXME: Docstring."))
+  (taxy-define-key-definer deffy-define-key deffy-keys "deffy-key"
+    ;; FIXME: Docstring.
+    ""))
 
 (deffy-define-key file ()
   (file-relative-name (deffy-def-file item) deffy-directory))
@@ -336,7 +337,7 @@ completion; with prefix, from all Deffy buffers."
 				            (get-text-property 0 :annotation candidate))))))
     (if (= 1 (length deffy-buffers))
 	(setf annotate-fn (lambda (def) (deffy-column-format-docstring def 0))
-	      group-fn #'deffy-type)
+	      group-fn #'deffy-key-type)
       (setf affixation-fn #'affix
 	    annotate-fn (lambda (def)
 			  (deffy-column-format-docstring def 0))))
