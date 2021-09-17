@@ -2,6 +2,12 @@
 
 Some example applcations using ~taxy~.
 
+* Bookmarky
+
+=bookmarky= shows Emacs bookmarks grouped in a customizeable way:
+
+[[../images/bookmarky.png]]
+
 * Deffy
 
 =deffy= shows definitions and top-level forms in an Elisp project or file.

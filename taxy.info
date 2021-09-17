@@ -1160,6 +1160,8 @@ File: README.info,  Node: Additions,  Up: 07-pre
    • Function ‘taxy-flatten’ returns a list of the items in a taxy and
      its sub-taxys.
    • Function/macro reference documentation.
+   • Example application ‘bookmarky’ lists Emacs bookmarks grouped with
+     Taxy.
 
 
 File: README.info,  Node: 06,  Next: 05,  Prev: 07-pre,  Up: Changelog
@@ -1411,24 +1413,24 @@ Node: Macros40017
 Node: Changelog40673
 Node: 07-pre40876
 Node: Additions40988
-Node: 0641218
-Node: Additions (1)41347
-Node: 0542697
-Node: Additions (2)42832
-Node: Fixes43938
-Node: 0444092
-Node: 0344314
-Node: Changes44443
-Node: Fixes (1)44806
-Node: 0245241
-Node: Changes (1)45410
-Node: Additions (3)45702
-Node: Fixes (2)46561
-Node: 0146815
-Node: Development46914
-Node: Copyright assignment47120
-Node: Credits47708
-Node: License47898
+Node: 0641307
+Node: Additions (1)41436
+Node: 0542786
+Node: Additions (2)42921
+Node: Fixes44027
+Node: 0444181
+Node: 0344403
+Node: Changes44532
+Node: Fixes (1)44895
+Node: 0245330
+Node: Changes (1)45499
+Node: Additions (3)45791
+Node: Fixes (2)46650
+Node: 0146904
+Node: Development47003
+Node: Copyright assignment47209
+Node: Credits47797
+Node: License47987
 
 End Tag Table
 
