@@ -931,7 +931,7 @@ Note that while =taxy-magit-section.el= is installed with the =taxy= package, th
 :TOC:      :depth 0
 :END:
 
-** 0.7-pre
+** 0.7
 
 *** Additions
 

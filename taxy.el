@@ -5,7 +5,7 @@
 ;; Author: Adam Porter <adam@alphapapa.net>
 ;; Maintainer: Adam Porter <adam@alphapapa.net>
 ;; URL: https://github.com/alphapapa/taxy.el
-;; Version: 0.7-pre
+;; Version: 0.7
 ;; Package-Requires: ((emacs "26.3"))
 ;; Keywords: lisp
 
