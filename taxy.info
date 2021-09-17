@@ -61,12 +61,18 @@ Usage
 * Modifying filled taxys::
 * Dynamic taxys::
 * Magit section::
+* Reference::
 
 Dynamic taxys
 
 * Multi-level dynamic taxys::
 * "Chains" of independent, multi-level dynamic taxys: "Chains" of independent multi-level dynamic taxys.
 * Defining a classification domain-specific language::
+
+Reference
+
+* Functions::
+* Macros::
 
 Changelog
 
@@ -510,7 +516,7 @@ File: README.info,  Node: Usage,  Next: Changelog,  Prev: Installation,  Up: Top
 3 Usage
 *******
 
-   • • • • • 
+   • • • • • • 
    A taxy is defined with the ‘make-taxy’ constructor, like:
 
      (make-taxy :name "Numbery"
@@ -553,6 +559,7 @@ replace items in a taxy with, e.g.  a more useful representation.
 * Modifying filled taxys::
 * Dynamic taxys::
 * Magit section::
+* Reference::
 
 
 File: README.info,  Node: Reusable taxys,  Next: Threading macros,  Up: Usage
@@ -1003,7 +1010,7 @@ function so that users can pass their own list of keys:
           ("Soccer" "Tennis" "Football" "Baseball"))))))
 
 
-File: README.info,  Node: Magit section,  Prev: Dynamic taxys,  Up: Usage
+File: README.info,  Node: Magit section,  Next: Reference,  Prev: Dynamic taxys,  Up: Usage
 
 3.5 Magit section
 =================
@@ -1023,6 +1030,100 @@ Showing a ‘taxy’ with ‘magit-section’ is very easy:
    Note that while ‘taxy-magit-section.el’ is installed with the ‘taxy’
 package, the ‘magit-section’ package is not automatically installed with
 it.
+
+
+File: README.info,  Node: Reference,  Prev: Magit section,  Up: Usage
+
+3.6 Reference
+=============
+
+* Menu:
+
+* Functions::
+* Macros::
+
+
+File: README.info,  Node: Functions,  Next: Macros,  Up: Reference
+
+3.6.1 Functions
+---------------
+
+  1. taxy-flatten (taxy)
+
+     Return a list of items in ‘taxy’ and its sub-taxys.
+
+  2. taxy-emptied (taxy)
+
+     Return a copy of ‘taxy’ without items.  Omits =taxy=’s items and
+     those of its descendant taxys.  Useful when reusing taxy
+     definitions.
+
+  3. taxy-fill (items taxy)
+
+     Fill ‘taxy’ with ‘items’ according to its definition.
+
+  4. taxy-make-take-function (keys aliases)
+
+     Return a taxy "take" function for ‘keys’.  Each of ‘keys’ should be
+     a function alias defined in ‘aliases’, or a list of such ‘key-fns’
+     (recursively, ad infinitum, approximately).  ‘aliases’ should be an
+     alist mapping aliases to functions (such as defined with a definer
+     defined by ‘taxy-define-key-definer’).
+
+  5. taxy-mapc-taxys (fn taxy)
+
+     *Alias:* ‘taxy-mapc*’
+
+     Return ‘taxy’ having applied ‘fn’ to it and its descendants.  Does
+     not copy ‘taxy’.  Destructively modifies ‘taxy’, if ‘fn’ does.
+
+  6. taxy-mapcar-items (fn taxy)
+
+     *Alias:* ‘taxy-mapcar’
+
+     Return copy of ‘taxy’, having replaced its items with the value of
+     ‘fn’ on each.  Replaces every item in ‘taxy’ and its descendants.
+     Useful to replace items with a more useful form after
+     classification.
+
+  7. taxy-plain (taxy)
+
+     Return a list of the human-readable parts of ‘taxy’.
+
+  8. taxy-size (taxy)
+
+     Return the number of items ‘taxy’ holds.  Includes items in ‘taxy’
+     ’s sub-taxys.
+
+  9. taxy-sort-items (pred key taxy)
+
+     *Alias:* ‘taxy-sort’
+
+     Sort ‘taxy’ ’s items by ‘pred’ and ‘key’.  Sorts items in ‘taxy’
+     and its sub-taxys.  ‘key’ is passed to ‘cl-sort’, which see.
+
+  10. taxy-sort-taxys (pred key taxy)
+
+     *Alias:* ‘taxy-sort*’
+
+     Sort ‘taxy’ ’s sub-taxys by ‘pred’ and ‘key’.  ‘key’ is passed to
+     ‘cl-sort’, which see.
+
+
+File: README.info,  Node: Macros,  Prev: Functions,  Up: Reference
+
+3.6.2 Macros
+------------
+
+  1. taxy-define-key-definer (name variable prefix docstring)
+
+     Define a macro ‘name’ that defines a key-function-defining macro.
+     The defined macro, having string ‘docstring’, associates the
+     defined key functions with their aliases in an alist stored in
+     symbol ‘variable’.  The defined key functions are named having
+     string ‘prefix’, which will have a hyphen appended to it.  The key
+     functions take one or more arguments, the first of which is the
+     item being tested, bound within the function to ‘item’.
 
 
 File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
@@ -1288,42 +1389,45 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples2123
-Node: Numbery (starting basically)2442
-Node: Lettery (filling incrementally)8203
-Node: Sporty (understanding completely)10717
-Node: Applications16704
-Node: Installation17179
-Node: Usage17492
-Node: Reusable taxys19629
-Node: Threading macros23782
-Node: Modifying filled taxys24321
-Node: Dynamic taxys25139
-Node: Multi-level dynamic taxys27788
-Node: "Chains" of independent multi-level dynamic taxys29981
-Node: Defining a classification domain-specific language32912
-Node: Magit section37075
-Node: Changelog37754
-Node: 07-pre37957
-Node: Additions38069
-Node: 0638252
-Node: Additions (1)38381
-Node: 0539731
-Node: Additions (2)39866
-Node: Fixes40972
-Node: 0441126
-Node: 0341348
-Node: Changes41477
-Node: Fixes (1)41840
-Node: 0242275
-Node: Changes (1)42444
-Node: Additions (3)42736
-Node: Fixes (2)43595
-Node: 0143849
-Node: Development43948
-Node: Copyright assignment44154
-Node: Credits44742
-Node: License44932
+Node: Examples2174
+Node: Numbery (starting basically)2493
+Node: Lettery (filling incrementally)8254
+Node: Sporty (understanding completely)10768
+Node: Applications16755
+Node: Installation17230
+Node: Usage17543
+Node: Reusable taxys19698
+Node: Threading macros23851
+Node: Modifying filled taxys24390
+Node: Dynamic taxys25208
+Node: Multi-level dynamic taxys27857
+Node: "Chains" of independent multi-level dynamic taxys30050
+Node: Defining a classification domain-specific language32981
+Node: Magit section37144
+Node: Reference37841
+Node: Functions37978
+Node: Macros40017
+Node: Changelog40673
+Node: 07-pre40876
+Node: Additions40988
+Node: 0641171
+Node: Additions (1)41300
+Node: 0542650
+Node: Additions (2)42785
+Node: Fixes43891
+Node: 0444045
+Node: 0344267
+Node: Changes44396
+Node: Fixes (1)44759
+Node: 0245194
+Node: Changes (1)45363
+Node: Additions (3)45655
+Node: Fixes (2)46514
+Node: 0146768
+Node: Development46867
+Node: Copyright assignment47073
+Node: Credits47661
+Node: License47851
 
 End Tag Table
 
