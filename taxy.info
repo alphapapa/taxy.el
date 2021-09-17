@@ -1048,37 +1048,31 @@ File: README.info,  Node: Functions,  Next: Macros,  Up: Reference
 3.6.1 Functions
 ---------------
 
-  1. taxy-flatten (taxy)
-
+taxy-flatten (taxy)
      Return a list of items in ‘taxy’ and its sub-taxys.
 
-  2. taxy-emptied (taxy)
-
+taxy-emptied (taxy)
      Return a copy of ‘taxy’ without items.  Omits =taxy=’s items and
      those of its descendant taxys.  Useful when reusing taxy
      definitions.
 
-  3. taxy-fill (items taxy)
-
+taxy-fill (items taxy)
      Fill ‘taxy’ with ‘items’ according to its definition.
 
-  4. taxy-make-take-function (keys aliases)
-
+taxy-make-take-function (keys aliases)
      Return a taxy "take" function for ‘keys’.  Each of ‘keys’ should be
      a function alias defined in ‘aliases’, or a list of such ‘key-fns’
      (recursively, ad infinitum, approximately).  ‘aliases’ should be an
      alist mapping aliases to functions (such as defined with a definer
      defined by ‘taxy-define-key-definer’).
 
-  5. taxy-mapc-taxys (fn taxy)
-
+taxy-mapc-taxys (fn taxy)
      *Alias:* ‘taxy-mapc*’
 
      Return ‘taxy’ having applied ‘fn’ to it and its descendants.  Does
      not copy ‘taxy’.  Destructively modifies ‘taxy’, if ‘fn’ does.
 
-  6. taxy-mapcar-items (fn taxy)
-
+taxy-mapcar-items (fn taxy)
      *Alias:* ‘taxy-mapcar’
 
      Return copy of ‘taxy’, having replaced its items with the value of
@@ -1086,24 +1080,20 @@ File: README.info,  Node: Functions,  Next: Macros,  Up: Reference
      Useful to replace items with a more useful form after
      classification.
 
-  7. taxy-plain (taxy)
-
+taxy-plain (taxy)
      Return a list of the human-readable parts of ‘taxy’.
 
-  8. taxy-size (taxy)
-
+taxy-size (taxy)
      Return the number of items ‘taxy’ holds.  Includes items in ‘taxy’
      ’s sub-taxys.
 
-  9. taxy-sort-items (pred key taxy)
-
+taxy-sort-items (pred key taxy)
      *Alias:* ‘taxy-sort’
 
      Sort ‘taxy’ ’s items by ‘pred’ and ‘key’.  Sorts items in ‘taxy’
      and its sub-taxys.  ‘key’ is passed to ‘cl-sort’, which see.
 
-  10. taxy-sort-taxys (pred key taxy)
-
+taxy-sort-taxys (pred key taxy)
      *Alias:* ‘taxy-sort*’
 
      Sort ‘taxy’ ’s sub-taxys by ‘pred’ and ‘key’.  ‘key’ is passed to
@@ -1115,8 +1105,7 @@ File: README.info,  Node: Macros,  Prev: Functions,  Up: Reference
 3.6.2 Macros
 ------------
 
-  1. taxy-define-key-definer (name variable prefix docstring)
-
+taxy-define-key-definer (name variable prefix docstring)
      Define a macro ‘name’ that defines a key-function-defining macro.
      The defined macro, having string ‘docstring’, associates the
      defined key functions with their aliases in an alist stored in
@@ -1409,28 +1398,28 @@ Node: Defining a classification domain-specific language32981
 Node: Magit section37144
 Node: Reference37841
 Node: Functions37978
-Node: Macros40017
-Node: Changelog40673
-Node: 07-pre40876
-Node: Additions40988
-Node: 0641307
-Node: Additions (1)41436
-Node: 0542786
-Node: Additions (2)42921
-Node: Fixes44027
-Node: 0444181
-Node: 0344403
-Node: Changes44532
-Node: Fixes (1)44895
-Node: 0245330
-Node: Changes (1)45499
-Node: Additions (3)45791
-Node: Fixes (2)46650
-Node: 0146904
-Node: Development47003
-Node: Copyright assignment47209
-Node: Credits47797
-Node: License47987
+Node: Macros39956
+Node: Changelog40606
+Node: 07-pre40809
+Node: Additions40921
+Node: 0641240
+Node: Additions (1)41369
+Node: 0542719
+Node: Additions (2)42854
+Node: Fixes43960
+Node: 0444114
+Node: 0344336
+Node: Changes44465
+Node: Fixes (1)44828
+Node: 0245263
+Node: Changes (1)45432
+Node: Additions (3)45724
+Node: Fixes (2)46583
+Node: 0146837
+Node: Development46936
+Node: Copyright assignment47142
+Node: Credits47730
+Node: License47920
 
 End Tag Table
 
