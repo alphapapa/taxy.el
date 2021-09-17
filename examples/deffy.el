@@ -240,11 +240,21 @@ Interactively, with prefix, display in dedicated side window."
   (deffy :display-buffer-action (or deffy-display-buffer-action
 				    '((display-buffer-same-window)))))
 
-(defun deffy-goto-form ()
-  "Go to form at point."
-  (interactive)
-  (pcase-let (((cl-struct deffy-def file pos)
-	       (oref (magit-current-section) value)))
+(defun deffy-goto-def (def)
+  "Go to definition DEF.
+Interactively, read DEF from visible Deffy window with
+completion; with prefix, from all Deffy buffers."
+  (interactive
+   (list (deffy--read-def
+           (if current-prefix-arg
+	       (cl-loop for buffer in (buffer-list)
+		        when (eq 'deffy-mode (buffer-local-value 'major-mode buffer))
+		        collect buffer)
+	     (cl-loop for window in (window-list)
+		      when (eq 'deffy-mode
+			       (buffer-local-value 'major-mode (window-buffer window)))
+		      return (list (window-buffer window)))))))
+  (pcase-let (((cl-struct deffy-def file pos) def))
     (pop-to-buffer
      (or (find-buffer-visiting file)
 	 (find-file-noselect file))
@@ -254,14 +264,16 @@ Interactively, with prefix, display in dedicated side window."
     (backward-sexp 1)))
 
 (defun deffy-mouse-1 (event)
+  "Call `deffy-RET' with point at EVENT's position."
   (interactive "e")
   (mouse-set-point event)
   (call-interactively #'deffy-RET))
 
 (defun deffy-RET ()
+  "Go to form at point, or expand section at point."
   (interactive)
   (cl-etypecase (oref (magit-current-section) value)
-    (deffy-def (call-interactively #'deffy-goto-form))
+    (deffy-def (deffy-goto-def (oref (magit-current-section) value)))
     (taxy-magit-section (call-interactively #'magit-section-cycle))
     (null nil)))
 
@@ -271,6 +283,68 @@ Interactively, with prefix, display in dedicated side window."
 	      revert-buffer-function #'deffy-revert))
 
 ;;;; Functions
+
+(cl-defun deffy--read-def
+    (deffy-buffers &key
+      affixation-fn
+      (annotate-fn (lambda (def)
+		     (concat (deffy-type def)
+			     " " (deffy-column-format-docstring def 0))))
+      (group-fn #'deffy-def-file))
+  "Read form selected from Deffy BUFFERS with completion."
+  (unless deffy-buffers
+    (user-error "No Deffy buffers to find in"))
+  (cl-labels ((def-cons
+		(def) (cons (propertize
+			     (cl-typecase (cl-second (deffy-def-form def))
+			       (symbol (symbol-name (cl-second (deffy-def-form def))))
+			       (t (prin1-to-string (cl-second (deffy-def-form def)))))
+			     :annotation (funcall annotate-fn def)
+			     :group (funcall group-fn def)
+			     :def def)
+			    def))
+	      (buffer-taxy
+	       (buffer) (with-current-buffer buffer
+			  (save-excursion
+			    (goto-char (point-min))
+			    (oref (magit-current-section) value))))
+	      (annotate
+	       (candidate)
+	       (concat (propertize " " 'display '(space :align-to center))
+		       (get-text-property 0 :annotation candidate)))
+	      (group
+	       (candidate transform)
+	       (pcase transform
+		 (`nil (get-text-property 0 :group candidate))
+		 (_ candidate)))
+	      (affix (candidates)
+		     (cl-loop for candidate in candidates collect
+		              (list (propertize candidate
+					        'face 'font-lock-function-name-face)
+			            (concat (propertize (deffy-type
+						          (get-text-property 0 :def candidate))
+						        'face 'font-lock-type-face)
+				            "  ")
+			            (concat (propertize " " 'display '(space :align-to center))
+				            (get-text-property 0 :annotation candidate))))))
+    (if (= 1 (length deffy-buffers))
+	(setf annotate-fn (lambda (def) (deffy-column-format-docstring def 0))
+	      group-fn #'deffy-type)
+      (setf affixation-fn #'affix
+	    annotate-fn (lambda (def)
+			  (deffy-column-format-docstring def 0))))
+    (let* ((taxys (mapcar #'buffer-taxy deffy-buffers))
+	   (items (mapcan #'taxy-flatten taxys))
+	   (alist (setf items (mapcar #'def-cons items)))
+	   (metadata (list 'metadata (cons 'group-function #'group)))
+	   (dynamic-fn (lambda (str pred flag)
+			 (pcase flag
+			   ('metadata metadata)
+			   (_ (complete-with-action flag alist str pred)))))
+	   (completion-extra-properties (list :annotation-function #'annotate
+					      :affixation-function affixation-fn))
+	   (selected (completing-read "Definition: " dynamic-fn nil t)))
+      (deffy-goto-def (alist-get selected alist nil nil #'equal)))))
 
 (cl-defun deffy--file-forms (file)
   "Return forms defined in FILE."
