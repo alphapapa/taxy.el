@@ -1159,6 +1159,7 @@ File: README.info,  Node: Additions,  Up: 07-pre
 
    • Function ‘taxy-flatten’ returns a list of the items in a taxy and
      its sub-taxys.
+   • Function/macro reference documentation.
 
 
 File: README.info,  Node: 06,  Next: 05,  Prev: 07-pre,  Up: Changelog
@@ -1410,24 +1411,24 @@ Node: Macros40017
 Node: Changelog40673
 Node: 07-pre40876
 Node: Additions40988
-Node: 0641171
-Node: Additions (1)41300
-Node: 0542650
-Node: Additions (2)42785
-Node: Fixes43891
-Node: 0444045
-Node: 0344267
-Node: Changes44396
-Node: Fixes (1)44759
-Node: 0245194
-Node: Changes (1)45363
-Node: Additions (3)45655
-Node: Fixes (2)46514
-Node: 0146768
-Node: Development46867
-Node: Copyright assignment47073
-Node: Credits47661
-Node: License47851
+Node: 0641218
+Node: Additions (1)41347
+Node: 0542697
+Node: Additions (2)42832
+Node: Fixes43938
+Node: 0444092
+Node: 0344314
+Node: Changes44443
+Node: Fixes (1)44806
+Node: 0245241
+Node: Changes (1)45410
+Node: Additions (3)45702
+Node: Fixes (2)46561
+Node: 0146815
+Node: Development46914
+Node: Copyright assignment47120
+Node: Credits47708
+Node: License47898
 
 End Tag Table
 

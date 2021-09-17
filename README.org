@@ -947,6 +947,7 @@ Define a macro =name= that defines a key-function-defining macro.  The defined m
 *** Additions
 
 +  Function ~taxy-flatten~ returns a list of the items in a taxy and its sub-taxys.
++  Function/macro reference documentation.
 
 ** 0.6
 
