@@ -34,7 +34,7 @@
 
 (cl-defstruct deffy-def
   ;; Okay, the name of this struct is silly, but at least it's concise.
-  file pos form)
+  file pos form name type docstring)
 
 (defgroup deffy nil
   "Show an overview of definitions in an Emacs Lisp project or buffer."
@@ -79,27 +79,13 @@
   (taxy-magit-section-define-column-definer "deffy"))
 
 (deffy-define-column "Definition" (:max-width 45 :face font-lock-function-name-face)
-  (let ((form-defines (pcase-exhaustive (cadr (deffy-def-form item))
-			((and (pred atom) it) it)
-			(`(quote ,it) it)
-			(`(,it . ,_) it))))
-    (format "%s" form-defines)))
+  (format "%s" (deffy-def-name item)))
 
 (deffy-define-column "Type" (:max-width 25 :face font-lock-type-face)
-  (format "%s" (car (deffy-def-form item))))
+  (format "%s" (deffy-def-type item)))
 
 (deffy-define-column "Docstring" (:max-width nil :face font-lock-doc-face)
-  (when-let ((docstring
-	      (pcase (deffy-def-form item)
-		(`(,(or 'defun 'cl-defun 'defmacro 'cl-defmacro) ,_name ,_args
-		   ,(and (pred stringp) docstring) . ,_)
-		 docstring)
-		(`(,(or 'defvar 'defvar-local 'defcustom) ,_name ,_value
-		   ,(and (pred stringp) docstring) . ,_)
-		 docstring)
-		(_ ;; Use the first string found, if any.
-		 (cl-find-if #'stringp (deffy-def-form item))))))
-    (replace-regexp-in-string "\n" "  " docstring)))
+  (deffy-def-docstring item))
 
 (unless deffy-columns
   ;; TODO: Automate this or document it
@@ -296,17 +282,14 @@ completion; with prefix, from all Deffy buffers."
     (deffy-buffers &key
       affixation-fn
       (annotate-fn (lambda (def)
-		     (concat (deffy-type def)
-			     " " (deffy-column-format-docstring def 0))))
+		     (concat (deffy-def-type def) " " (deffy-def-docstring def))))
       (group-fn #'deffy-def-file))
   "Read form selected from Deffy BUFFERS with completion."
   (unless deffy-buffers
     (user-error "No Deffy buffers to find in"))
   (cl-labels ((def-cons
 		(def) (cons (propertize
-			     (cl-typecase (cl-second (deffy-def-form def))
-			       (symbol (symbol-name (cl-second (deffy-def-form def))))
-			       (t (prin1-to-string (cl-second (deffy-def-form def)))))
+			     (format "%s" (deffy-def-name def))
 			     :annotation (funcall annotate-fn def)
 			     :group (funcall group-fn def)
 			     :def def)
@@ -335,12 +318,11 @@ completion; with prefix, from all Deffy buffers."
 				            "  ")
 			            (concat (propertize " " 'display '(space :align-to center))
 				            (get-text-property 0 :annotation candidate))))))
-    (if (= 1 (length deffy-buffers))
-	(setf annotate-fn (lambda (def) (deffy-column-format-docstring def 0))
-	      group-fn #'deffy-key-type)
-      (setf affixation-fn #'affix
-	    annotate-fn (lambda (def)
-			  (deffy-column-format-docstring def 0))))
+    (pcase (length deffy-buffers)
+      (1 (setf annotate-fn #'deffy-def-docstring
+	       group-fn #'deffy-key-type))
+      (_ (setf annotate-fn #'deffy-def-docstring
+               affixation-fn #'affix)))
     (let* ((taxys (mapcar #'buffer-taxy deffy-buffers))
 	   (items (mapcan #'taxy-flatten taxys))
 	   (alist (setf items (mapcar #'def-cons items)))
@@ -363,7 +345,25 @@ completion; with prefix, from all Deffy buffers."
 			  (read (current-buffer)))
 	     while form
 	     when (listp form)
-	     collect (make-deffy-def :file file :pos (point) :form form))))
+	     collect (make-deffy-def
+                      :file file :pos (point) :form form
+                      :name (pcase-exhaustive (cadr form)
+			      ((and (pred atom) it) it)
+			      (`(quote ,it) it)
+			      (`(,it . ,_) it))
+                      :type (car form)
+                      :docstring (replace-regexp-in-string
+                                  "\n" "  "
+                                  (pcase form
+		                    (`(,(or 'defun 'cl-defun 'defmacro 'cl-defmacro) ,_name ,_args
+		                       ,(and (pred stringp) docstring) . ,_)
+		                     docstring)
+		                    (`(,(or 'defvar 'defvar-local 'defcustom) ,_name ,_value
+		                       ,(and (pred stringp) docstring) . ,_)
+		                     docstring)
+		                    (_ ;; Use the first string found, if any.
+		                     (or (cl-find-if #'stringp form)
+                                         ""))))))))
 
 ;;;;; Bookmark support
 
