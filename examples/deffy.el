@@ -246,8 +246,8 @@ Interactively, with prefix, display in dedicated side window."
   (deffy :display-buffer-action (or deffy-display-buffer-action
 				    '((display-buffer-same-window)))))
 
-(defun deffy-goto-def (def)
-  "Go to definition DEF.
+(defun deffy-jump (def)
+  "Jump to definition DEF.
 Interactively, read DEF from visible Deffy window with
 completion; with prefix, from all Deffy buffers."
   (interactive
@@ -279,7 +279,7 @@ completion; with prefix, from all Deffy buffers."
   "Go to form at point, or expand section at point."
   (interactive)
   (cl-etypecase (oref (magit-current-section) value)
-    (deffy-def (deffy-goto-def (oref (magit-current-section) value)))
+    (deffy-def (deffy-jump (oref (magit-current-section) value)))
     (taxy-magit-section (call-interactively #'magit-section-cycle))
     (null nil)))
 
@@ -350,7 +350,7 @@ completion; with prefix, from all Deffy buffers."
 	   (completion-extra-properties (list :annotation-function #'annotate
 					      :affixation-function affixation-fn))
 	   (selected (completing-read "Definition: " dynamic-fn nil t)))
-      (deffy-goto-def (alist-get selected alist nil nil #'equal)))))
+      (deffy-jump (alist-get selected alist nil nil #'equal)))))
 
 (cl-defun deffy--file-forms (file)
   "Return forms defined in FILE."
