@@ -85,17 +85,21 @@ Changelog
 * 0.2: 02.
 * 0.1: 01.
 
-0.7
+0.8-pre
 
 * Additions::
 
-0.6
+0.7
 
 * Additions: Additions (1).
 
-0.5
+0.6
 
 * Additions: Additions (2).
+
+0.5
+
+* Additions: Additions (3).
 * Fixes::
 
 0.3
@@ -106,7 +110,7 @@ Changelog
 0.2
 
 * Changes: Changes (1).
-* Additions: Additions (3).
+* Additions: Additions (4).
 * Fixes: Fixes (2).
 
 Development
@@ -1038,6 +1042,8 @@ File: README.info,  Node: Reference,  Prev: Magit section,  Up: Usage
 3.6 Reference
 =============
 
+In Emacs 28+, see also ‘M-x shortdoc-display-group RET taxy RET’.
+
 * Menu:
 
 * Functions::
@@ -1138,7 +1144,17 @@ File: README.info,  Node: 08-pre,  Next: 07,  Up: Changelog
 4.1 0.8-pre
 ===========
 
-Nothing new yet.
+* Menu:
+
+* Additions::
+
+
+File: README.info,  Node: Additions,  Up: 08-pre
+
+4.1.1 Additions
+---------------
+
+   • Short documentation group for Emacs 28+.
 
 
 File: README.info,  Node: 07,  Next: 06,  Prev: 08-pre,  Up: Changelog
@@ -1148,10 +1164,10 @@ File: README.info,  Node: 07,  Next: 06,  Prev: 08-pre,  Up: Changelog
 
 * Menu:
 
-* Additions::
+* Additions: Additions (1).
 
 
-File: README.info,  Node: Additions,  Up: 07
+File: README.info,  Node: Additions (1),  Up: 07
 
 4.2.1 Additions
 ---------------
@@ -1170,10 +1186,10 @@ File: README.info,  Node: 06,  Next: 05,  Prev: 07,  Up: Changelog
 
 * Menu:
 
-* Additions: Additions (1).
+* Additions: Additions (2).
 
 
-File: README.info,  Node: Additions (1),  Up: 06
+File: README.info,  Node: Additions (2),  Up: 06
 
 4.3.1 Additions
 ---------------
@@ -1210,11 +1226,11 @@ File: README.info,  Node: 05,  Next: 04,  Prev: 06,  Up: Changelog
 
 * Menu:
 
-* Additions: Additions (2).
+* Additions: Additions (3).
 * Fixes::
 
 
-File: README.info,  Node: Additions (2),  Next: Fixes,  Up: 05
+File: README.info,  Node: Additions (3),  Next: Fixes,  Up: 05
 
 4.4.1 Additions
 ---------------
@@ -1236,7 +1252,7 @@ File: README.info,  Node: Additions (2),  Next: Fixes,  Up: 05
    • New example ‘taxy-package-report’.
 
 
-File: README.info,  Node: Fixes,  Prev: Additions (2),  Up: 05
+File: README.info,  Node: Fixes,  Prev: Additions (3),  Up: 05
 
 4.4.2 Fixes
 -----------
@@ -1295,11 +1311,11 @@ File: README.info,  Node: 02,  Next: 01,  Prev: 03,  Up: Changelog
 * Menu:
 
 * Changes: Changes (1).
-* Additions: Additions (3).
+* Additions: Additions (4).
 * Fixes: Fixes (2).
 
 
-File: README.info,  Node: Changes (1),  Next: Additions (3),  Up: 02
+File: README.info,  Node: Changes (1),  Next: Additions (4),  Up: 02
 
 4.7.1 Changes
 -------------
@@ -1309,7 +1325,7 @@ File: README.info,  Node: Changes (1),  Next: Additions (3),  Up: 02
      reason to maintain two versions.
 
 
-File: README.info,  Node: Additions (3),  Next: Fixes (2),  Prev: Changes (1),  Up: 02
+File: README.info,  Node: Additions (4),  Next: Fixes (2),  Prev: Changes (1),  Up: 02
 
 4.7.2 Additions
 ---------------
@@ -1327,7 +1343,7 @@ File: README.info,  Node: Additions (3),  Next: Fixes (2),  Prev: Changes (1),  
      .
 
 
-File: README.info,  Node: Fixes (2),  Prev: Additions (3),  Up: 02
+File: README.info,  Node: Fixes (2),  Prev: Additions (4),  Up: 02
 
 4.7.3 Fixes
 -----------
@@ -1391,46 +1407,47 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples2181
-Node: Numbery (starting basically)2500
-Node: Lettery (filling incrementally)8261
-Node: Sporty (understanding completely)10775
-Node: Applications16762
-Node: Installation17237
-Node: Usage17550
-Node: Reusable taxys19705
-Node: Threading macros23858
-Node: Modifying filled taxys24397
-Node: Dynamic taxys25215
-Node: Multi-level dynamic taxys27864
-Node: "Chains" of independent multi-level dynamic taxys30057
-Node: Defining a classification domain-specific language32988
-Node: Magit section37151
-Node: Reference37848
-Node: Functions37985
-Node: Macros39963
-Node: Changelog40613
-Node: 08-pre40827
-Node: 0740933
+Node: Examples2219
+Node: Numbery (starting basically)2538
+Node: Lettery (filling incrementally)8299
+Node: Sporty (understanding completely)10813
+Node: Applications16800
+Node: Installation17275
+Node: Usage17588
+Node: Reusable taxys19743
+Node: Threading macros23896
+Node: Modifying filled taxys24435
+Node: Dynamic taxys25253
+Node: Multi-level dynamic taxys27902
+Node: "Chains" of independent multi-level dynamic taxys30095
+Node: Defining a classification domain-specific language33026
+Node: Magit section37189
+Node: Reference37886
+Node: Functions38094
+Node: Macros40072
+Node: Changelog40722
+Node: 08-pre40936
 Node: Additions41048
-Node: 0641363
-Node: Additions (1)41488
-Node: 0542838
-Node: Additions (2)42973
-Node: Fixes44079
-Node: 0444233
-Node: 0344455
-Node: Changes44584
-Node: Fixes (1)44947
-Node: 0245382
-Node: Changes (1)45551
-Node: Additions (3)45843
-Node: Fixes (2)46702
-Node: 0146956
-Node: Development47055
-Node: Copyright assignment47261
-Node: Credits47849
-Node: License48039
+Node: 0741182
+Node: Additions (1)41311
+Node: 0641630
+Node: Additions (2)41755
+Node: 0543105
+Node: Additions (3)43240
+Node: Fixes44346
+Node: 0444500
+Node: 0344722
+Node: Changes44851
+Node: Fixes (1)45214
+Node: 0245649
+Node: Changes (1)45818
+Node: Additions (4)46110
+Node: Fixes (2)46969
+Node: 0147223
+Node: Development47322
+Node: Copyright assignment47528
+Node: Credits48116
+Node: License48306
 
 End Tag Table
 

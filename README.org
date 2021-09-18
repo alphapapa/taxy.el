@@ -881,6 +881,8 @@ Note that while =taxy-magit-section.el= is installed with the =taxy= package, th
 
 ** Reference
 
+In Emacs 28+, see also =M-x shortdoc-display-group RET taxy RET=.
+
 *** Functions
 
 - taxy-flatten (taxy) ::
@@ -933,7 +935,9 @@ Note that while =taxy-magit-section.el= is installed with the =taxy= package, th
 
 ** 0.8-pre
 
-Nothing new yet.
+*** Additions
+
++  Short documentation group for Emacs 28+.
 
 ** 0.7
 
