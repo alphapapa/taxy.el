@@ -1,6 +1,5 @@
 #+TITLE: taxy.el Notes
 
-
 * Ideas
 
 ** Useful functions from [[id:8d9adb33-3f14-4667-a03e-bd5c6656d178][taxonomy Python package]]
@@ -9,10 +8,15 @@ It's specifically intended for biological taxonomies, but some of the functions 
 
 * References
 
+** [[https://github.com/volrath/treepy.el][treepy.el]]
+
+I'm guessing that Treepy can be used with Taxy structs pretty easily.  It might be good to demonstrate how to use them together.
+
 ** [[https://pypi.org/project/taxonomy/][taxonomy · PyPI]]
 :PROPERTIES:
 :ID:       8d9adb33-3f14-4667-a03e-bd5c6656d178
 :END:
+
 
 * Checklists
 
@@ -83,4 +87,59 @@ When committing a fix:
 +  [ ] Delete WIP branch
 
 ** Archive
+
+* Code
+
+** Definition to Org
+
+This function returns an Org-formatted entry for a ~deffy-def~ struct.
+
+#+begin_src elisp
+  (defun taxy--defs-to-org ()
+    (interactive)
+    (kill-new
+     (mapconcat #'taxy--def-to-org
+                (mapcar (lambda (section)
+                          (oref section value))
+                        (magit-region-sections))
+                "\n\n")))
+
+  (defun taxy--def-to-org (def)
+    (format "* %s %s\n\n%s"
+            (cl-second (deffy-def-form def))
+            (concat "=" (mapconcat #'prin1-to-string (cl-third (deffy-def-form def)) " ") "=")
+            (taxy--wash-doc (documentation (cl-second (deffy-def-form def))))))
+
+  ;; NOTE: Inexplicably, I can't get the rx upper form to match only
+  ;; uppercase characters.  So this is on hold, I guess.
+
+  (defun taxy--wash-doc (string)
+    (thread-last string
+      (replace-regexp-in-string "\n" " ")
+      (replace-regexp-in-string (rx bow (1+ upper) eow)
+                                (lambda (s)
+                                  (concat "=" (downcase s) "=")))
+      ;; (replace-regexp-in-string (rx "‘" (group (1+ (syntax symbol))) "’")
+      ;;                           (lambda (s)
+      ;;                             (concat "=" (downcase (match-string 1 s)) "=")))
+      ))
+
+  (defun taxy--wash-doc (string)
+    (with-temp-buffer
+      (org-mode)
+      (save-excursion
+        (insert string))
+      (pcase-dolist (`(,match ,rep)
+                     (list '("\n" "  ")
+                           (list (rx bow (1+ upper) eow)
+                                 (lambda (s)
+                                   (concat "=" (downcase s) "=")))))
+        (save-excursion
+          (while (re-search-forward match nil t)
+            (replace-match (cl-typecase rep
+                             (string rep)
+                             (function (funcall rep (match-string 0))))
+                           t t nil 0))))
+      (buffer-string)))
+#+end_src
 
