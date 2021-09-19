@@ -253,7 +253,7 @@ completion; with prefix, from all Deffy buffers."
      (or (find-buffer-visiting file)
 	 (find-file-noselect file))
      `(display-buffer-in-previous-window
-       (previous-window . ,(get-mru-window))))
+       (previous-window . ,(get-mru-window nil nil 'not-selected))))
     (goto-char pos)
     (backward-sexp 1)))
 
