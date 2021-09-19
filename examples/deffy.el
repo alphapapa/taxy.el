@@ -162,6 +162,11 @@ buffer."
 		(def-name (def) (format "%s" (cl-second (deffy-def-form def)))))
       ;; (when (get-buffer buffer-name)
       ;;   (kill-buffer buffer-name))
+      (setf files (cl-reduce #'cl-remove-if-not (list #'elisp-file-p #'file-visible-p)
+			     :initial-value (or files (project-files project))
+			     :from-end t))
+      (unless files
+        (user-error "No files to show"))
       (with-current-buffer (get-buffer-create buffer-name)
 	(deffy-mode)
 	(setq-local deffy-taxy-default-keys keys
@@ -169,10 +174,6 @@ buffer."
 		    deffy-files files
 		    deffy-display-buffer-action display-buffer-action
 		    default-directory deffy-directory)
-	(setf files (cl-reduce #'cl-remove-if-not (list #'elisp-file-p #'file-visible-p)
-			       :initial-value (or files (project-files project))
-			       :from-end t))
-	(cl-assert files nil "No files to show")
 	(let* ((forms (apply #'append (mapcar #'deffy--file-forms files)))
 	       (taxy (thread-last
 			 (make-fn
@@ -243,17 +244,23 @@ Interactively, read DEF from current buffer with completion; with
 prefix, from all `deffy-mode' buffers."
   (interactive
    (list (deffy--read-def
-           (if current-prefix-arg
+	   (if current-prefix-arg
 	       (cl-loop for buffer in (buffer-list)
-		        when (eq 'deffy-mode (buffer-local-value 'major-mode buffer))
-		        collect buffer)
-             (or (cl-loop for buffer in (buffer-list)
-                          when (and (eq 'deffy-mode (buffer-local-value 'major-mode buffer))
-                                    (member (buffer-file-name) (buffer-local-value 'deffy-files buffer)))
-                          return (list buffer))
-                 (save-window-excursion
-                   (deffy-buffer)
-                   (list (current-buffer))))))))
+			when (eq 'deffy-mode (buffer-local-value 'major-mode buffer))
+			collect buffer)
+	     (or (cl-loop for buffer in (buffer-list)
+			  when (and (eq 'deffy-mode (buffer-local-value 'major-mode buffer))
+				    (member (buffer-file-name)
+                                            (buffer-local-value 'deffy-files buffer)))
+			  return (list buffer))
+		 (condition-case nil
+		     (save-window-excursion
+		       (deffy-buffer)
+		       (list (current-buffer)))
+		   (error (cl-loop for window in (window-list)
+                                   when (eq 'deffy-mode
+                                            (buffer-local-value 'major-mode (window-buffer window)))
+                                   return (list (window-buffer window))))))))))
   (pcase-let (((cl-struct deffy-def file pos) def))
     (pop-to-buffer
      (or (find-buffer-visiting file)
