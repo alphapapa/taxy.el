@@ -339,7 +339,7 @@ completion; with prefix, from all Deffy buffers."
 	   (completion-extra-properties (list :annotation-function #'annotate
 					      :affixation-function affixation-fn))
 	   (selected (completing-read "Definition: " dynamic-fn nil t)))
-      (deffy-jump (alist-get selected alist nil nil #'equal)))))
+      (alist-get selected alist nil nil #'equal))))
 
 (cl-defun deffy--file-forms (file)
   "Return forms defined in FILE."
