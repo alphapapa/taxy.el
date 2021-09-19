@@ -239,18 +239,21 @@ Interactively, with prefix, display in dedicated side window."
 
 (defun deffy-jump (def)
   "Jump to definition DEF.
-Interactively, read DEF from visible Deffy window with
-completion; with prefix, from all Deffy buffers."
+Interactively, read DEF from current buffer with completion; with
+prefix, from all `deffy-mode' buffers."
   (interactive
    (list (deffy--read-def
            (if current-prefix-arg
 	       (cl-loop for buffer in (buffer-list)
 		        when (eq 'deffy-mode (buffer-local-value 'major-mode buffer))
 		        collect buffer)
-	     (cl-loop for window in (window-list)
-		      when (eq 'deffy-mode
-			       (buffer-local-value 'major-mode (window-buffer window)))
-		      return (list (window-buffer window)))))))
+             (or (cl-loop for buffer in (buffer-list)
+                          when (and (eq 'deffy-mode (buffer-local-value 'major-mode buffer))
+                                    (member (buffer-file-name) (buffer-local-value 'deffy-files buffer)))
+                          return (list buffer))
+                 (save-window-excursion
+                   (deffy-buffer)
+                   (list (current-buffer))))))))
   (pcase-let (((cl-struct deffy-def file pos) def))
     (pop-to-buffer
      (or (find-buffer-visiting file)
