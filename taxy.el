@@ -283,9 +283,9 @@ KEY is passed to `cl-sort', which see."
 
 (defalias 'taxy-sort* #'taxy-sort-taxys)
 
-(cl-defun taxy-lineage (item taxy &key (test #'member) (key #'taxy-items))
-  "Return the lineage of ITEM (of any type) in TAXY.
-Returns a list of parent taxys.  Compares KEY with TEST."
+(cl-defun taxy-path (item taxy &key (test #'member) (key #'taxy-items))
+  "Return the path to ITEM in TAXY.
+Returns a list of ancestor taxys.  Compares KEY with TEST."
   (cl-labels ((rec (path item taxy)
                    (if (funcall test item (funcall key taxy))
                        (list taxy)

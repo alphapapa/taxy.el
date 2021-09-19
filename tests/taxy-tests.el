@@ -54,17 +54,17 @@
                  (taxy-name
                   (taxy-find-parent 2 taxy-tests-numbery)))))
 
-(ert-deftest taxy-lineage ()
+(ert-deftest taxy-path ()
   (should (equal '("Numbers" "< 5" "Even")
                  (mapcar #'taxy-name
-                         (taxy-lineage 2 taxy-tests-numbery))))
+                         (taxy-path 2 taxy-tests-numbery))))
   (should (equal '("Numbers" "< 5" "Odd")
                  (mapcar #'taxy-name
-                         (taxy-lineage 1 taxy-tests-numbery))))
+                         (taxy-path 1 taxy-tests-numbery))))
   (should (equal '("Numbers" "< 5")
                  (mapcar #'taxy-name
-                         (taxy-lineage "< 5" taxy-tests-numbery
-                                       :key #'taxy-name :test #'equal)))))
+                         (taxy-path "< 5" taxy-tests-numbery
+                                    :key #'taxy-name :test #'equal)))))
 
 (ert-deftest taxy-follow ()
   (should (seq-set-equal-p '(0 2 4)
