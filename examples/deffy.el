@@ -125,16 +125,17 @@ See Info node `(elisp)Displaying Buffers in Side Windows'."
 ;;;; Commands
 
 ;;;###autoload
-(cl-defun deffy (&key (project (or (project-current)
-				   (cons 'transient default-directory)))
-		      (keys deffy-taxy-default-keys)
-		      (files deffy-files)
-		      (buffer-name (format "*Deffy: %s*"
-					   (if files
-					       (string-join (mapcar #'file-relative-name files) ", ")
-					     (file-name-nondirectory
-					      (directory-file-name (project-root project))))))
-		      visibility-fn display-buffer-action)
+(cl-defun deffy
+    (&key (project (or (project-current)
+		       (cons 'transient default-directory)))
+	  (keys deffy-taxy-default-keys)
+	  (files deffy-files)
+	  (buffer-name (format "*Deffy: %s*"
+			       (if files
+				   (string-join (mapcar #'file-relative-name files) ", ")
+				 (file-name-nondirectory
+				  (directory-file-name (project-root project))))))
+	  visibility-fn display-buffer-action)
   "Show definitions defined in PROJECT or FILES.
 Interactively, with PREFIX, show only definitions in current
 buffer."
@@ -176,11 +177,12 @@ buffer."
 	       (taxy (thread-last
 			 (make-fn
 			  :name "Deffy"
-			  :description (format "Definitions in %s:"
-					       (if files
-						   (string-join (mapcar #'file-relative-name files) ", ")
-						 (file-name-nondirectory
-						  (directory-file-name (project-root project)))))
+			  :description
+                          (format "Definitions in %s:"
+				  (if files
+				      (string-join (mapcar #'file-relative-name files) ", ")
+				    (file-name-nondirectory
+				     (directory-file-name (project-root project)))))
 			  :take (taxy-make-take-function keys deffy-keys))
 		       (taxy-fill forms)
 		       (taxy-sort* #'string< #'taxy-name)
@@ -313,11 +315,13 @@ completion; with prefix, from all Deffy buffers."
 		     (cl-loop for candidate in candidates collect
 		              (list (propertize candidate
 					        'face 'font-lock-function-name-face)
-			            (concat (propertize (deffy-def-type
-						          (get-text-property 0 :def candidate))
-						        'face 'font-lock-type-face)
+			            (concat (propertize
+                                             (deffy-def-type
+					       (get-text-property 0 :def candidate))
+					     'face 'font-lock-type-face)
 				            "  ")
-			            (concat (propertize " " 'display '(space :align-to center))
+			            (concat (propertize " "
+                                                        'display '(space :align-to center))
 				            (get-text-property 0 :annotation candidate))))))
     (pcase (length deffy-buffers)
       (1 (setf annotate-fn #'deffy-def-docstring
@@ -353,18 +357,19 @@ completion; with prefix, from all Deffy buffers."
 			      (`(quote ,it) it)
 			      (`(,it . ,_) it))
                       :type (car form)
-                      :docstring (replace-regexp-in-string
-                                  "\n" "  "
-                                  (pcase form
-		                    (`(,(or 'defun 'cl-defun 'defmacro 'cl-defmacro) ,_name ,_args
-		                       ,(and (pred stringp) docstring) . ,_)
-		                     docstring)
-		                    (`(,(or 'defvar 'defvar-local 'defcustom) ,_name ,_value
-		                       ,(and (pred stringp) docstring) . ,_)
-		                     docstring)
-		                    (_ ;; Use the first string found, if any.
-		                     (or (cl-find-if #'stringp form)
-                                         ""))))))))
+                      :docstring
+                      (replace-regexp-in-string
+                       "\n" "  "
+                       (pcase form
+		         (`(,(or 'defun 'cl-defun 'defmacro 'cl-defmacro) ,_name ,_args
+		            ,(and (pred stringp) docstring) . ,_)
+		          docstring)
+		         (`(,(or 'defvar 'defvar-local 'defcustom) ,_name ,_value
+		            ,(and (pred stringp) docstring) . ,_)
+		          docstring)
+		         (_ ;; Use the first string found, if any.
+		          (or (cl-find-if #'stringp form)
+                              ""))))))))
 
 ;;;;; Bookmark support
 
