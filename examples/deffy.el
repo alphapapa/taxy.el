@@ -115,6 +115,7 @@
   '(display-buffer-in-side-window
     (side . right)
     (window-parameters
+     (dedicated . t)
      (window-side . right)
      (no-delete-other-windows . t)))
   "`display-buffer' action used when displaying Deffy buffer in a side window.
