@@ -119,6 +119,19 @@ when reusing taxy definitions."
           (cl-loop for taxy in (taxy-taxys taxy)
                    append (taxy-flatten taxy))))
 
+(cl-defun taxy-follow (path taxy &key (key #'identity) (test #'equal))
+  ;; TODO: Document this.
+  "Return taxy at PATH in TAXY's sub-taxys.
+Compares KEY with TEST."
+  (cl-labels ((rec (path taxy)
+                   (when (funcall test (car path) (funcall key taxy))
+                     (if (cdr path)
+                         (cl-loop for sub-taxy in (taxy-taxys taxy)
+                                  when (rec (cdr path) sub-taxy)
+                                  return it)
+                       taxy))))
+    (rec path taxy)))
+
 (defun taxy-mapcar-items (fn taxy)
   "Return copy of TAXY, having replaced its items with the value of FN on each.
 Replaces every item in TAXY and its descendants.  Useful to
@@ -269,6 +282,50 @@ KEY is passed to `cl-sort', which see."
     taxy))
 
 (defalias 'taxy-sort* #'taxy-sort-taxys)
+
+(cl-defun taxy-lineage (item taxy &key (test #'member) (key #'taxy-items))
+  "Return the lineage of ITEM (of any type) in TAXY.
+Returns a list of parent taxys.  Compares KEY with TEST."
+  (cl-labels ((rec (path item taxy)
+                   (if (funcall test item (funcall key taxy))
+                       (list taxy)
+                     (cl-loop for sub-taxy in (taxy-taxys taxy)
+                              for lineage = (rec path item sub-taxy)
+                              when lineage
+                              return (cons taxy lineage)))))
+    (rec nil item taxy)))
+
+;;;; Methods
+
+;; TODO: Document these.
+
+;; NOTE: While `taxy-parent' would be a more concise name, I'm
+;; reserving that name in case of adding a `parent' slot to the `taxy'
+;; struct in the future.  Also, similarly to `cl-find', this looks for
+;; the first matching item in a taxy and doesn't promise that it's the
+;; only occurrence.
+
+(cl-defgeneric taxy-find-parent (item taxy &key (test #'member))
+  "Return the parent of ITEM in TAXY.
+Compares with TEST.")
+
+(cl-defmethod taxy-find-parent ((item t) taxy &key (test #'member))
+  "Return the parent of ITEM (of any type) in TAXY.
+Compares with TEST."
+  (if (funcall test item (taxy-items taxy))
+      taxy
+    (cl-loop for sub-taxy in (taxy-taxys taxy)
+             when (taxy-find-parent item sub-taxy :test test)
+             return it)))
+
+(cl-defmethod taxy-find-parent ((item taxy) taxy &key (test #'member))
+  "Return the parent of ITEM (a taxy) in TAXY.
+Compares with TEST."
+  (if (funcall test item (taxy-taxys taxy))
+      taxy
+    (cl-loop for sub-taxy in (taxy-taxys taxy)
+             when (taxy-find-parent item sub-taxy :test test)
+             return it)))
 
 ;;;; Key functions
 
