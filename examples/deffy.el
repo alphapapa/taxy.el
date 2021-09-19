@@ -316,8 +316,9 @@ completion; with prefix, from all Deffy buffers."
 		              (list (propertize candidate
 					        'face 'font-lock-function-name-face)
 			            (concat (propertize
-                                             (deffy-def-type
-					       (get-text-property 0 :def candidate))
+                                             (symbol-name
+                                              (deffy-def-type
+					        (get-text-property 0 :def candidate)))
 					     'face 'font-lock-type-face)
 				            "  ")
 			            (concat (propertize " "
