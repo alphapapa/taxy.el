@@ -312,7 +312,7 @@ completion; with prefix, from all Deffy buffers."
 		     (cl-loop for candidate in candidates collect
 		              (list (propertize candidate
 					        'face 'font-lock-function-name-face)
-			            (concat (propertize (deffy-type
+			            (concat (propertize (deffy-def-type
 						          (get-text-property 0 :def candidate))
 						        'face 'font-lock-type-face)
 				            "  ")
