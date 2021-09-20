@@ -283,6 +283,7 @@ KEY is passed to `cl-sort', which see."
 (defalias 'taxy-sort* #'taxy-sort-taxys)
 
 (cl-defun taxy-path (item taxy &key (test #'member) (key #'taxy-items))
+  ;; TODO: Document this.
   "Return the path to ITEM in TAXY.
 Returns a list of ancestor taxys.  Compares KEY with TEST."
   (cl-labels ((rec (path item taxy)
