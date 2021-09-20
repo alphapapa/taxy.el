@@ -261,12 +261,15 @@ prefix, from all `deffy-mode' buffers."
                                    when (eq 'deffy-mode
                                             (buffer-local-value 'major-mode (window-buffer window)))
                                    return (list (window-buffer window))))))))))
-  (pcase-let (((cl-struct deffy-def file pos) def))
+  (pcase-let (((cl-struct deffy-def file pos) def)
+              (action (if (eq 'deffy-mode major-mode)
+                          `(display-buffer-in-previous-window
+                            (previous-window . ,(get-mru-window nil nil 'not-selected)))
+                        '(display-buffer-same-window))))
     (pop-to-buffer
      (or (find-buffer-visiting file)
 	 (find-file-noselect file))
-     `(display-buffer-in-previous-window
-       (previous-window . ,(get-mru-window nil nil 'not-selected))))
+     action)
     (goto-char pos)
     (backward-sexp 1)))
 
