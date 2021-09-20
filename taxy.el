@@ -113,7 +113,6 @@ when reusing taxy definitions."
   taxy)
 
 (defun taxy-flatten (taxy)
-  ;; TODO: Document this function.
   "Return a list of items in TAXY and its sub-taxys."
   (append (taxy-items taxy)
           (cl-loop for taxy in (taxy-taxys taxy)
