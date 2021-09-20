@@ -120,9 +120,9 @@ when reusing taxy definitions."
                    append (taxy-flatten taxy))))
 
 (cl-defun taxy-follow (path taxy &key (key #'identity) (test #'equal))
-  ;; TODO: Document this.
+  ;; TODO: Demonstrate this in an example.
   "Return taxy at PATH in TAXY's sub-taxys.
-Compares KEY with TEST."
+Compares KEY applied to each taxy with TEST."
   (cl-labels ((rec (path taxy)
                    (when (funcall test (car path) (funcall key taxy))
                      (if (cdr path)
@@ -482,7 +482,17 @@ defined with a definer defined by `taxy-define-key-definer')."
       :eval (taxy-sort-taxys #'string< #'taxy-name
               (make-taxy :name "Taxy"
                          :taxys (list (make-taxy :name "Beta")
-                                      (make-taxy :name "Alpha")))))))
+                                      (make-taxy :name "Alpha")))))
+    (taxy-follow
+     :eval (taxy-items
+            (taxy-follow
+             '("Numbers" "Odd")
+             (make-taxy :name "Numbers"
+                        :taxys (list (make-taxy :name "Even"
+                                                :items '(0 2 4))
+                                     (make-taxy :name "Odd"
+                                                :items '(1 3))))
+             :key #'taxy-name)))))
 
 ;;;; Footer
 

@@ -1058,6 +1058,10 @@ File: README.info,  Node: Functions,  Next: Macros,  Up: Reference
 taxy-flatten (taxy)
      Return a list of items in ‘taxy’ and its sub-taxys.
 
+taxy-follow (path taxy &key (key #’identity) (test #’equal))
+     Return taxy at ‘path’ in ‘taxy’’s sub-taxys.  Compares ‘key’
+     applied to each taxy with ‘test’.
+
 taxy-emptied (taxy)
      Return a copy of ‘taxy’ without items.  Omits =taxy=’s items and
      those of its descendant taxys.  Useful when reusing taxy
@@ -1424,30 +1428,30 @@ Node: Defining a classification domain-specific language33026
 Node: Magit section37189
 Node: Reference37886
 Node: Functions38094
-Node: Macros40072
-Node: Changelog40722
-Node: 08-pre40936
-Node: Additions41048
-Node: 0741182
-Node: Additions (1)41311
-Node: 0641630
-Node: Additions (2)41755
-Node: 0543105
-Node: Additions (3)43240
-Node: Fixes44346
-Node: 0444500
-Node: 0344722
-Node: Changes44851
-Node: Fixes (1)45214
-Node: 0245649
-Node: Changes (1)45818
-Node: Additions (4)46110
-Node: Fixes (2)46969
-Node: 0147223
-Node: Development47322
-Node: Copyright assignment47528
-Node: Credits48116
-Node: License48306
+Node: Macros40261
+Node: Changelog40911
+Node: 08-pre41125
+Node: Additions41237
+Node: 0741371
+Node: Additions (1)41500
+Node: 0641819
+Node: Additions (2)41944
+Node: 0543294
+Node: Additions (3)43429
+Node: Fixes44535
+Node: 0444689
+Node: 0344911
+Node: Changes45040
+Node: Fixes (1)45403
+Node: 0245838
+Node: Changes (1)46007
+Node: Additions (4)46299
+Node: Fixes (2)47158
+Node: 0147412
+Node: Development47511
+Node: Copyright assignment47717
+Node: Credits48305
+Node: License48495
 
 End Tag Table
 

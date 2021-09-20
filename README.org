@@ -888,6 +888,9 @@ In Emacs 28+, see also =M-x shortdoc-display-group RET taxy RET=.
 - taxy-flatten (taxy) ::
   Return a list of items in =taxy= and its sub-taxys.
 
+- taxy-follow (path taxy &key (key #'identity) (test #'equal)) ::
+  Return taxy at =path= in =taxy='s sub-taxys.  Compares =key= applied to each taxy with =test=.
+
 - taxy-emptied (taxy) ::
   Return a copy of =taxy= without items.  Omits =taxy=’s items and those of its descendant taxys.  Useful when reusing taxy definitions.
 
