@@ -74,19 +74,19 @@
   "Fill TAXY with ITEMS according to its definition."
   (cl-labels ((apply-item (item taxy)
                           (or (if (taxy-take taxy)
-				  (funcall (taxy-take taxy) item taxy)
-				(cl-loop for taxy in (taxy-taxys taxy)
-					 when (funcall (taxy-predicate taxy) item)
-					 do (progn
-					      (if (taxy-take taxy)
-						  (funcall (taxy-take taxy) item taxy)
-						(if (taxy-taxys taxy)
-						    (or (apply-item item taxy)
-							(push item (taxy-items taxy)))
-						  (push item (taxy-items taxy))))
-					      (setf item (funcall (taxy-then taxy) item)))
-					 unless item return t
-					 finally return nil))
+                                  (funcall (taxy-take taxy) item taxy)
+                                (cl-loop for taxy in (taxy-taxys taxy)
+                                         when (funcall (taxy-predicate taxy) item)
+                                         do (progn
+                                              (if (taxy-take taxy)
+                                                  (funcall (taxy-take taxy) item taxy)
+                                                (if (taxy-taxys taxy)
+                                                    (or (apply-item item taxy)
+                                                        (push item (taxy-items taxy)))
+                                                  (push item (taxy-items taxy))))
+                                              (setf item (funcall (taxy-then taxy) item)))
+                                         unless item return t
+                                         finally return nil))
                               ;; No sub-taxys took the item: add it to this taxy.
                               (when (funcall (taxy-predicate taxy) item)
                                 (if (taxy-take taxy)
@@ -251,9 +251,9 @@ Sorts items in TAXY and its sub-taxys.  KEY is passed to
 `cl-sort', which see."
   (declare (indent defun))
   (taxy-mapc* (lambda (taxy)
-		(setf (taxy-items taxy)
-		      (cl-sort (taxy-items taxy)
-			       pred :key key)))
+                (setf (taxy-items taxy)
+                      (cl-sort (taxy-items taxy)
+                               pred :key key)))
     taxy))
 
 (defalias 'taxy-sort #'taxy-sort-items)
@@ -263,9 +263,9 @@ Sorts items in TAXY and its sub-taxys.  KEY is passed to
 KEY is passed to `cl-sort', which see."
   (declare (indent defun))
   (taxy-mapc* (lambda (taxy)
-		(setf (taxy-taxys taxy)
-		      (cl-sort (taxy-taxys taxy)
-			       pred :key key)))
+                (setf (taxy-taxys taxy)
+                      (cl-sort (taxy-taxys taxy)
+                               pred :key key)))
     taxy))
 
 (defalias 'taxy-sort* #'taxy-sort-taxys)
@@ -299,18 +299,18 @@ item being tested, bound within the function to `item'."
   `(let ((variable ',variable))
      (defvar ,variable nil
        ,(format "Alist mapping key aliases to key functions defined with `%s'."
-		name))
+                name))
      (defmacro ,name (name args &rest body)
        ,docstring
        (declare (indent defun)
-		(debug (&define symbolp listp &rest def-form)))
+                (debug (&define symbolp listp &rest def-form)))
        (let* ((fn-symbol (intern (format "%s-%s" ,prefix name)))
-	      (fn `(cl-function
-		    (lambda (item ,@args)
-		      ,@body))))
-	 `(progn
-	    (fset ',fn-symbol ,fn)
-	    (setf (map-elt ,variable ',name) ',fn-symbol))))))
+              (fn `(cl-function
+                    (lambda (item ,@args)
+                      ,@body))))
+         `(progn
+            (fset ',fn-symbol ,fn)
+            (setf (map-elt ,variable ',name) ',fn-symbol))))))
 
 (defun taxy-make-take-function (keys aliases)
   "Return a `taxy' \"take\" function for KEYS.
@@ -347,7 +347,7 @@ defined with a definer defined by `taxy-define-key-definer')."
                                                       (and (pred atom)
                                                            ;; SOMEDAY: Use (not symbolp) when depending on Emacs 28.1.
                                                            (pred (lambda (it) (not (symbolp it)))))
-						      `(quote ,_))
+                                                      `(quote ,_))
                                                   t)))))
                          ;; Key with args: replace with a lambda that
                          ;; calls that key's function with given args.

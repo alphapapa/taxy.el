@@ -99,24 +99,24 @@ which blank lines are inserted between sections at that level."
                  (item taxy depth)
                  (magit-insert-section (magit-section item)
                    (magit-insert-section-body
-		     ;; This is a tedious way to give the indent
-		     ;; string the same text properties as the start
-		     ;; of the formatted string, but no matter where I
-		     ;; left point after using `insert-and-inherit',
-		     ;; something was wrong about the properties, and
-		     ;; `magit-section' didn't navigate the sections
-		     ;; properly anymore.
-		     (let* ((formatted (funcall (taxy-magit-section-format-fn taxy) item))
-			    (indent-size (if (or (not taxy-magit-section-insert-indent-items)
-						 (< depth 0))
-					     0
-					   (+ (* depth (taxy-magit-section-heading-indent taxy))
-					      (taxy-magit-section-item-indent taxy))))
+                     ;; This is a tedious way to give the indent
+                     ;; string the same text properties as the start
+                     ;; of the formatted string, but no matter where I
+                     ;; left point after using `insert-and-inherit',
+                     ;; something was wrong about the properties, and
+                     ;; `magit-section' didn't navigate the sections
+                     ;; properly anymore.
+                     (let* ((formatted (funcall (taxy-magit-section-format-fn taxy) item))
+                            (indent-size (if (or (not taxy-magit-section-insert-indent-items)
+                                                 (< depth 0))
+                                             0
+                                           (+ (* depth (taxy-magit-section-heading-indent taxy))
+                                              (taxy-magit-section-item-indent taxy))))
                             (indent-string (make-string indent-size ? )))
-		       (add-text-properties 0 (length indent-string)
-					    (text-properties-at 0 formatted)
-					    indent-string)
-		       (insert indent-string formatted "\n")))))
+                       (add-text-properties 0 (length indent-string)
+                                            (text-properties-at 0 formatted)
+                                            indent-string)
+                       (insert indent-string formatted "\n")))))
                 (insert-taxy
                  (taxy depth) (let ((magit-section-set-visibility-hook magit-section-set-visibility-hook)
                                     (taxy-magit-section-heading-indent (taxy-magit-section-heading-indent taxy))
@@ -129,7 +129,7 @@ which blank lines are inserted between sections at that level."
                                   (magit-insert-heading
                                     (make-string (* (if (< depth 0) 0 depth)
                                                     (taxy-magit-section-heading-indent taxy))
-						 ? )
+                                                 ? )
                                     (propertize (taxy-name taxy)
                                                 'face (funcall (taxy-magit-section-heading-face-fn taxy) depth))
                                     (format " (%s%s)"
@@ -200,7 +200,7 @@ As well as these variables, which are to be passed to
   - PREFIX-column-formatters"
   ;; TODO: Document this.
   (let* ((definer-name (intern (format "%s-define-column" prefix)))
-	 (definer-docstring (format "Define a column formatting function with NAME.
+         (definer-docstring (format "Define a column formatting function with NAME.
 NAME should be a string.  BODY should return a string or nil.  In
 the BODY, `item' is bound to the item being formatted, and `depth' is
 bound to the item's depth in the hierarchy.
@@ -215,80 +215,80 @@ PLIST may be a plist setting the following options:
   `:max-width' defines a customization option for the column's
   maximum width with the specified value as its default: an
   integer limits the width, while nil does not."))
-	 (level-indent-variable-name (intern (format "%s-level-indent" prefix)))
-	 (level-indent-docstring (format "Indentation applied to each level of depth for `%s' columns."
-					 prefix))
-	 (item-indent-variable-name (intern (format "%s-item-indent" prefix)))
-	 (item-indent-docstring (format "Indentation applied to each item for `%s' columns."
-					prefix))
-	 (columns-variable-name (intern (format "%s-columns" prefix)))
-	 (columns-variable-docstring (or columns-variable-docstring
-					 (format "Columns defined by `%s'."
-						 definer-name)))
-	 (column-formatters-variable-name (intern (format "%s-column-formatters" prefix)))
-	 (column-formatters-variable-docstring (format "Column formatters defined by `%s'."
-						       definer-name)))
+         (level-indent-variable-name (intern (format "%s-level-indent" prefix)))
+         (level-indent-docstring (format "Indentation applied to each level of depth for `%s' columns."
+                                         prefix))
+         (item-indent-variable-name (intern (format "%s-item-indent" prefix)))
+         (item-indent-docstring (format "Indentation applied to each item for `%s' columns."
+                                        prefix))
+         (columns-variable-name (intern (format "%s-columns" prefix)))
+         (columns-variable-docstring (or columns-variable-docstring
+                                         (format "Columns defined by `%s'."
+                                                 definer-name)))
+         (column-formatters-variable-name (intern (format "%s-column-formatters" prefix)))
+         (column-formatters-variable-docstring (format "Column formatters defined by `%s'."
+                                                       definer-name)))
     `(let ((columns-variable ',columns-variable-name)
-	   (column-formatters-variable ',column-formatters-variable-name))
+           (column-formatters-variable ',column-formatters-variable-name))
        (defcustom ,level-indent-variable-name 2
-	 ,level-indent-docstring
-	 :type 'integer)
+         ,level-indent-docstring
+         :type 'integer)
        (defcustom ,item-indent-variable-name 2
-	 ,item-indent-docstring
-	 :type 'integer)
+         ,item-indent-docstring
+         :type 'integer)
        (defvar ,columns-variable-name nil
-	 ,columns-variable-docstring)
+         ,columns-variable-docstring)
        (defvar ,column-formatters-variable-name nil
-	 ,column-formatters-variable-docstring)
+         ,column-formatters-variable-docstring)
        (defmacro ,definer-name (name plist &rest body)
-	 ,definer-docstring
-	 (declare (indent defun))
-	 (cl-check-type name string)
-	 (pcase-let* ((fn-name (intern (concat ,prefix "-column-format-" (downcase name))))
-		      (columns-variable-name ',columns-variable-name)
-		      (level-indent-variable-name ',level-indent-variable-name)
-		      (item-indent-variable-name ',item-indent-variable-name)
-		      ((map (:face face) (:max-width max-width)) plist)
-		      (max-width-variable (intern (concat ,prefix "-column-" name "-max-width")))
-		      (max-width-docstring (format "Maximum width of the %s column." name)))
-	   `(progn
-	      ,(when (plist-member plist :max-width)
-		 `(defcustom ,max-width-variable
-		    ,max-width
-		    ,max-width-docstring
-		    :type '(choice (integer :tag "Maximum width")
-				   (const :tag "Unlimited width" nil))))
-	      (defun ,fn-name (item depth)
-		(if-let ((string (progn ,@body)))
-		    (progn
-		      ,(when max-width
-			 `(when ,max-width-variable
-			    (setf string (truncate-string-to-width string ,max-width-variable nil nil "…"))))
-		      ,(when face
-			 ;; Faces are not defined until load time, while this checks type at expansion
-			 ;; time, so we can only test that the argument is a symbol, not a face.
-			 (cl-check-type face symbol ":face must be a face symbol")
-			 `(setf string (propertize string 'face ',face)))
-		      (when (equal ,name (car ,columns-variable-name))
-			;; First column: apply indentation.
-			(let ((indentation (make-string (+ (* depth ,level-indent-variable-name)
-							   ,item-indent-variable-name)
-							? )))
-			  (setf string (concat indentation string))))
-		      string)
-		  ""))
-	      (setf (alist-get 'formatter (alist-get ,name ,column-formatters-variable nil nil #'equal))
-		    #',fn-name)
-	      (setf (alist-get 'align (alist-get ,name ,column-formatters-variable nil nil #'equal))
-		    ,(plist-get plist :align))
-	      ;; Add column to the columns-variable's standard value.
-	      (unless (member ,name (get ',columns-variable 'standard-value))
-		(setf (get ',columns-variable 'standard-value)
-		      (append (get ',columns-variable 'standard-value)
-			      (list ,name))))
-	      ;; Add column to the columns-variable's custom type.
-	      (cl-pushnew ,name (get ',columns-variable 'custom-type)
-			  :test #'equal)))))))
+         ,definer-docstring
+         (declare (indent defun))
+         (cl-check-type name string)
+         (pcase-let* ((fn-name (intern (concat ,prefix "-column-format-" (downcase name))))
+                      (columns-variable-name ',columns-variable-name)
+                      (level-indent-variable-name ',level-indent-variable-name)
+                      (item-indent-variable-name ',item-indent-variable-name)
+                      ((map (:face face) (:max-width max-width)) plist)
+                      (max-width-variable (intern (concat ,prefix "-column-" name "-max-width")))
+                      (max-width-docstring (format "Maximum width of the %s column." name)))
+           `(progn
+              ,(when (plist-member plist :max-width)
+                 `(defcustom ,max-width-variable
+                    ,max-width
+                    ,max-width-docstring
+                    :type '(choice (integer :tag "Maximum width")
+                                   (const :tag "Unlimited width" nil))))
+              (defun ,fn-name (item depth)
+                (if-let ((string (progn ,@body)))
+                    (progn
+                      ,(when max-width
+                         `(when ,max-width-variable
+                            (setf string (truncate-string-to-width string ,max-width-variable nil nil "…"))))
+                      ,(when face
+                         ;; Faces are not defined until load time, while this checks type at expansion
+                         ;; time, so we can only test that the argument is a symbol, not a face.
+                         (cl-check-type face symbol ":face must be a face symbol")
+                         `(setf string (propertize string 'face ',face)))
+                      (when (equal ,name (car ,columns-variable-name))
+                        ;; First column: apply indentation.
+                        (let ((indentation (make-string (+ (* depth ,level-indent-variable-name)
+                                                           ,item-indent-variable-name)
+                                                        ? )))
+                          (setf string (concat indentation string))))
+                      string)
+                  ""))
+              (setf (alist-get 'formatter (alist-get ,name ,column-formatters-variable nil nil #'equal))
+                    #',fn-name)
+              (setf (alist-get 'align (alist-get ,name ,column-formatters-variable nil nil #'equal))
+                    ,(plist-get plist :align))
+              ;; Add column to the columns-variable's standard value.
+              (unless (member ,name (get ',columns-variable 'standard-value))
+                (setf (get ',columns-variable 'standard-value)
+                      (append (get ',columns-variable 'standard-value)
+                              (list ,name))))
+              ;; Add column to the columns-variable's custom type.
+              (cl-pushnew ,name (get ',columns-variable 'custom-type)
+                          :test #'equal)))))))
 
 ;;;;; Functions
 
@@ -309,45 +309,45 @@ and values are the column width.  Each string is formatted
 according to `columns' and takes into account the width of all
 the items' values for each column."
   (let ((table (make-hash-table))
-	column-aligns column-sizes)
+        column-aligns column-sizes)
     (cl-labels ((format-column
-		 (item depth column-name)
-		 (let* ((column-alist (alist-get column-name formatters nil nil #'equal))
-			(fn (alist-get 'formatter column-alist))
-			(value (funcall fn item depth))
-			(current-column-size (or (map-elt column-sizes column-name) 0)))
-		   (setf (map-elt column-sizes column-name)
-			 (max current-column-size (string-width value)))
-		   (setf (map-elt column-aligns column-name)
-			 (or (alist-get 'align column-alist)
-			     'left))
-		   value))
-		(format-item
-		 (depth item) (puthash item
-				       (cl-loop for column in columns
-						collect (format-column item depth column))
-				       table))
-		(format-taxy (depth taxy)
-			     (dolist (item (taxy-items taxy))
-			       (format-item depth item))
-			     (dolist (taxy (taxy-taxys taxy))
-			       (format-taxy (1+ depth) taxy))))
+                 (item depth column-name)
+                 (let* ((column-alist (alist-get column-name formatters nil nil #'equal))
+                        (fn (alist-get 'formatter column-alist))
+                        (value (funcall fn item depth))
+                        (current-column-size (or (map-elt column-sizes column-name) 0)))
+                   (setf (map-elt column-sizes column-name)
+                         (max current-column-size (string-width value)))
+                   (setf (map-elt column-aligns column-name)
+                         (or (alist-get 'align column-alist)
+                             'left))
+                   value))
+                (format-item
+                 (depth item) (puthash item
+                                       (cl-loop for column in columns
+                                                collect (format-column item depth column))
+                                       table))
+                (format-taxy (depth taxy)
+                             (dolist (item (taxy-items taxy))
+                               (format-item depth item))
+                             (dolist (taxy (taxy-taxys taxy))
+                               (format-taxy (1+ depth) taxy))))
       (format-taxy 0 taxy)
       ;; Now format each item's string using the column sizes.
       (let* ((column-sizes (nreverse column-sizes))
-	     (format-string
-	      (string-join
-	       (cl-loop for (name . size) in column-sizes
-			for align = (pcase-exhaustive (alist-get name column-aligns nil nil #'equal)
-				      ((or `nil 'left) "-")
-				      ('right ""))
-			collect (format "%%%s%ss" align size))
-	       " ")))
-	(maphash (lambda (item column-values)
-		   (puthash item (apply #'format format-string column-values)
-			    table))
-		 table)
-	(cons table column-sizes)))))
+             (format-string
+              (string-join
+               (cl-loop for (name . size) in column-sizes
+                        for align = (pcase-exhaustive (alist-get name column-aligns nil nil #'equal)
+                                      ((or `nil 'left) "-")
+                                      ('right ""))
+                        collect (format "%%%s%ss" align size))
+               " ")))
+        (maphash (lambda (item column-values)
+                   (puthash item (apply #'format format-string column-values)
+                            table))
+                 table)
+        (cons table column-sizes)))))
 
 (defun taxy-magit-section-format-header (column-sizes formatters)
   ;; TODO: Document this.
@@ -356,20 +356,20 @@ COLUMN-SIZES should be the CDR of the cell returned by
 `taxy-magit-section-format-items'.  FORMATTERS should be the
 variable passed to that function, which see."
   (let* ((first-column-name (caar column-sizes))
-	 (first-column-alist (alist-get first-column-name formatters nil nil #'equal))
-	 (first-column-align (pcase-exhaustive (alist-get 'align first-column-alist)
-			       ((or `nil 'left) "-")
-			       ('right ""))))
+         (first-column-alist (alist-get first-column-name formatters nil nil #'equal))
+         (first-column-align (pcase-exhaustive (alist-get 'align first-column-alist)
+                               ((or `nil 'left) "-")
+                               ('right ""))))
     (concat (format (format " %%%s%ss"
-			    first-column-align (cdar column-sizes))
-		    (caar column-sizes))
-	    (cl-loop for (name . size) in (cdr column-sizes)
-		     for column-alist = (alist-get name formatters nil nil #'equal)
-		     for align = (pcase-exhaustive (alist-get 'align column-alist)
-				   ((or `nil 'left) "-")
-				   ('right ""))
-		     for spec = (format " %%%s%ss" align size)
-		     concat (format spec name)))))
+                            first-column-align (cdar column-sizes))
+                    (caar column-sizes))
+            (cl-loop for (name . size) in (cdr column-sizes)
+                     for column-alist = (alist-get name formatters nil nil #'equal)
+                     for align = (pcase-exhaustive (alist-get 'align column-alist)
+                                   ((or `nil 'left) "-")
+                                   ('right ""))
+                     for spec = (format " %%%s%ss" align size)
+                     concat (format spec name)))))
 
 ;;;; Footer
 
