@@ -49,6 +49,7 @@
 ;;;; Requirements
 
 (require 'cl-lib)
+(require 'map)
 (require 'subr-x)
 
 ;;;; Structs
