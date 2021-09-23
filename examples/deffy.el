@@ -289,7 +289,7 @@ prefix, from all `deffy-mode' buffers."
 
 (define-derived-mode deffy-mode magit-section-mode "Deffy"
   :global nil
-  (setq-local bookmark-make-record-function #'deffy--bookmark-make-record
+  (setq-local bookmark-make-record-function #'deffy-bookmark-make-record
 	      revert-buffer-function #'deffy-revert))
 
 ;;;; Functions
@@ -389,15 +389,15 @@ prefix, from all `deffy-mode' buffers."
 
 (defvar bookmark-make-record-function)
 
-(defun deffy--bookmark-make-record ()
+(defun deffy-bookmark-make-record ()
   "Return a bookmark record for current Deffy buffer."
   (list (concat "Deffy: %s" deffy-directory)
 	(cons 'directory deffy-directory)
 	(cons 'files deffy-files)
-	(cons 'handler #'deffy--bookmark-handler)))
+	(cons 'handler #'deffy-bookmark-handler)))
 
 ;;;###autoload
-(defun deffy--bookmark-handler (record)
+(defun deffy-bookmark-handler (record)
   "Show Deffy buffer for bookmark RECORD."
   (pcase-let* ((`(,_ . ,(map directory files)) record))
     (deffy :files files :project (project-current nil directory))
