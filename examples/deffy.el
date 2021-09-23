@@ -28,6 +28,7 @@
 ;;; Code:
 
 (require 'map)
+(require 'project)
 
 (require 'taxy)
 (require 'taxy-magit-section)
@@ -40,6 +41,23 @@
   "Show an overview of definitions in an Emacs Lisp project or buffer."
   :group 'emacs-lisp-mode)
 
+;;;; Variables
+
+(defvar deffy-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "RET") #'deffy-RET)
+    (define-key map [mouse-1] #'deffy-mouse-1)
+    map))
+
+(defvar-local deffy-directory nil
+  "Directory relative to which filenames should be expanded.")
+
+(defvar-local deffy-files nil
+  "Files shown in the current Deffy buffer.")
+
+(defvar-local deffy-display-buffer-action nil
+  "Last-used display-buffer-action in the current Deffy buffer.")
+
 ;;;; Keys
 
 (cl-eval-when (compile load eval)
@@ -47,26 +65,26 @@
   ;; seems to be.
   (taxy-define-key-definer deffy-define-key deffy-keys "deffy-key"
     ;; FIXME: Docstring.
-    ""))
+    "")
 
-(deffy-define-key file ()
-  (file-relative-name (deffy-def-file item) deffy-directory))
+  (deffy-define-key file ()
+    (file-relative-name (deffy-def-file item) deffy-directory))
 
-(deffy-define-key type ()
-  (pcase-let* (((cl-struct deffy-def form) item)
-	       (type (pcase form
-		       (`(,(or 'defun 'cl-defun) . ,_)
-			(if (cl-find-if (lambda (form)
-					  (pcase form
-					    (`(interactive . ,_) t)))
-					form)
-			    'command
-			  'function))
-		       (`(,(or 'defmacro 'cl-defmacro) . ,_)
-			'macro)
-		       (`(,car . ,_) car))))
-    (when type
-      (format "%s" type))))
+  (deffy-define-key type ()
+    (pcase-let* (((cl-struct deffy-def form) item)
+	         (type (pcase form
+		         (`(,(or 'defun 'cl-defun) . ,_)
+			  (if (cl-find-if (lambda (form)
+					    (pcase form
+					      (`(interactive . ,_) t)))
+					  form)
+			      'command
+			    'function))
+		         (`(,(or 'defmacro 'cl-defmacro) . ,_)
+			  'macro)
+		         (`(,car . ,_) car))))
+      (when type
+        (format "%s" type)))))
 
 (defvar deffy-taxy-default-keys
   '(type file))
@@ -91,23 +109,6 @@
   ;; TODO: Automate this or document it
   (setq-default deffy-columns
 		(get 'deffy-columns 'standard-value)))
-
-;;;; Variables
-
-(defvar deffy-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "RET") #'deffy-RET)
-    (define-key map [mouse-1] #'deffy-mouse-1)
-    map))
-
-(defvar-local deffy-directory nil
-  "Directory relative to which filenames should be expanded.")
-
-(defvar-local deffy-files nil
-  "Files shown in the current Deffy buffer.")
-
-(defvar-local deffy-display-buffer-action nil
-  "Last-used display-buffer-action in the current Deffy buffer.")
 
 ;;;; Options
 
