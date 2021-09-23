@@ -76,7 +76,7 @@ Reference
 
 Changelog
 
-* 0.8-pre: 08-pre.
+* 0.8: 08.
 * 0.7: 07.
 * 0.6: 06.
 * 0.5: 05.
@@ -85,7 +85,7 @@ Changelog
 * 0.2: 02.
 * 0.1: 01.
 
-0.8-pre
+0.8
 
 * Additions::
 * Fixes::
@@ -1130,7 +1130,7 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 
 * Menu:
 
-* 0.8-pre: 08-pre.
+* 0.8: 08.
 * 0.7: 07.
 * 0.6: 06.
 * 0.5: 05.
@@ -1140,10 +1140,10 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 * 0.1: 01.
 
 
-File: README.info,  Node: 08-pre,  Next: 07,  Up: Changelog
+File: README.info,  Node: 08,  Next: 07,  Up: Changelog
 
-4.1 0.8-pre
-===========
+4.1 0.8
+=======
 
 * Menu:
 
@@ -1151,7 +1151,7 @@ File: README.info,  Node: 08-pre,  Next: 07,  Up: Changelog
 * Fixes::
 
 
-File: README.info,  Node: Additions,  Next: Fixes,  Up: 08-pre
+File: README.info,  Node: Additions,  Next: Fixes,  Up: 08
 
 4.1.1 Additions
 ---------------
@@ -1159,7 +1159,7 @@ File: README.info,  Node: Additions,  Next: Fixes,  Up: 08-pre
    • Short documentation group for Emacs 28+.
 
 
-File: README.info,  Node: Fixes,  Prev: Additions,  Up: 08-pre
+File: README.info,  Node: Fixes,  Prev: Additions,  Up: 08
 
 4.1.2 Fixes
 -----------
@@ -1167,7 +1167,7 @@ File: README.info,  Node: Fixes,  Prev: Additions,  Up: 08-pre
    • Require ‘map’ for ‘pcase’ pattern.
 
 
-File: README.info,  Node: 07,  Next: 06,  Prev: 08-pre,  Up: Changelog
+File: README.info,  Node: 07,  Next: 06,  Prev: 08,  Up: Changelog
 
 4.2 0.7
 =======
@@ -1417,48 +1417,48 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples2239
-Node: Numbery (starting basically)2558
-Node: Lettery (filling incrementally)8319
-Node: Sporty (understanding completely)10833
-Node: Applications16820
-Node: Installation17295
-Node: Usage17608
-Node: Reusable taxys19763
-Node: Threading macros23916
-Node: Modifying filled taxys24455
-Node: Dynamic taxys25273
-Node: Multi-level dynamic taxys27922
-Node: "Chains" of independent multi-level dynamic taxys30115
-Node: Defining a classification domain-specific language33046
-Node: Magit section37209
-Node: Reference37906
-Node: Functions38114
-Node: Macros40092
-Node: Changelog40742
-Node: 08-pre40956
-Node: Additions41078
-Node: Fixes41226
-Node: 0741368
-Node: Additions (1)41497
-Node: 0641816
-Node: Additions (2)41941
-Node: 0543291
-Node: Additions (3)43436
-Node: Fixes (1)44546
-Node: 0444704
-Node: 0344926
-Node: Changes45055
-Node: Fixes (2)45418
-Node: 0245853
-Node: Changes (1)46022
-Node: Additions (4)46314
-Node: Fixes (3)47173
-Node: 0147427
-Node: Development47526
-Node: Copyright assignment47732
-Node: Credits48320
-Node: License48510
+Node: Examples2227
+Node: Numbery (starting basically)2546
+Node: Lettery (filling incrementally)8307
+Node: Sporty (understanding completely)10821
+Node: Applications16808
+Node: Installation17283
+Node: Usage17596
+Node: Reusable taxys19751
+Node: Threading macros23904
+Node: Modifying filled taxys24443
+Node: Dynamic taxys25261
+Node: Multi-level dynamic taxys27910
+Node: "Chains" of independent multi-level dynamic taxys30103
+Node: Defining a classification domain-specific language33034
+Node: Magit section37197
+Node: Reference37894
+Node: Functions38102
+Node: Macros40080
+Node: Changelog40730
+Node: 0840936
+Node: Additions41046
+Node: Fixes41190
+Node: 0741328
+Node: Additions (1)41453
+Node: 0641772
+Node: Additions (2)41897
+Node: 0543247
+Node: Additions (3)43392
+Node: Fixes (1)44502
+Node: 0444660
+Node: 0344882
+Node: Changes45011
+Node: Fixes (2)45374
+Node: 0245809
+Node: Changes (1)45978
+Node: Additions (4)46270
+Node: Fixes (3)47129
+Node: 0147383
+Node: Development47482
+Node: Copyright assignment47688
+Node: Credits48276
+Node: License48466
 
 End Tag Table
 
