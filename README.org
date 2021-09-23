@@ -939,6 +939,10 @@ In Emacs 28+, see also =M-x shortdoc-display-group RET taxy RET=.
 
 +  Short documentation group for Emacs 28+.
 
+*** Fixes
+
++  Require =map= for ~pcase~ pattern.
+
 ** 0.7
 
 *** Additions
