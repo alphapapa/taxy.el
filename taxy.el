@@ -363,6 +363,9 @@ defined with a definer defined by `taxy-define-key-definer')."
 
 ;; Available in Emacs 28.
 
+(eval-when-compile
+  (require 'shortdoc nil t))
+
 (when (require 'shortdoc nil t)
   (define-short-documentation-group taxy
     (taxy-flatten
