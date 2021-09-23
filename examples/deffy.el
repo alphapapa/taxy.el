@@ -396,6 +396,7 @@ prefix, from all `deffy-mode' buffers."
 	(cons 'files deffy-files)
 	(cons 'handler #'deffy--bookmark-handler)))
 
+;;;###autoload
 (defun deffy--bookmark-handler (record)
   "Show Deffy buffer for bookmark RECORD."
   (pcase-let* ((`(,_ . ,(map directory files)) record))
