@@ -70,21 +70,22 @@ When committing a fix:
 
 ** Release template
 
-+  [ ] Make WIP branch
-+  [ ] =Meta= pre-release commit
-     -  [ ] Update version numbers
-          +  [ ] =taxy.el=
-          +  [ ] =README.org=
-+  [ ] Complete [[id:d8d7b88e-5737-437e-af76-2253f8340de3][commit checklist]]
-+  [ ] Changelog entry
-+  [ ] Merge to stable branch
-     -  [ ] Non-fast-forward merge WIP branch into stable branch
-     -  [ ] Tag and sign merge commit
-+  [ ] Push stable branch
-+  [ ] Push tags
-+  [ ] Merge to master or make stable branch
-+  [ ] Push master/stable
-+  [ ] Delete WIP branch
++ [ ] Make WIP branch
++ [ ] =Meta= pre-release commit
+  - [ ] Update version numbers
+    + [ ] =taxy.el=
+    + [ ] =taxy-magit-section.el=
+    + [ ] =README.org=
++ [ ] Complete [[id:d8d7b88e-5737-437e-af76-2253f8340de3][commit checklist]]
++ [ ] Changelog entry
++ [ ] Merge to stable branch
+  - [ ] Non-fast-forward merge WIP branch into stable branch
+  - [ ] Tag and sign merge commit
++ [ ] Push stable branch
++ [ ] Push tags
++ [ ] Merge to master or make stable branch
++ [ ] Push master/stable
++ [ ] Delete WIP branch
 
 ** Archive
 
