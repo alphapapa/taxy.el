@@ -90,7 +90,8 @@ this does not disable indentation of section headings.")
 
 ;;;; Functions
 
-(cl-defun taxy-magit-section-insert (taxy &key (items 'first) (initial-depth 0) (blank-between-depth 1))
+(cl-defun taxy-magit-section-insert
+    (taxy &key (items 'first) (initial-depth 0) (blank-between-depth 1))
   "Insert a `magit-section' for TAXY into current buffer.
 If ITEMS is `first', insert a taxy's items before its descendant
 taxys; if `last', insert them after descendants.  INITIAL-DEPTH
@@ -123,36 +124,38 @@ which blank lines are inserted between sections at that level."
                                             indent-string)
                        (insert indent-string formatted "\n")))))
                 (insert-taxy
-                 (taxy depth) (let ((magit-section-set-visibility-hook magit-section-set-visibility-hook)
-                                    (taxy-magit-section-level-indent (taxy-magit-section-level-indent taxy))
-                                    (taxy-magit-section-item-indent (taxy-magit-section-item-indent taxy)))
-                                (cl-typecase taxy
-                                  (taxy-magit-section
-                                   (when (taxy-magit-section-visibility-fn taxy)
-                                     (push (taxy-magit-section-visibility-fn taxy) magit-section-set-visibility-hook))))
-                                (magit-insert-section (magit-section taxy)
-                                  (magit-insert-heading
-                                    (make-string (* (if (< depth 0) 0 depth)
-                                                    (taxy-magit-section-level-indent taxy))
-                                                 ? )
-                                    (propertize (taxy-name taxy)
-                                                'face (funcall (taxy-magit-section-heading-face-fn taxy) depth))
-                                    (format " (%s%s)"
-                                            (if (taxy-description taxy)
-                                                (concat (taxy-description taxy) " ")
-                                              "")
-                                            (taxy-size taxy)))
-                                  (magit-insert-section-body
-                                    (when (eq 'first items)
-                                      (dolist (item (taxy-items taxy))
-                                        (insert-item item taxy depth)))
-                                    (dolist (taxy (taxy-taxys taxy))
-                                      (insert-taxy taxy (1+ depth)))
-                                    (when (eq 'last items)
-                                      (dolist (item (taxy-items taxy))
-                                        (insert-item item taxy depth))))
-                                  (when (<= depth blank-between-depth)
-                                    (insert "\n"))))))
+                 (taxy depth)
+                 (let ((magit-section-set-visibility-hook magit-section-set-visibility-hook)
+                       (taxy-magit-section-level-indent (taxy-magit-section-level-indent taxy))
+                       (taxy-magit-section-item-indent (taxy-magit-section-item-indent taxy)))
+                   (cl-typecase taxy
+                     (taxy-magit-section
+                      (when (taxy-magit-section-visibility-fn taxy)
+                        (push (taxy-magit-section-visibility-fn taxy)
+                              magit-section-set-visibility-hook))))
+                   (magit-insert-section (magit-section taxy)
+                     (magit-insert-heading
+                       (make-string (* (if (< depth 0) 0 depth)
+                                       (taxy-magit-section-level-indent taxy))
+                                    ? )
+                       (propertize (taxy-name taxy)
+                                   'face (funcall (taxy-magit-section-heading-face-fn taxy) depth))
+                       (format " (%s%s)"
+                               (if (taxy-description taxy)
+                                   (concat (taxy-description taxy) " ")
+                                 "")
+                               (taxy-size taxy)))
+                     (magit-insert-section-body
+                       (when (eq 'first items)
+                         (dolist (item (taxy-items taxy))
+                           (insert-item item taxy depth)))
+                       (dolist (taxy (taxy-taxys taxy))
+                         (insert-taxy taxy (1+ depth)))
+                       (when (eq 'last items)
+                         (dolist (item (taxy-items taxy))
+                           (insert-item item taxy depth))))
+                     (when (<= depth blank-between-depth)
+                       (insert "\n"))))))
       (magit-insert-section (magit-section)
         (insert-taxy taxy initial-depth)))))
 
@@ -187,7 +190,8 @@ Default visibility function for
 
 ;;;;; Macros
 
-(cl-defmacro taxy-magit-section-define-column-definer (prefix &key columns-variable-docstring)
+(cl-defmacro taxy-magit-section-define-column-definer
+    (prefix &key columns-variable-docstring)
   "Define a column-defining macro.
 The macro is named \"PREFIX-define-column\".
 
@@ -268,7 +272,8 @@ PLIST may be a plist setting the following options:
                     (progn
                       ,(when max-width
                          `(when ,max-width-variable
-                            (setf string (truncate-string-to-width string ,max-width-variable nil nil "…"))))
+                            (setf string (truncate-string-to-width
+                                          string ,max-width-variable nil nil "…"))))
                       ,(when face
                          ;; Faces are not defined until load time, while this checks type at expansion
                          ;; time, so we can only test that the argument is a symbol, not a face.
@@ -282,9 +287,11 @@ PLIST may be a plist setting the following options:
                           (setf string (concat indentation string))))
                       string)
                   ""))
-              (setf (alist-get 'formatter (alist-get ,name ,column-formatters-variable nil nil #'equal))
+              (setf (alist-get 'formatter
+                               (alist-get ,name ,column-formatters-variable nil nil #'equal))
                     #',fn-name)
-              (setf (alist-get 'align (alist-get ,name ,column-formatters-variable nil nil #'equal))
+              (setf (alist-get 'align
+                               (alist-get ,name ,column-formatters-variable nil nil #'equal))
                     ,(plist-get plist :align))
               ;; Add column to the columns-variable's standard value.
               (unless (member ,name (get ',columns-variable 'standard-value))
@@ -297,10 +304,12 @@ PLIST may be a plist setting the following options:
 
 ;;;;; Functions
 
-;; MAYBE: Consider using spaces with `:align-to', rather than formatting strings with indentation, as used by `epkg'
-;; (see <https://github.com/emacscollective/epkg/blob/edf8c009066360af61caedf67a2482eaa19481b0/epkg-desc.el#L363>).
-;; I'm not sure which would perform better; I guess that with many lines, redisplay might take longer to use the
-;; display properties for alignment than just having pre-aligned lines of text.
+;; MAYBE: Consider using spaces with `:align-to', rather than formatting strings with
+;; indentation, as used by `epkg' (see
+;; <https://github.com/emacscollective/epkg/blob/edf8c009066360af61caedf67a2482eaa19481b0/epkg-desc.el#L363>).
+;; I'm not sure which would perform better; I guess that with many lines, redisplay might
+;; take longer to use the display properties for alignment than just having pre-aligned
+;; lines of text.
 
 (defun taxy-magit-section-format-items (columns formatters taxy)
   ;; TODO: Document this.
