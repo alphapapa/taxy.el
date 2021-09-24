@@ -26,6 +26,13 @@
 
 ;;; Code:
 
+(require 'bookmark)
+(require 'cl-lib)
+(require 'subr-x)
+
+(require 'taxy)
+(require 'taxy-magit-section)
+
 (defgroup bookmarky nil
   "List bookmarks grouped with Taxy."
   :group 'bookmark)
