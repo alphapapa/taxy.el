@@ -1,10 +1,13 @@
-;;; taxy-magit-section.el ---                        -*- lexical-binding: t; -*-
+;;; taxy-magit-section.el --- View Taxy structs in a Magit Section buffer  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  Free Software Foundation, Inc.
 
 ;; Author: Adam Porter <adam@alphapapa.net>
 ;; Maintainer: Adam Porter <adam@alphapapa.net>
-;; Keywords:
+;; URL: https://github.com/alphapapa/taxy.el
+;; Version: 0.9-pre
+;; Package-Requires: ((emacs "26.3") (magit-section "3.2.1"))
+;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -21,7 +24,10 @@
 
 ;;; Commentary:
 
-;;
+;; This library provides a way to view `taxy' structs in a
+;; column-based, `magit-section' buffer.  Columns are defined using
+;; simple top-level forms, and new columns may be easily defined by
+;; users in their configurations.
 
 ;;; Code:
 
