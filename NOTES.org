@@ -86,6 +86,11 @@ When committing a fix:
 + [ ] Merge to master or make stable branch
 + [ ] Push master/stable
 + [ ] Delete WIP branch
++ [ ] =Meta= post-release commit
+  - [ ] Update version numbers (=n+1=-pre)
+    + [ ] =taxy.el=
+    + [ ] =taxy-magit-section.el=
+    + [ ] =README.org
 
 ** Archive
 
