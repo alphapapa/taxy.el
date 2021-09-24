@@ -364,75 +364,72 @@ defined with a definer defined by `taxy-define-key-definer')."
 ;; byte-compiling this section will produce warnings due to the
 ;; shortdoc forms that appear to be function calls.
 
-(eval-when-compile
-  (require 'shortdoc nil t))
-
-(when (require 'shortdoc nil t)
-  (with-no-warnings
-    ;; TODO: Remove `with-no-warnings' when requiring Emacs 28+.
-    (define-short-documentation-group taxy
-      (taxy-flatten
-       :eval (taxy-flatten
-              (make-taxy
-               :items '(a b c)
-               :taxys (list (make-taxy
-                             :items '(d e f))))))
-      (taxy-emptied
-       :eval (taxy-emptied
-              (make-taxy
-               :items '(a b c)
-               :taxys (list (make-taxy
-                             :items '(d e f))))))
-      (taxy-fill
-       :eval (taxy-fill '(0 1 2 3)
-                        (make-taxy
-                         :name "Numbers"
-                         :taxys (list (make-taxy
-                                       :name "Odd"
-                                       :predicate #'cl-oddp)
-                                      (make-taxy
-                                       :name "Even"
-                                       :predicate #'cl-evenp)))))
-      (taxy-make-take-function
-       :eval (taxy-make-take-function
-              '(first-char second-char)
-              '((first-char (lambda (s) (substring s nil 1)))
-                (second-char (lambda (s) (substring s 1 2))))))
-      (taxy-mapc-taxys
-        :eval (taxy-mapc-taxys
-                (lambda (taxy)
-                  (setf (taxy-name taxy) (upcase (taxy-name taxy))))
-                (make-taxy :name "a" :taxys (list (make-taxy :name "b")))))
-      (taxy-mapcar-items
-        :eval (taxy-mapcar-items #'upcase
-                (make-taxy :items (list "a" "b" "c")
-                           :taxys (list (make-taxy :items (list "d" "e" "f"))))))
-      (taxy-plain
-       :eval (taxy-plain
-              (taxy-fill '(0 1 2 3)
-                         (make-taxy
-                          :name "Numbers"
-                          :taxys (list (make-taxy
-                                        :name "Odd"
-                                        :predicate #'cl-oddp)
-                                       (make-taxy
-                                        :name "Even"
-                                        :predicate #'cl-evenp))))))
-      (taxy-size
-       :eval (taxy-size
-              (make-taxy
-               :items '(a b c)
-               :taxys (list (make-taxy
-                             :items '(d e f))))))
-      (taxy-sort-items
-        :eval (taxy-sort-items #'string< #'identity
-                (make-taxy :items (list "c" "b" "a")
-                           :taxys (list (make-taxy :items (list "f" "e" "d"))))))
-      (taxy-sort-taxys
-        :eval (taxy-sort-taxys #'string< #'taxy-name
-                (make-taxy :name "Taxy"
-                           :taxys (list (make-taxy :name "Beta")
-                                        (make-taxy :name "Alpha"))))))))
+(with-eval-after-load 'shortdoc
+  (declare-function shortdoc-add-function "shortdoc" (group section elem))
+  (mapc (lambda (elem)
+	  (shortdoc-add-function 'taxy nil elem))
+        '((taxy-flatten
+           :eval (taxy-flatten
+                  (make-taxy
+                   :items '(a b c)
+                   :taxys (list (make-taxy
+                                 :items '(d e f))))))
+          (taxy-emptied
+           :eval (taxy-emptied
+                  (make-taxy
+                   :items '(a b c)
+                   :taxys (list (make-taxy
+                                 :items '(d e f))))))
+          (taxy-fill
+           :eval (taxy-fill '(0 1 2 3)
+                            (make-taxy
+                             :name "Numbers"
+                             :taxys (list (make-taxy
+                                           :name "Odd"
+                                           :predicate #'cl-oddp)
+                                          (make-taxy
+                                           :name "Even"
+                                           :predicate #'cl-evenp)))))
+          (taxy-make-take-function
+           :eval (taxy-make-take-function
+                  '(first-char second-char)
+                  '((first-char (lambda (s) (substring s nil 1)))
+                    (second-char (lambda (s) (substring s 1 2))))))
+          (taxy-mapc-taxys
+            :eval (taxy-mapc-taxys
+                    (lambda (taxy)
+                      (setf (taxy-name taxy) (upcase (taxy-name taxy))))
+                    (make-taxy :name "a" :taxys (list (make-taxy :name "b")))))
+          (taxy-mapcar-items
+            :eval (taxy-mapcar-items #'upcase
+                    (make-taxy :items (list "a" "b" "c")
+                               :taxys (list (make-taxy :items (list "d" "e" "f"))))))
+          (taxy-plain
+           :eval (taxy-plain
+                  (taxy-fill '(0 1 2 3)
+                             (make-taxy
+                              :name "Numbers"
+                              :taxys (list (make-taxy
+                                            :name "Odd"
+                                            :predicate #'cl-oddp)
+                                           (make-taxy
+                                            :name "Even"
+                                            :predicate #'cl-evenp))))))
+          (taxy-size
+           :eval (taxy-size
+                  (make-taxy
+                   :items '(a b c)
+                   :taxys (list (make-taxy
+                                 :items '(d e f))))))
+          (taxy-sort-items
+            :eval (taxy-sort-items #'string< #'identity
+                    (make-taxy :items (list "c" "b" "a")
+                               :taxys (list (make-taxy :items (list "f" "e" "d"))))))
+          (taxy-sort-taxys
+            :eval (taxy-sort-taxys #'string< #'taxy-name
+                    (make-taxy :name "Taxy"
+                               :taxys (list (make-taxy :name "Beta")
+                                            (make-taxy :name "Alpha"))))))))
 
 ;;;; Footer
 
