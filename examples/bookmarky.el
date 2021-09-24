@@ -126,7 +126,7 @@ a slash."
 			 (apply #'make-taxy-magit-section
 				:make #'make-fn
 				:format-fn #'format-item
-				:heading-indent bookmarky-level-indent
+				:level-indent bookmarky-level-indent
 				:visibility-fn visibility-fn
 				args)))
       (with-current-buffer (get-buffer-create buffer-name)

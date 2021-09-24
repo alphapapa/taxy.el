@@ -34,7 +34,7 @@
 
 ;;;; Variables
 
-(defvar taxy-magit-section-heading-indent 2
+(defvar taxy-magit-section-level-indent 2
   "Default heading indentation per level.")
 
 (defvar taxy-magit-section-item-indent 2
@@ -75,8 +75,7 @@ this does not disable indentation of section headings.")
   ;; performance, since slot accessors can't be optimized).
   (visibility-fn #'taxy-magit-section-visibility)
   (heading-face-fn (lambda (_depth) 'magit-section-heading))
-  ;; TODO: Rename heading-indent slot to level-indent.
-  (heading-indent 2)
+  (level-indent 2)
   (item-indent 2)
   (format-fn #'prin1-to-string))
 
@@ -110,7 +109,7 @@ which blank lines are inserted between sections at that level."
                             (indent-size (if (or (not taxy-magit-section-insert-indent-items)
                                                  (< depth 0))
                                              0
-                                           (+ (* depth (taxy-magit-section-heading-indent taxy))
+                                           (+ (* depth (taxy-magit-section-level-indent taxy))
                                               (taxy-magit-section-item-indent taxy))))
                             (indent-string (make-string indent-size ? )))
                        (add-text-properties 0 (length indent-string)
@@ -119,7 +118,7 @@ which blank lines are inserted between sections at that level."
                        (insert indent-string formatted "\n")))))
                 (insert-taxy
                  (taxy depth) (let ((magit-section-set-visibility-hook magit-section-set-visibility-hook)
-                                    (taxy-magit-section-heading-indent (taxy-magit-section-heading-indent taxy))
+                                    (taxy-magit-section-level-indent (taxy-magit-section-level-indent taxy))
                                     (taxy-magit-section-item-indent (taxy-magit-section-item-indent taxy)))
                                 (cl-typecase taxy
                                   (taxy-magit-section
@@ -128,7 +127,7 @@ which blank lines are inserted between sections at that level."
                                 (magit-insert-section (magit-section taxy)
                                   (magit-insert-heading
                                     (make-string (* (if (< depth 0) 0 depth)
-                                                    (taxy-magit-section-heading-indent taxy))
+                                                    (taxy-magit-section-level-indent taxy))
                                                  ? )
                                     (propertize (taxy-name taxy)
                                                 'face (funcall (taxy-magit-section-heading-face-fn taxy) depth))
@@ -187,8 +186,8 @@ Default visibility function for
 The macro is named \"PREFIX-define-column\".
 
 These customization options are defined, which are to be used in
-a `taxy-magit-section' in its `:heading-indent' and
-`:item-indent' slots, respectively:
+a `taxy-magit-section' in its `:level-indent' and `:item-indent'
+slots, respectively:
 
   - PREFIX-level-indent
   - PREFIX-item-indent

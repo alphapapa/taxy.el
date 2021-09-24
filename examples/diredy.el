@@ -65,7 +65,7 @@
 	      (make-fn (&rest args)
 		       (apply #'make-taxy-magit-section
 			      :make #'make-fn
-			      :heading-indent 1
+			      :level-indent 1
 			      :item-indent 2
 			      args)))
     (make-fn

@@ -156,7 +156,7 @@ buffer."
 			 (apply #'make-taxy-magit-section
 				:make #'make-fn
 				:format-fn #'format-item
-				:heading-indent deffy-level-indent
+				:level-indent deffy-level-indent
 				:visibility-fn visibility-fn
 				;; :heading-face-fn #'heading-face
 				args))
