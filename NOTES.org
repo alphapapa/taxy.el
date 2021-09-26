@@ -2,6 +2,24 @@
 
 * Ideas
 
+** PROJECT EWOC-based UI
+:LOGBOOK:
+- State "PROJECT"    from              [2021-09-26 Sun 04:28]
+:END:
+
+Could be a useful alternative to =taxy-magit-section= sometimes.
+
+[2021-09-26 Sun 03:11] WIP/POC in the =wip/ewoc= branch.  Seems promising, and the code is pretty simple, but it needs some more work.  Supposedly EWOCs can be nested, but I'm not sure if this is the right way to do it.
+
+** Deffy
+
+*** TODO Store only directory for project view
+:LOGBOOK:
+- State "TODO"       from              [2021-09-26 Sun 04:28]
+:END:
+
+That way, refreshing the buffer will discover new files.
+
 ** Useful functions from [[id:8d9adb33-3f14-4667-a03e-bd5c6656d178][taxonomy Python package]]
 
 It's specifically intended for biological taxonomies, but some of the functions listed there may be useful, e.g. ~lineage~, ~prune~.
