@@ -22,6 +22,81 @@
 
 ;; This library renders Taxy structs with EWOC.
 
+;; TESTING CODE:
+
+(defvar numbery
+  (make-taxy
+   :name "Numbery"
+   :description "A silly taxonomy of numbers."
+   :taxys (list (make-taxy
+                 :name "< 10"
+                 :description "Numbers below 10 (consuming)"
+                 :predicate (lambda (n) (< n 10))
+                 :taxys (list
+                         ;; These sub-taxys further classify the numbers below 10 into odd
+                         ;; and even.  The odd taxy "consumes" numbers, while the even one
+                         ;; doesn't, leaving them to reappear in the parent taxy's items.
+                         (make-taxy :name "Odd"
+                                    :description "(consuming)"
+                                    :predicate #'cl-oddp)
+                         (make-taxy :name "Even"
+                                    :description "(non-consuming)"
+                                    :predicate #'cl-evenp
+                                    :then #'identity)))
+                (make-taxy
+                 :name ">= 10"
+                 :description "Numbers above 9 (consuming)"
+                 :predicate (lambda (n) (>= n 10))
+                 :taxys (list
+                         ;; Like in the "< 10" taxy, these sub-taxys further classify
+                         ;; the numbers, but only one of them consumes numbers it
+                         ;; takes in, leaving the rest to reappear in the parent taxy.
+                         (make-taxy :name "Divisible by 3"
+                                    :description "(non-consuming)"
+                                    :predicate (lambda (n) (zerop (mod n 3)))
+                                    :then #'identity)
+                         (make-taxy :name "Divisible by 4"
+                                    :description "(non-consuming)"
+                                    :predicate (lambda (n) (zerop (mod n 4)))
+                                    :then #'identity)
+                         (make-taxy :name "Divisible by 3 or 4"
+                                    :description "(consuming)"
+                                    ;; Since this taxy's `:then' function is unset,
+                                    ;; it defaults to `ignore', which causes it to
+                                    ;; consume numbers it takes in.  Since these
+                                    ;; numbers have already been taken in (without
+                                    ;; being consumed) by the previous two sibling
+                                    ;; taxys, they also appear in them.
+                                    :predicate (lambda (n) (or (zerop (mod n 3))
+                                                               (zerop (mod n 4)))))
+                         (make-taxy :name "Divisible by 5"
+                                    :description "(non-consuming)"
+                                    :predicate (lambda (n) (zerop (mod n 5)))
+                                    :then #'identity))))))
+
+(defun taxy-ewoc-test ()
+  (interactive)
+  (with-current-buffer (get-buffer-create "*Taxy EWOC test*")
+    (let* ((inhibit-read-only t)
+	   (taxy-ewoc-nosep nil)
+	   (taxy-ewoc-footers)
+           (taxy (thread-last numbery
+		   taxy-emptied
+		   (taxy-fill (cl-loop for i below 20
+				       collect i))
+		   (taxy-sort #'< #'identity)))
+	   (header (taxy-ewoc-header taxy))
+	   (footer (taxy-ewoc-footer taxy)))
+      (read-only-mode)
+      (erase-buffer)
+      (delete-all-overlays)
+      (setq taxy-ewoc-root-ewoc
+	    (ewoc-create #'taxy-ewoc--pretty-print header footer taxy-ewoc-nosep))
+      (let ((taxy-ewoc-parent-ewoc taxy-ewoc-root-ewoc)
+	    (taxy-ewoc-depth (1+ taxy-ewoc-depth)))
+	(ewoc-enter-first taxy-ewoc-root-ewoc taxy)))
+    (pop-to-buffer (current-buffer))))
+
 ;;; Code:
 
 (require 'cl-lib)
