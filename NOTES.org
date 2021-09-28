@@ -2,6 +2,13 @@
 
 * Ideas
 
+** PROJECT Publish taxy-magit-section separately
+:LOGBOOK:
+- State "PROJECT"    from              [2021-09-28 Tue 00:56]
+:END:
+
++ [[https://lists.gnu.org/archive/html/emacs-devel/2021-09/msg01970.html][Stefan asks that it be in a separate repo or branch]]
+
 ** PROJECT EWOC-based UI
 :LOGBOOK:
 - State "PROJECT"    from              [2021-09-26 Sun 04:28]
