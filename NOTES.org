@@ -18,6 +18,13 @@ Could be a useful alternative to =taxy-magit-section= sometimes.
 
 [2021-09-26 Sun 03:11] WIP/POC in the =wip/ewoc= branch.  Seems promising, and the code is pretty simple, but it needs some more work.  Supposedly EWOCs can be nested, but I'm not sure if this is the right way to do it.
 
+** PROJECT =tree-widget= based UI
+:LOGBOOK:
+- State "PROJECT"    from              [2021-09-28 Tue 12:44]
+:END:
+
++ [[*hierarchy.el][hierarchy.el's implementation]]
+
 ** Deffy
 
 *** TODO Store only directory for project view
@@ -36,6 +43,12 @@ It's specifically intended for biological taxonomies, but some of the functions 
 ** [[https://github.com/volrath/treepy.el][treepy.el]]
 
 I'm guessing that Treepy can be used with Taxy structs pretty easily.  It might be good to demonstrate how to use them together.
+
+** hierarchy.el
+
+Damien Cassou's package works very differently: it stores a hierarchy as a struct that uses hash tables to map items to their parents.
+
+The way it uses =tree-widget= should be instructive: see functions =hierarchy-tree-display= and =hierarchy-convert-to-tree-widget=.
 
 ** [[https://pypi.org/project/taxonomy/][taxonomy · PyPI]]
 :PROPERTIES:
