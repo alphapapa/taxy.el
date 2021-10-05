@@ -1,0 +1,122 @@
+This is README.info, produced by makeinfo version 5.2 from README.texi.
+
+INFO-DIR-SECTION Emacs
+START-INFO-DIR-ENTRY
+* Taxy Magit Section: (taxy-magit-section). Render Taxy structs with Magit Section.
+END-INFO-DIR-ENTRY
+
+
+File: README.info,  Node: Top,  Next: COMMENT Examples,  Up: (dir)
+
+taxy-magit-section.el
+*********************
+
+https://elpa.gnu.org/packages/taxy-magit-section.svg
+(https://elpa.gnu.org/packages/taxy-magit-section.html)
+
+   This library renders Taxy (https://github.com/alphapapa/taxy.el)
+structs with magit-section (https://melpa.org/#/magit-section).
+
+* Menu:
+
+* COMMENT Examples::
+* Installation::
+* COMMENT Usage::
+* Changelog::
+* Development::
+* Credits::
+* License::
+
+— The Detailed Node Listing —
+
+Changelog
+
+* 0.9-pre: 09-pre. 
+
+
+
+File: README.info,  Node: COMMENT Examples,  Next: Installation,  Prev: Top,  Up: Top
+
+1 COMMENT Examples
+******************
+
+
+File: README.info,  Node: Installation,  Next: COMMENT Usage,  Prev: COMMENT Examples,  Up: Top
+
+2 Installation
+**************
+
+‘taxy-magit-section’ is distributed in GNU ELPA (https://elpa.gnu.org/),
+which is available in Emacs by default.  Use ‘M-x package-install RET
+taxy-magit-section RET’, then ‘(require 'taxy-magit-section)’ in your
+Elisp project.
+
+
+File: README.info,  Node: COMMENT Usage,  Next: Changelog,  Prev: Installation,  Up: Top
+
+3 COMMENT Usage
+***************
+
+
+File: README.info,  Node: Changelog,  Next: Development,  Prev: COMMENT Usage,  Up: Top
+
+4 Changelog
+***********
+
+* Menu:
+
+* 0.9-pre: 09-pre. 
+
+
+File: README.info,  Node: 09-pre,  Up: Changelog
+
+4.1 0.9-pre
+===========
+
+   • ‘taxy-magit-section’ moved to separate package.
+
+
+File: README.info,  Node: Development,  Next: Credits,  Prev: Changelog,  Up: Top
+
+5 Development
+*************
+
+‘taxy-magit-section’ is developed in a branch of the main Taxy repo
+(https://github.com/alphapapa/taxy.el).
+
+
+File: README.info,  Node: Credits,  Next: License,  Prev: Development,  Up: Top
+
+6 Credits
+*********
+
+   • Thanks to Stefan Monnier for his feedback, and for maintaining GNU
+     ELPA.
+
+
+File: README.info,  Node: License,  Prev: Credits,  Up: Top
+
+7 License
+*********
+
+GPLv3
+
+
+
+Tag Table:
+Node: Top221
+Node: COMMENT Examples767
+Node: Installation895
+Node: COMMENT Usage1266
+Node: Changelog1391
+Node: 09-pre1537
+Node: Development1674
+Node: Credits1901
+Node: License2091
+
+End Tag Table
+
+
+Local Variables:
+coding: utf-8
+End:
