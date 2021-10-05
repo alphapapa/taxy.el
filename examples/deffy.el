@@ -163,7 +163,7 @@ buffer."
 		(def-name (def) (format "%s" (cl-second (deffy-def-form def)))))
       ;; (when (get-buffer buffer-name)
       ;;   (kill-buffer buffer-name))
-      (setf files (cl-reduce #'cl-remove-if-not (list #'elisp-file-p #'file-visible-p)
+      (setf files (cl-reduce #'cl-remove-if-not (list #'file-exists-p #'elisp-file-p #'file-visible-p)
 			     :initial-value (or files (project-files project))
 			     :from-end t))
       (unless files
