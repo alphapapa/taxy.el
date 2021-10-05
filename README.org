@@ -861,7 +861,7 @@ And this produces:
 
 ** Magit section
 
-Showing a =taxy= with =magit-section= is very easy:
+Showing a =taxy= with =magit-section= is easy using the library [[https://github.com/alphapapa/taxy.el/tree/package/taxy-magit-section][taxy-magit-section]], which is packaged separately:
 
 #+BEGIN_SRC elisp :exports code
   (require 'taxy-magit-section)
@@ -876,8 +876,6 @@ Showing a =taxy= with =magit-section= is very easy:
 That shows a buffer like this:
 
 [[images/magit-section-numbery.png]]
-
-Note that while =taxy-magit-section.el= is installed with the =taxy= package, the =magit-section= package is not automatically installed with it.
 
 ** Reference
 
@@ -935,7 +933,9 @@ In Emacs 28+, see also =M-x shortdoc-display-group RET taxy RET=.
 
 ** 0.9-pre
 
-Nothing new yet.
+*** Changes
+
++  Library =taxy-magit-section= is now [[https://elpa.gnu.org/packages/taxy-magit-section.html][packaged separately]] and maintained in a [[https://github.com/alphapapa/taxy.el/tree/package/taxy-magit-section][separate branch]].
 
 ** 0.8
 
