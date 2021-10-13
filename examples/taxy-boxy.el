@@ -264,7 +264,7 @@ item in TAXY."
                                    ""))))
     (boxy-add-next box parent)
     (when-let ((taxys (taxy-taxys taxy)))
-      (oset box :expand-children
+      (oset box expand-children
             `(lambda (box)
                (mapc
                 (lambda (taxy) (taxy-boxy-add-taxy taxy box ',make-box))
@@ -276,8 +276,8 @@ item in TAXY."
 (defun taxy-boxy-add-item (item parent make-box)
   "Add ITEM to PARENT using MAKE-BOX to generate a `boxy-box'."
   (let ((box (funcall make-box item)))
-    (oset parent :markers (append (if (slot-boundp box :markers) (oref box :markers))
-                                  (if (slot-boundp parent :markers) (oref parent :markers))))
+    (oset parent markers (append (if (slot-boundp box :markers) (oref box markers))
+                                  (if (slot-boundp parent :markers) (oref parent markers))))
     (boxy-add-next box parent)))
 
 (provide 'taxy-boxy)
