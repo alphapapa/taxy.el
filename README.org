@@ -806,9 +806,10 @@ Finally, rather than using a pre-made taxy struct, we make one at runtime, makin
       taxy-plain))
 #+end_src
 
+# NOTE: The #+RESULTS: header is removed for the following results block, because it seems to cause the GitHub renderer to hide it.
+
 Which gives us:
 
-#+RESULTS:
 #+begin_src elisp
   ("Sporty (DSL)"
    ((indoor
@@ -845,9 +846,10 @@ This also allows the grouping keys to be easily changed at runtime, producing a 
     :keys '((uses 'ball) venue))
 #+end_src
 
+# NOTE: The #+RESULTS: header is removed for the following results block, because it seems to cause the GitHub renderer to hide it.
+
 And this produces:
 
-#+RESULTS:
 #+begin_src elisp :exports code
   ("Sporty (DSL)"
    ((outdoor
