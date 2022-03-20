@@ -127,7 +127,12 @@ which blank lines are inserted between sections at that level."
                  (taxy depth)
                  (let ((magit-section-set-visibility-hook magit-section-set-visibility-hook)
                        (taxy-magit-section-level-indent (taxy-magit-section-level-indent taxy))
-                       (taxy-magit-section-item-indent (taxy-magit-section-item-indent taxy)))
+                       (taxy-magit-section-item-indent (taxy-magit-section-item-indent taxy))
+                       (taxy-name (copy-sequence (taxy-name taxy))))
+                   (add-face-text-property
+                    0 (length taxy-name)
+                    (funcall (taxy-magit-section-heading-face-fn taxy) depth)
+                    nil taxy-name)
                    (cl-typecase taxy
                      (taxy-magit-section
                       (when (taxy-magit-section-visibility-fn taxy)
@@ -138,8 +143,7 @@ which blank lines are inserted between sections at that level."
                        (make-string (* (if (< depth 0) 0 depth)
                                        (taxy-magit-section-level-indent taxy))
                                     ? )
-                       (propertize (taxy-name taxy)
-                                   'face (funcall (taxy-magit-section-heading-face-fn taxy) depth))
+                       taxy-name
                        (format " (%s%s)"
                                (if (taxy-description taxy)
                                    (concat (taxy-description taxy) " ")
