@@ -61,9 +61,6 @@ The way it uses =tree-widget= should be instructive: see functions =hierarchy-tr
 Copied from =org-ql=.
 
 ** Commits
-:PROPERTIES:
-:ID:       d8d7b88e-5737-437e-af76-2253f8340de3
-:END:
 
 To complete before and after pushing any commit.
 
@@ -108,11 +105,15 @@ When committing a fix:
 
 ** Release template
 
+- [ ] =taxy.el= checklist
+- [ ] =taxy-magit-section.el= checklist
+
+*** =taxy.el=
+
 + [ ] Make WIP branch
 + [ ] =Meta= pre-release commit
   - [ ] Update version numbers
     + [ ] =taxy.el=
-    + [ ] =taxy-magit-section.el=
     + [ ] =README.org=
 + [ ] Complete [[id:d8d7b88e-5737-437e-af76-2253f8340de3][commit checklist]]
 + [ ] Changelog entry
@@ -127,6 +128,27 @@ When committing a fix:
 + [ ] =Meta= post-release commit
   - [ ] Update version numbers (=n+1=-pre)
     + [ ] =taxy.el=
+    + [ ] =README.org
+
+*** =taxy-magit-section=
+
++ [ ] Make WIP branch
++ [ ] =Meta= pre-release commit
+  - [ ] Update version numbers
+    + [ ] =taxy-magit-section.el=
+    + [ ] =README.org=
++ [ ] Complete [[id:d8d7b88e-5737-437e-af76-2253f8340de3][commit checklist]]
++ [ ] Changelog entry
++ [ ] Merge to stable branch
+  - [ ] Non-fast-forward merge WIP branch into stable branch
+  - [ ] Tag and sign merge commit
++ [ ] Push stable branch
++ [ ] Push tags
++ [ ] Merge to master or make stable branch
++ [ ] Push master/stable
++ [ ] Delete WIP branch
++ [ ] =Meta= post-release commit
+  - [ ] Update version numbers (=n+1=-pre)
     + [ ] =taxy-magit-section.el=
     + [ ] =README.org
 
