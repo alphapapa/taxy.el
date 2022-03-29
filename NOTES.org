@@ -108,23 +108,27 @@ When committing a fix:
 - [ ] =taxy.el= checklist
 - [ ] =taxy-magit-section.el= checklist
 
-*** =taxy.el=
+*** =taxy=
 
-+ [ ] Make WIP branch
-+ [ ] =Meta= pre-release commit
-  - [ ] Update version numbers
-    + [ ] =taxy.el=
-    + [ ] =README.org=
-+ [ ] Complete [[id:d8d7b88e-5737-437e-af76-2253f8340de3][commit checklist]]
-+ [ ] Changelog entry
-+ [ ] Merge to stable branch
-  - [ ] Non-fast-forward merge WIP branch into stable branch
-  - [ ] Tag and sign merge commit
-+ [ ] Push stable branch
-+ [ ] Push tags
-+ [ ] Merge to master or make stable branch
-+ [ ] Push master/stable
-+ [ ] Delete WIP branch
++ [X] Make WIP branch
++ [X] =Meta= pre-release commit
+  - [X] Update version numbers
+    + [X] =taxy.el=
+    + [X] =README.org=
++ [X] Complete [[id:d8d7b88e-5737-437e-af76-2253f8340de3][commit checklist]]
++ [X] Changelog entry
++ [ ] Merge to existing stable branch/make new stable branch
+  + Merge: 
+    + [ ] Non-fast-forward merge WIP branch into stable branch
+    + [ ] Tag and sign merge commit
+  + New:
+    + [X] Make new stable branch: =stable/VERSION=
++ [X] Tag release commit
++ [X] Push stable branch
++ [X] Push tags
++ [X] Merge to master
++ [X] Push master
++ [X] Delete WIP branch
 + [ ] =Meta= post-release commit
   - [ ] Update version numbers (=n+1=-pre)
     + [ ] =taxy.el=
@@ -139,13 +143,17 @@ When committing a fix:
     + [ ] =README.org=
 + [ ] Complete [[id:d8d7b88e-5737-437e-af76-2253f8340de3][commit checklist]]
 + [ ] Changelog entry
-+ [ ] Merge to stable branch
-  - [ ] Non-fast-forward merge WIP branch into stable branch
-  - [ ] Tag and sign merge commit
++ [ ] Merge to existing stable branch/make new stable branch
+  + Merge: 
+    + [ ] Non-fast-forward merge WIP branch into stable branch
+    + [ ] Tag and sign merge commit
+  + New:
+    + [ ] Make new stable branch: =stable/VERSION=
++ [ ] Tag release commit: =VERSION-taxy-magit-section=
 + [ ] Push stable branch
 + [ ] Push tags
-+ [ ] Merge to master or make stable branch
-+ [ ] Push master/stable
++ [ ] Merge to master: =package/taxy-magit-section=
++ [ ] Push master: =package/taxy-magit-section=
 + [ ] Delete WIP branch
 + [ ] =Meta= post-release commit
   - [ ] Update version numbers (=n+1=-pre)
@@ -153,6 +161,66 @@ When committing a fix:
     + [ ] =README.org
 
 ** Archive
+
+*** UNDERWAY Release: 0.9
+:LOGBOOK:
+- State "UNDERWAY"   from              [2022-03-29 Tue 00:21]
+:END:
+
+- [ ] =taxy.el= checklist
+- [ ] =taxy-magit-section.el= checklist
+
+**** =taxy=
+
++ [X] Make WIP branch
++ [X] =Meta= pre-release commit
+  - [X] Update version numbers
+    + [X] =taxy.el=
+    + [X] =README.org=
++ [X] Complete [[id:d8d7b88e-5737-437e-af76-2253f8340de3][commit checklist]]
++ [X] Changelog entry
++ [ ] Merge to existing stable branch/make new stable branch
+  + Merge: 
+    + [ ] Non-fast-forward merge WIP branch into stable branch
+    + [ ] Tag and sign merge commit
+  + New:
+    + [X] Make new stable branch =stable/VERSION=
++ [X] Tag release commit
++ [X] Push stable branch
++ [X] Push tags
++ [X] Merge to master
++ [X] Push master
++ [X] Delete WIP branch
++ [ ] =Meta= post-release commit
+  - [ ] Update version numbers (=n+1=-pre)
+    + [ ] =taxy.el=
+    + [ ] =README.org
+
+**** =taxy-magit-section=
+
++ [X] Make WIP branch
++ [X] =Meta= pre-release commit
+  - [X] Update version numbers
+    + [X] =taxy-magit-section.el=
+    + [X] =README.org=
++ [X] Complete [[id:d8d7b88e-5737-437e-af76-2253f8340de3][commit checklist]]
++ [X] Changelog entry
++ [ ] Merge to existing stable branch/make new stable branch
+  + Merge: 
+    + [ ] Non-fast-forward merge WIP branch into stable branch
+    + [ ] Tag and sign merge commit
+  + New:
+    + [X] Make new stable branch: =stable/VERSION=
++ [X] Tag release commit: =VERSION-taxy-magit-section=
++ [X] Push stable branch
++ [X] Push tags
++ [X] Merge to master: =package/taxy-magit-section=
++ [X] Push master: =package/taxy-magit-section=
++ [X] Delete WIP branch
++ [ ] =Meta= post-release commit
+  - [ ] Update version numbers (=n+1=-pre)
+    + [ ] =taxy-magit-section.el=
+    + [ ] =README.org
 
 * Code
 
