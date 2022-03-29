@@ -78,6 +78,9 @@ File: README.info,  Node: 091,  Next: 09,  Up: Changelog
 *Fixes*
    • ‘taxy-magit-section-insert’ appends heading faces, so users can
      override (or merge with) the default.
+   • ‘taxy-magit-section-format-items’ uses columns’ headers as their
+     minimum width, which preserves each column’s width regardless of
+     items’ values.
 
 
 File: README.info,  Node: 09,  Prev: 091,  Up: Changelog
@@ -123,10 +126,10 @@ Node: Installation902
 Node: COMMENT Usage1273
 Node: Changelog1398
 Node: 0911551
-Node: 091759
-Node: Development1949
-Node: Credits2176
-Node: License2366
+Node: 091931
+Node: Development2121
+Node: Credits2348
+Node: License2538
 
 End Tag Table
 

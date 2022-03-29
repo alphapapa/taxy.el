@@ -365,7 +365,7 @@ the items' values for each column."
                  (let* ((column-alist (alist-get column-name formatters nil nil #'equal))
                         (fn (alist-get 'formatter column-alist))
                         (value (funcall fn item depth))
-                        (current-column-size (or (map-elt column-sizes column-name) 0)))
+                        (current-column-size (or (map-elt column-sizes column-name) (string-width column-name))))
                    (setf (map-elt column-sizes column-name)
                          (max current-column-size (string-width* value)))
                    (setf (map-elt column-aligns column-name)

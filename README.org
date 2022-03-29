@@ -36,6 +36,7 @@ This library renders [[https://github.com/alphapapa/taxy.el][Taxy]] structs with
 
 *Fixes*
 +  =taxy-magit-section-insert= appends heading faces, so users can override (or merge with) the default.
++  =taxy-magit-section-format-items= uses columns' headers as their minimum width, which preserves each column's width regardless of items' values.
 
 ** 0.9
 
