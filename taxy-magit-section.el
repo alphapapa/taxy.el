@@ -132,7 +132,7 @@ which blank lines are inserted between sections at that level."
                    (add-face-text-property
                     0 (length taxy-name)
                     (funcall (taxy-magit-section-heading-face-fn taxy) depth)
-                    nil taxy-name)
+                    t taxy-name)
                    (cl-typecase taxy
                      (taxy-magit-section
                       (when (taxy-magit-section-visibility-fn taxy)
