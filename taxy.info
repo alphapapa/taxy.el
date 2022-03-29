@@ -76,7 +76,7 @@ Reference
 
 Changelog
 
-* 0.9-pre: 09-pre. 
+* 0.9: 09. 
 * 0.8: 08. 
 * 0.7: 07. 
 * 0.6: 06. 
@@ -86,7 +86,7 @@ Changelog
 * 0.2: 02. 
 * 0.1: 01. 
 
-0.9-pre
+0.9
 
 * Changes::
 
@@ -1134,7 +1134,7 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 
 * Menu:
 
-* 0.9-pre: 09-pre. 
+* 0.9: 09. 
 * 0.8: 08. 
 * 0.7: 07. 
 * 0.6: 06. 
@@ -1145,17 +1145,17 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 * 0.1: 01. 
 
 
-File: README.info,  Node: 09-pre,  Next: 08,  Up: Changelog
+File: README.info,  Node: 09,  Next: 08,  Up: Changelog
 
-4.1 0.9-pre
-===========
+4.1 0.9
+=======
 
 * Menu:
 
 * Changes::
 
 
-File: README.info,  Node: Changes,  Up: 09-pre
+File: README.info,  Node: Changes,  Up: 09
 
 4.1.1 Changes
 -------------
@@ -1164,9 +1164,11 @@ File: README.info,  Node: Changes,  Up: 09-pre
      (https://elpa.gnu.org/packages/taxy-magit-section.html) and
      maintained in a separate branch
      (https://github.com/alphapapa/taxy.el/tree/package/taxy-magit-section).
+   • Minor fixes to documentation and examples.
+   • Emacs 27.1 or later is now required.
 
 
-File: README.info,  Node: 08,  Next: 07,  Prev: 09-pre,  Up: Changelog
+File: README.info,  Node: 08,  Next: 07,  Prev: 09,  Up: Changelog
 
 4.2 0.8
 =======
@@ -1443,50 +1445,50 @@ GPLv3
 
 Tag Table:
 Node: Top218
-Node: Examples2299
-Node: Numbery (starting basically)2618
-Node: Lettery (filling incrementally)8379
-Node: Sporty (understanding completely)10893
-Node: Applications16880
-Node: Installation17355
-Node: Usage17668
-Node: Reusable taxys19823
-Node: Threading macros23976
-Node: Modifying filled taxys24515
-Node: Dynamic taxys25333
-Node: Multi-level dynamic taxys27983
-Node: "Chains" of independent multi-level dynamic taxys30176
-Node: Defining a classification domain-specific language33107
-Node: Magit section37270
-Node: Reference37938
-Node: Functions38146
-Node: Macros40124
-Node: Changelog40774
-Node: 09-pre41008
-Node: Changes41118
-Node: 0841444
-Node: Additions41569
-Node: Fixes41713
-Node: 0741851
-Node: Additions (1)41977
-Node: 0642296
-Node: Additions (2)42422
-Node: 0543772
-Node: Additions (3)43919
-Node: Fixes (1)45029
-Node: 0445187
-Node: 0345409
-Node: Changes (1)45552
-Node: Fixes (2)45919
-Node: 0246358
-Node: Changes (2)46530
-Node: Additions (4)46822
-Node: Fixes (3)47681
-Node: 0147935
-Node: Development48034
-Node: Copyright assignment48240
-Node: Credits48828
-Node: License49018
+Node: Examples2287
+Node: Numbery (starting basically)2606
+Node: Lettery (filling incrementally)8367
+Node: Sporty (understanding completely)10881
+Node: Applications16868
+Node: Installation17343
+Node: Usage17656
+Node: Reusable taxys19811
+Node: Threading macros23964
+Node: Modifying filled taxys24503
+Node: Dynamic taxys25321
+Node: Multi-level dynamic taxys27971
+Node: "Chains" of independent multi-level dynamic taxys30164
+Node: Defining a classification domain-specific language33095
+Node: Magit section37258
+Node: Reference37926
+Node: Functions38134
+Node: Macros40112
+Node: Changelog40762
+Node: 0940988
+Node: Changes41086
+Node: 0841502
+Node: Additions41623
+Node: Fixes41767
+Node: 0741905
+Node: Additions (1)42031
+Node: 0642350
+Node: Additions (2)42476
+Node: 0543826
+Node: Additions (3)43973
+Node: Fixes (1)45083
+Node: 0445241
+Node: 0345463
+Node: Changes (1)45606
+Node: Fixes (2)45973
+Node: 0246412
+Node: Changes (2)46584
+Node: Additions (4)46876
+Node: Fixes (3)47735
+Node: 0147989
+Node: Development48088
+Node: Copyright assignment48294
+Node: Credits48882
+Node: License49072
 
 End Tag Table
 

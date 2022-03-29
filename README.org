@@ -933,11 +933,12 @@ In Emacs 28+, see also =M-x shortdoc-display-group RET taxy RET=.
 :TOC:      :depth 0
 :END:
 
-** 0.9-pre
+** 0.9
 
 *** Changes
 
 +  Library =taxy-magit-section= is now [[https://elpa.gnu.org/packages/taxy-magit-section.html][packaged separately]] and maintained in a [[https://github.com/alphapapa/taxy.el/tree/package/taxy-magit-section][separate branch]].
++  Minor fixes to documentation and examples.
 
 ** 0.8
 
