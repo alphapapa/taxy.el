@@ -7,3 +7,4 @@ org-src-*
 /makem.sh
 /.sandbox/
 /scratch/
+/taxy.el
