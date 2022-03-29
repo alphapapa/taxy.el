@@ -35,6 +35,7 @@ This library renders [[https://github.com/alphapapa/taxy.el][Taxy]] structs with
 ** 0.9-pre
 
 +  =taxy-magit-section= moved to separate package.
++  Better align columns whose values are images.
 
 * Development
 :PROPERTIES:

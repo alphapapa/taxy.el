@@ -327,18 +327,60 @@ and values are the column width.  Each string is formatted
 according to `columns' and takes into account the width of all
 the items' values for each column."
   (let ((table (make-hash-table))
-        column-aligns column-sizes)
-    (cl-labels ((format-column
+        column-aligns column-sizes image-p)
+    (cl-labels ((string-width*
+                 (string) (if-let (pos (text-property-not-all 0 (length string)
+                                                              'display nil string))
+                              ;; Text has a display property: check for an image.
+                              (pcase (get-text-property pos 'display string)
+                                ((and `(image . ,_rest) spec)
+                                 ;; An image: try to calcuate the display width.  (See also:
+                                 ;; `org-string-width'.)
+
+                                 ;; FIXME: The entire string may not be an image, so the
+                                 ;; image part needs to be handled separately from any
+                                 ;; non-image part.
+
+                                 ;; TODO: Do we need to specify the frame?  What if the
+                                 ;; buffer isn't currently displayed?
+                                 (setf image-p t)
+                                 (floor (car (image-size spec))))
+                                (_
+                                 ;; No image: just use `string-width'.
+                                 (setf image-p nil)
+                                 (string-width string)))
+                            ;; No display property.
+                            (setf image-p nil)
+                            (string-width string)))
+                (resize-image-string
+                 (string width) (let ((image
+                                       (get-text-property
+                                        (text-property-not-all 0 (length string)
+                                                               'display nil string)
+                                        'display string)))
+                                  (propertize (make-string width ? ) 'display image)))
+
+                (format-column
                  (item depth column-name)
                  (let* ((column-alist (alist-get column-name formatters nil nil #'equal))
                         (fn (alist-get 'formatter column-alist))
                         (value (funcall fn item depth))
                         (current-column-size (or (map-elt column-sizes column-name) 0)))
                    (setf (map-elt column-sizes column-name)
-                         (max current-column-size (string-width value)))
+                         (max current-column-size (string-width* value)))
                    (setf (map-elt column-aligns column-name)
                          (or (alist-get 'align column-alist)
                              'left))
+                   (when image-p
+                     ;; String probably is an image: set its non-image string value to a
+                     ;; number of matching spaces.  It's not always pixel-perfect, but
+                     ;; this is probably as good as we can do without using pixel-based
+                     ;; :align-to's for everything (which might be worth doing in the
+                     ;; future).
+
+                     ;; FIXME: This only works properly if the entire string has an image
+                     ;; display property (but this is good enough for now).
+                     (setf value (resize-image-string value (string-width* value))))
                    value))
                 (format-item
                  (depth item) (puthash item
