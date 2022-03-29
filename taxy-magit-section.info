@@ -31,6 +31,7 @@ structs with magit-section (https://melpa.org/#/magit-section).
 
 Changelog
 
+* 0.9.1: 091. 
 * 0.9: 09. 
 
 
@@ -65,12 +66,21 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: COMMENT Usage,  
 
 * Menu:
 
+* 0.9.1: 091. 
 * 0.9: 09. 
 
 
-File: README.info,  Node: 09,  Up: Changelog
+File: README.info,  Node: 091,  Next: 09,  Up: Changelog
 
-4.1 0.9
+4.1 0.9.1
+=========
+
+Nothing new yet.
+
+
+File: README.info,  Node: 09,  Prev: 091,  Up: Changelog
+
+4.2 0.9
 =======
 
    • ‘taxy-magit-section’ moved to separate package.
@@ -106,14 +116,15 @@ GPLv3
 
 Tag Table:
 Node: Top221
-Node: COMMENT Examples759
-Node: Installation887
-Node: COMMENT Usage1258
-Node: Changelog1383
-Node: 091521
-Node: Development1699
-Node: Credits1926
-Node: License2116
+Node: COMMENT Examples774
+Node: Installation902
+Node: COMMENT Usage1273
+Node: Changelog1398
+Node: 0911551
+Node: 091650
+Node: Development1840
+Node: Credits2067
+Node: License2257
 
 End Tag Table
 
