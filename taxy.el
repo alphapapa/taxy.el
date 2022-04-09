@@ -184,9 +184,11 @@ numbers greater-than-or-equal-to 10 are tested against
   (declare (indent defun))
   (cl-macrolet ((offer-or-push
                  () `(if (cdr key-fns)
-                         (taxy-take-keyed (cdr key-fns) item taxy
-                           :key-name-fn key-name-fn :then then)
-                       (push item (taxy-items taxy)))))
+                         (setf item
+                               (taxy-take-keyed (cdr key-fns) item taxy
+                                 :key-name-fn key-name-fn :then then))
+                       (push item (taxy-items taxy))
+                       (funcall (taxy-then taxy) item))))
     (cl-typecase (car key-fns)
       (function
        ;; A single key function.
@@ -216,27 +218,36 @@ numbers greater-than-or-equal-to 10 are tested against
                                         (lambda (item taxy)
                                           (taxy-take-keyed (cdr key-fns) item taxy
                                             :key-name-fn key-name-fn :then then)))
-                                :then then)
+                                :then (or (when (symbolp key-fn)
+                                            ;; A named function: use its :taxy-then property, if any.
+                                            (message "ARGH: %S %S" key-fn (get key-fn :taxy-then))
+                                            (get key-fn :taxy-then))
+                                          then))
                                (taxy-taxys taxy))))))
                (if (cdr key-fns)
                    ;; Other key-fns remain: offer item to them, allowing
                    ;; them to create more sub-taxys beneath this key-taxy.
-                   (taxy-take-keyed (cdr key-fns) item key-taxy
-                     :key-name-fn key-name-fn :then then)
-                 ;; No more key-fns remain: add item to this taxy.
-                 (push item (taxy-items key-taxy))))
-           ;; No key value: offer to other KEY-FNS or push to this taxy.
-           (offer-or-push))))
-      (list
-       ;; A "chain" of key functions.
-       (or (when (funcall (caar key-fns) item)
-             ;; The first function in this chain returns non-nil for
-             ;; the item: apply the item to the chain.
-             (taxy-take-keyed (car key-fns) item taxy
-               :key-name-fn key-name-fn :then then))
-           ;; This "chain" of key-fns didn't take the item: offer it to
-           ;; other chains, or push to this taxy if they don't take it.
-           (offer-or-push))))))
+                   (when (setf item (taxy-take-keyed (cdr key-fns) item key-taxy
+                                      :key-name-fn key-name-fn :then then))
+                     ;; Taxy didn't consume the item: offer it to other keys.
+                     (taxy-take-keyed (cddr key-fns) item key-taxy
+                       :key-name-fn key-name-fn :then then))
+                 ;; No more key-fns remain: add item to this taxy, returning the value of
+                 ;; the THEN function.
+                 (push item (taxy-items key-taxy))
+                 (funcall (taxy-then key-taxy) item))
+               ;; No key value: offer to other KEY-FNS or push to this taxy.
+               (offer-or-push))))
+       (list
+        ;; A "chain" of key functions.
+        (or (when (funcall (caar key-fns) item)
+              ;; The first function in this chain returns non-nil for
+              ;; the item: apply the item to the chain.
+              (taxy-take-keyed (car key-fns) item taxy
+                :key-name-fn key-name-fn :then then))
+            ;; This "chain" of key-fns didn't take the item: offer it to
+            ;; other chains, or push to this taxy if they don't take it.
+            (offer-or-push)))))))
 
 (defun taxy-size (taxy)
   "Return the number of items TAXY holds.
@@ -305,11 +316,18 @@ item being tested, bound within the function to `item'."
        (declare (indent defun)
                 (debug (&define symbolp listp &rest def-form)))
        (let* ((fn-symbol (intern (format "%s-%s" ,prefix name)))
+              (plist-args (cl-loop for (key . value) on body by #'cddr
+                                   while (keywordp key)
+                                   append (cons key value)
+                                   do (setf body (cddr body))))
+              (then (plist-get plist-args :then))
               (fn `(cl-function
                     (lambda (item ,@args)
                       ,@body))))
          `(progn
             (fset ',fn-symbol ,fn)
+            ,(when then
+               `(put ',fn-symbol :taxy-then ,then))
             (setf (map-elt ,variable ',name) ',fn-symbol))))))
 
 (defun taxy-make-take-function (keys aliases)
@@ -327,6 +345,10 @@ defined with a definer defined by `taxy-define-key-definer')."
                                   ,form))))
                 (quote-fn
                  (fn) (pcase fn
+                        (`(discard ,fn)
+                         `(lambda (element)
+                            (when (,(quote-fn fn) element)
+                              nil)))
                         ((pred symbolp) (expand-form fn))
                         (`(,(and (or 'and 'or 'not) boolean)
                            . ,(and args (map (:name name) (:keys keys))))
