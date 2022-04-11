@@ -183,6 +183,47 @@ Default visibility function for
        (_ 'show)))
     (_ nil)))
 
+;;;; Command definer
+
+;; Provide a macro to define commands which operate on either the item section at point or
+;; all items under a section header.
+
+(cl-defmacro taxy-magit-section-define-command-definer
+    (prefix)
+  "Define a command-defining macro.
+The macro is named \"PREFIX-define-command\".  The commands it
+defines are to be used in a `taxy-magit-section' buffer."
+  (declare (indent defun))
+  (let* ((definer-name (intern (format "%s-define-command" prefix)))
+         (definer-docstring
+           (format "Define a command-defining function with NAME and DOCSTRING.
+NAME should be a symbol, which will be prefixed by \"%s-\".
+COMMAND may be a named command symbol or a lambda which will be
+called with one argument, the item being acted on.  If REFRESH-P,
+the buffer will be refreshed after the command.  LET* may be a
+list of `let*' binding forms which are bound around the
+command (i.e. when multiple items are being acted on, these
+bindings are established once, around the loop that calls COMMAND
+for each item)." prefix)))
+    `(cl-defmacro ,definer-name (name docstring command
+                                      &key let* (refresh-p t))
+       ,definer-docstring
+       (declare (indent defun)
+                (debug (symbolp stringp def-form
+                                &rest [&or [":let*" (&rest &or symbolp (gate symbolp &optional def-form))]
+                                           [":refresh-p" booleanp]])))
+       (let* ((command-name (intern (format "%s-%s" ,prefix name))))
+         `(defun ,command-name ()
+            ,docstring
+            (interactive)
+            (let ((original-buffer (current-buffer)))
+              (when-let* ((sections (or (magit-region-sections) (list (magit-current-section)))))
+                (let* ,let*
+                  (taxy-magit-section--mapc-sections ,command sections)
+                  ,(when refresh-p
+                     `(with-current-buffer original-buffer
+                        (revert-buffer)))))))))))
+
 ;;;; Column-based formatting
 
 ;; Column-based, or "table"?
@@ -430,6 +471,24 @@ variable passed to that function, which see."
                                    ('right ""))
                      for spec = (format " %%%s%ss" align size)
                      concat (format spec name)))))
+
+(cl-defun taxy-magit-section-values (&optional (section (magit-current-section)))
+  "Return values in region or SECTION (and its descendants)."
+  (cl-labels ((section-values
+               (section) (remq nil
+                               (cons (oref section value)
+                                     (when (oref section children)
+                                       (mapcar #'section-values (oref section children)))))))
+    (or (magit-region-values)
+        (section-values section))))
+
+(defun taxy-magit-section--mapc-sections (fn sections)
+  "Call FN for each item in SECTIONS and their descendants."
+  (cl-labels ((do-section
+               (section) (if (oref section children)
+                             (mapc #'do-section (oref section children))
+                           (funcall fn (oref section value)))))
+    (mapc #'do-section sections)))
 
 ;;;; Footer
 
