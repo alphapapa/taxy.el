@@ -304,7 +304,10 @@ prefix, from all `deffy-mode' buffers."
   "Read form selected from Deffy BUFFERS with completion."
   (unless deffy-buffers
     (user-error "No Deffy buffers to find in"))
-  (cl-labels ((def-cons
+  (cl-labels ((disambiguate (string)
+                            (format "%s (%s)"
+                                    string (deffy-def-type (get-text-property 0 :def string))))
+              (def-cons
 		(def) (cons (propertize
 			     (format "%s" (deffy-def-name def))
 			     :annotation (funcall annotate-fn def)
@@ -345,7 +348,20 @@ prefix, from all `deffy-mode' buffers."
                affixation-fn #'affix)))
     (let* ((taxys (mapcar #'buffer-taxy deffy-buffers))
 	   (items (mapcan #'taxy-flatten taxys))
-	   (alist (setf items (mapcar #'def-cons items)))
+	   (alist (mapcar #'def-cons items))
+           ;; Unfortunately, `completing-read' always discards text properties, which
+           ;; means that they can't be used to disambiguate items with the same name
+           ;; (e.g. `(defthis foo)' in one form and `(defthat foo)' in another).  So we
+           ;; have to check for items with duplicate names, then replace the string with
+           ;; one that disambiguates them.
+           (duplicates (cl-loop for item in alist
+                                when (> (cl-count (car item) alist :key #'car :test #'equal) 1)
+                                collect item))
+           (_ (when duplicates
+                (dolist (dupe duplicates)
+                  (setf alist (remove dupe alist)
+                        dupe (cons (disambiguate (car dupe)) (cdr dupe)))
+                  (push dupe alist))))
 	   (metadata (list 'metadata (cons 'group-function #'group)))
 	   (dynamic-fn (lambda (str pred flag)
 			 (pcase flag

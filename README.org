@@ -935,7 +935,9 @@ In Emacs 28+, see also =M-x shortdoc-display-group RET taxy RET=.
 
 ** 0.10-pre
 
-Nothing new yet.
+*Examples*
++ Deffy
+  + Fix: Disambiguate forms with the same name.
 
 ** 0.9
 
