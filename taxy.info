@@ -1152,7 +1152,9 @@ File: README.info,  Node: 010-pre,  Next: 09,  Up: Changelog
 4.1 0.10-pre
 ============
 
-Nothing new yet.
+*Examples*
+   • Deffy
+        • Fix: Disambiguate forms with the same name.
 
 
 File: README.info,  Node: 09,  Next: 08,  Prev: 010-pre,  Up: Changelog
@@ -1474,31 +1476,31 @@ Node: Functions38156
 Node: Macros40134
 Node: Changelog40784
 Node: 010-pre41032
-Node: 0941141
-Node: Changes41255
-Node: 0841627
-Node: Additions41748
-Node: Fixes41892
-Node: 0742030
-Node: Additions (1)42156
-Node: 0642475
-Node: Additions (2)42601
-Node: 0543951
-Node: Additions (3)44098
-Node: Fixes (1)45208
-Node: 0445366
-Node: 0345588
-Node: Changes (1)45731
-Node: Fixes (2)46098
-Node: 0246537
-Node: Changes (2)46709
-Node: Additions (4)47001
-Node: Fixes (3)47860
-Node: 0148114
-Node: Development48215
-Node: Copyright assignment48421
-Node: Credits49009
-Node: License49199
+Node: 0941204
+Node: Changes41318
+Node: 0841690
+Node: Additions41811
+Node: Fixes41955
+Node: 0742093
+Node: Additions (1)42219
+Node: 0642538
+Node: Additions (2)42664
+Node: 0544014
+Node: Additions (3)44161
+Node: Fixes (1)45271
+Node: 0445429
+Node: 0345651
+Node: Changes (1)45794
+Node: Fixes (2)46161
+Node: 0246600
+Node: Changes (2)46772
+Node: Additions (4)47064
+Node: Fixes (3)47923
+Node: 0148177
+Node: Development48278
+Node: Copyright assignment48484
+Node: Credits49072
+Node: License49262
 
 End Tag Table
 
