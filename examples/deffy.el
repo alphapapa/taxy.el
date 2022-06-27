@@ -73,7 +73,7 @@
   (deffy-define-key type ()
     (pcase-let* (((cl-struct deffy-def form) item)
 	         (type (pcase form
-		         (`(,(or 'defun 'cl-defun) . ,_)
+		         (`(,(or 'defun 'cl-defun 'defalias) . ,_)
 			  (if (cl-find-if (lambda (form)
 					    (pcase form
 					      (`(interactive . ,_) t)))
@@ -82,7 +82,24 @@
 			    'function))
 		         (`(,(or 'defmacro 'cl-defmacro) . ,_)
 			  'macro)
-		         (`(,car . ,_) car))))
+                         (`(,(or 'cl-defstruct) . ,_)
+			  'struct)
+                         (`(,(or 'defclass) . ,_)
+			  'class)
+                         (`(,(or 'defcustom 'defgroup 'defvar 'defvar-local) . ,_)
+                          'variable)
+                         (`(,(or 'provide 'require) . ,_)
+                          'feature)
+                         ;; Top-level forms that don't usually correspond to definitions,
+                         ;; so we ignore them.
+                         (`(,(or 'cl-eval-when 'eval-when-compile 'with-eval-after-load) . ,_)
+                          nil)
+                         (`(,(or 'unless 'when) . ,_)
+                          nil)
+                         ;; Top-level forms that are macro calls (e.g. custom defining macros).
+                         ((and `(,car . ,_) (guard (macrop car))) car)
+                         ;; Anything else: ignored.
+		         (`(,car . ,_) nil))))
       (when type
         (format "%s" type)))))
 
