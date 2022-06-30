@@ -100,6 +100,14 @@
                          ((and `(,car . ,_) (guard (macrop car))) car)
                          ;; Anything else: ignored.
 		         (`(,car . ,_) nil))))
+      ;; FIXME: Returning nil for these ignored types only works when the form is in the
+      ;; top-level file, i.e. when the file's relative name is nil, so these ignored types
+      ;; still show up when they're in other files.  This isn't really the right way to
+      ;; discard uninteresting items.
+
+      ;; FIXME: Also, when a project Lisp file is not loaded into Emacs, some symbols may
+      ;; not be correctly classified, e.g. defining macros.  It's probably not feasible to
+      ;; solve that completely correctly, so some options or workarounds may be needed.
       (when type
         (format "%s" type)))))
 
