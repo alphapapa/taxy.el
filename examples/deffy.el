@@ -168,7 +168,7 @@ See Info node `(elisp)Displaying Buffers in Side Windows'."
 	  (files deffy-files)
 	  (buffer-name (format "*Deffy: %s*"
 			       (if files
-				   (string-join (mapcar #'file-relative-name files) ", ")
+				   (string-join (mapcar #'file-name-nondirectory files) ", ")
 				 (file-name-nondirectory
 				  (directory-file-name (project-root project))))))
 	  visibility-fn display-buffer-action)
