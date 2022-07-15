@@ -438,8 +438,9 @@ prefixes, from all `deffy-mode' buffers."
 Return value is actually a one-element list."
   (or (cl-loop for other-buffer in (buffer-list)
 	       when (and (eq 'deffy-mode (buffer-local-value 'major-mode other-buffer))
-		         (member (buffer-file-name buffer)
-                                 (buffer-local-value 'deffy-files other-buffer)))
+		         (or (member (buffer-file-name buffer)
+                                     (buffer-local-value 'deffy-files other-buffer))
+                             (equal default-directory (buffer-local-value 'deffy-directory other-buffer))))
 	       return (list other-buffer))
       ;; Make a new deffy buffer for BUFFER.
       (condition-case nil
