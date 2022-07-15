@@ -212,15 +212,15 @@ buffer."
 		    default-directory deffy-directory)
 	(let* ((forms (apply #'append (mapcar #'deffy--file-forms files)))
 	       (taxy (thread-last
-			 (make-fn
-			  :name "Deffy"
-			  :description
-                          (format "Definitions in %s:"
-				  (if files
-				      (string-join (mapcar #'file-relative-name files) ", ")
-				    (file-name-nondirectory
-				     (directory-file-name (project-root project)))))
-			  :take (taxy-make-take-function keys deffy-keys))
+		       (make-fn
+			:name "Deffy"
+			:description
+                        (format "Definitions in %s:"
+				(if files
+				    (string-join (mapcar #'file-relative-name files) ", ")
+				  (file-name-nondirectory
+				   (directory-file-name (project-root project)))))
+			:take (taxy-make-take-function keys deffy-keys))
 		       (taxy-fill forms)
 		       (taxy-sort* #'string< #'taxy-name)
 		       (taxy-sort #'string< #'def-name)))
