@@ -453,6 +453,9 @@ Return value is actually a one-element list."
 
 ;;;;; Bookmark support
 
+;; FIXME: If a project gains a file after a Deffy bookmark is made, the restored Deffy
+;; buffer won't show the new file.
+
 (defvar bookmark-make-record-function)
 
 (defun deffy-bookmark-make-record ()
