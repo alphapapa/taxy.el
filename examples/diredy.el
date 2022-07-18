@@ -37,41 +37,60 @@
 ;;;; Variables
 
 (defvar diredy-taxy
-  (cl-labels ((file-name
-               (string) (let* ((start (text-property-not-all 0 (length string) 'dired-filename nil string))
-                               (end (text-property-any start (length string) 'dired-filename nil string)))
-                          (substring string start end)))
-              (file-extension
-               (filename) (file-name-extension filename))
-              (file-type (string)
-                         (when-let ((extension (file-extension (file-name string))))
-                           (mailcap-extension-to-mime extension)))
-              (file-size
-               (filename) (file-attribute-size (file-attributes filename)))
-              (file-size-group
-               (string) (pcase (file-size (file-name string))
-                          ('nil "No size")
-                          ((pred (> 1024))
-                           "< 1K")
-                          ((pred (> 102400))
-                           "< 100K")
-                          ((pred (> 1048576))
-                           "< 1M")
-                          ((pred (> 10485760))
-                           "< 10M")
-                          (_ ">= 10M")))
-              (file-dir? (string) (if (file-directory-p (file-name string))
-                                      "Directory" "File"))
-	      (make-fn (&rest args)
-		       (apply #'make-taxy-magit-section
-			      :make #'make-fn
-			      :level-indent 1
-			      :item-indent 2
-			      args)))
-    (make-fn
-     :name "Diredy"
-     :make #'make-fn
-     :take (apply-partially #'taxy-take-keyed (list #'file-dir? #'file-size-group #'file-type)))))
+  (cl-macrolet ((machine-size
+                 (size) (let ((case-fold-search t))
+                          (string-match (rx bos (group (1+ digit)) (0+ space)
+                                            (group (repeat 1 (any "kmg")))
+                                            (optional (optional "i") "b"))
+                                        size)
+                          (* (pcase (match-string 2 size)
+                               ((or "k" "K") 1024)
+                               ((or "m" "M") (* 1024 1024))
+                               ((or "g" "G") (* 1024 1024 1024)))
+                             (string-to-number (match-string 1 size)))))
+                (label
+                 (prefix size)
+                 (propertize (concat prefix " " size)
+                             :machine-size (number-to-string (machine-size size)))))
+    (cl-labels ((file-name
+                 (string) (let* ((start (text-property-not-all 0 (length string) 'dired-filename nil string))
+                                 (end (text-property-any start (length string) 'dired-filename nil string)))
+                            (substring string start end)))
+                (file-extension
+                 (filename) (file-name-extension filename))
+                (file-type (string)
+                           (when-let ((extension (file-extension (file-name string))))
+                             (mailcap-extension-to-mime extension)))
+                (file-size
+                 (filename) (file-attribute-size (file-attributes filename)))
+                (file-size-group
+                 (string) (pcase (file-size (file-name string))
+                            ('nil "No size")
+                            ((pred (<= (machine-size "1G")))
+                             (label ">=" "1G"))
+                            ((pred (<= (machine-size "100M")))
+                             (label ">=" "100M"))
+                            ((pred (<= (machine-size "10M")))
+                             (label ">=" "10M"))
+                            ((pred (<= (machine-size "1M")))
+                             (label ">=" "1M"))
+                            ((pred (<= (machine-size "100K")))
+                             (label ">=" "100K"))
+                            ((pred (<= (machine-size "1K")))
+                             (label ">=" "1K"))
+                            (_ (label "<" "1K"))))
+                (file-dir? (string) (if (file-directory-p (file-name string))
+                                        "Directory" "File"))
+	        (make-fn (&rest args)
+		         (apply #'make-taxy-magit-section
+			        :make #'make-fn
+			        :level-indent 1
+			        :item-indent 2
+			        args)))
+      (make-fn
+       :name "Diredy"
+       :make #'make-fn
+       :take (apply-partially #'taxy-take-keyed (list #'file-dir? #'file-size-group #'file-type))))))
 
 (defvar dired-mode)
 
@@ -93,12 +112,15 @@
 			     collect (string-trim (buffer-substring (point-at-bol) (point-at-eol)))
 			     do (forward-line 1))))
 	   (filled-taxy (thread-last diredy-taxy
-			  taxy-emptied
-			  (taxy-fill lines)
-			  (taxy-mapc* (lambda (taxy)
-					(setf (taxy-taxys taxy)
-					      (cl-sort (taxy-taxys taxy) #'string<
-						       :key #'taxy-name))))))
+			             taxy-emptied
+			             (taxy-fill lines)
+			             (taxy-mapc* (lambda (taxy)
+					           (setf (taxy-taxys taxy)
+					                 (cl-sort (taxy-taxys taxy)
+                                                                  (lambda (a b)
+                                                                    (string< (or (get-text-property 0 :machine-size a) a)
+                                                                             (or (get-text-property 0 :machine-size b) b)))
+						                  :key #'taxy-name))))))
 	   (inhibit-read-only t))
       (delete-region (point) (point-max))
       (taxy-magit-section-insert filled-taxy :items 'last
