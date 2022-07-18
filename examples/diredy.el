@@ -124,7 +124,7 @@
 						                  :key #'taxy-name))))))
 	   (inhibit-read-only t))
       (delete-region (point) (point-max))
-      (taxy-magit-section-insert filled-taxy :items 'last
+      (taxy-magit-section-insert filled-taxy :items 'first
 	:initial-depth 0 :blank-between-depth 1))))
 
 ;;;; Functions
