@@ -86,6 +86,7 @@
 			        :make #'make-fn
 			        :level-indent 1
 			        :item-indent 2
+                                :format-fn #'identity
 			        args)))
       (make-fn
        :name "Diredy"
