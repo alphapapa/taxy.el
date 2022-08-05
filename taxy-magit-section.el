@@ -5,8 +5,8 @@
 ;; Author: Adam Porter <adam@alphapapa.net>
 ;; Maintainer: Adam Porter <adam@alphapapa.net>
 ;; URL: https://github.com/alphapapa/taxy.el
-;; Package-Requires: ((emacs "26.3") (magit-section "3.2.1"))
 ;; Version: 0.10-pre
+;; Package-Requires: ((emacs "26.3") (magit-section "3.2.1") (taxy "0.10-pre"))
 ;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify

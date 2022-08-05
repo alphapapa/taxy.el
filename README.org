@@ -34,7 +34,8 @@ This library renders [[https://github.com/alphapapa/taxy.el][Taxy]] structs with
 
 ** 0.10-pre
 
-Nothing new yet.
+*Fixes*
++  Require package ~taxy~ in package headers.
 
 ** 0.9.1
 

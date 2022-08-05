@@ -31,6 +31,7 @@ structs with magit-section (https://melpa.org/#/magit-section).
 
 Changelog
 
+* 0.10-pre: 010-pre. 
 * 0.9.1: 091. 
 * 0.9: 09. 
 
@@ -66,13 +67,23 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: COMMENT Usage,  
 
 * Menu:
 
+* 0.10-pre: 010-pre. 
 * 0.9.1: 091. 
 * 0.9: 09. 
 
 
-File: README.info,  Node: 091,  Next: 09,  Up: Changelog
+File: README.info,  Node: 010-pre,  Next: 091,  Up: Changelog
 
-4.1 0.9.1
+4.1 0.10-pre
+============
+
+*Fixes*
+   • Require package ‘taxy’ in package headers.
+
+
+File: README.info,  Node: 091,  Next: 09,  Prev: 010-pre,  Up: Changelog
+
+4.2 0.9.1
 =========
 
 *Fixes*
@@ -85,7 +96,7 @@ File: README.info,  Node: 091,  Next: 09,  Up: Changelog
 
 File: README.info,  Node: 09,  Prev: 091,  Up: Changelog
 
-4.2 0.9
+4.3 0.9
 =======
 
    • ‘taxy-magit-section’ moved to separate package.
@@ -121,15 +132,16 @@ GPLv3
 
 Tag Table:
 Node: Top221
-Node: COMMENT Examples774
-Node: Installation902
-Node: COMMENT Usage1273
-Node: Changelog1398
-Node: 0911551
-Node: 091931
-Node: Development2121
-Node: Credits2348
-Node: License2538
+Node: COMMENT Examples796
+Node: Installation924
+Node: COMMENT Usage1295
+Node: Changelog1420
+Node: 010-pre1595
+Node: 0911750
+Node: 092146
+Node: Development2336
+Node: Credits2563
+Node: License2753
 
 End Tag Table
 
