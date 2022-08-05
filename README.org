@@ -933,7 +933,7 @@ In Emacs 28+, see also =M-x shortdoc-display-group RET taxy RET=.
 :TOC:      :depth 0
 :END:
 
-** 0.10-pre
+** 0.10
 
 *Examples*
 + Deffy
