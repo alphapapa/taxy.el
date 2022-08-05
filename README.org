@@ -32,6 +32,10 @@ This library renders [[https://github.com/alphapapa/taxy.el][Taxy]] structs with
 :TOC:      :depth 0
 :END:
 
+** 0.10-pre
+
+Nothing new yet.
+
 ** 0.9.1
 
 *Fixes*
