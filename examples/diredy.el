@@ -34,24 +34,30 @@
 (require 'dired)
 (require 'mailcap)
 
+;;;; Functions
+
+(eval-and-compile
+  (defun diredy--machine-size (size)
+    "Return number of bytes represented by human-readable SIZE."
+    (declare (pure t) (side-effect-free t))
+    (let ((case-fold-search t))
+      (string-match (rx bos (group (1+ digit)) (0+ space)
+                        (group (repeat 1 (any "kmg")))
+                        (optional (optional "i") "b"))
+                    size)
+      (* (pcase (match-string 2 size)
+           ((or "k" "K") 1024)
+           ((or "m" "M") (* 1024 1024))
+           ((or "g" "G") (* 1024 1024 1024)))
+         (string-to-number (match-string 1 size))))))
+
 ;;;; Variables
 
 (defvar diredy-taxy
-  (cl-macrolet ((machine-size
-                 (size) (let ((case-fold-search t))
-                          (string-match (rx bos (group (1+ digit)) (0+ space)
-                                            (group (repeat 1 (any "kmg")))
-                                            (optional (optional "i") "b"))
-                                        size)
-                          (* (pcase (match-string 2 size)
-                               ((or "k" "K") 1024)
-                               ((or "m" "M") (* 1024 1024))
-                               ((or "g" "G") (* 1024 1024 1024)))
-                             (string-to-number (match-string 1 size)))))
-                (label
+  (cl-macrolet ((label
                  (prefix size)
                  (propertize (concat prefix " " size)
-                             :machine-size (number-to-string (machine-size size)))))
+                             :machine-size (number-to-string (diredy--machine-size size)))))
     (cl-labels ((file-name
                  (string) (let* ((start (text-property-not-all 0 (length string) 'dired-filename nil string))
                                  (end (text-property-any start (length string) 'dired-filename nil string)))
@@ -66,17 +72,17 @@
                 (file-size-group
                  (string) (pcase (file-size (file-name string))
                             ('nil "No size")
-                            ((pred (<= (machine-size "1G")))
+                            ((pred (<= (diredy--machine-size "1G")))
                              (label ">=" "1G"))
-                            ((pred (<= (machine-size "100M")))
+                            ((pred (<= (diredy--machine-size "100M")))
                              (label ">=" "100M"))
-                            ((pred (<= (machine-size "10M")))
+                            ((pred (<= (diredy--machine-size "10M")))
                              (label ">=" "10M"))
-                            ((pred (<= (machine-size "1M")))
+                            ((pred (<= (diredy--machine-size "1M")))
                              (label ">=" "1M"))
-                            ((pred (<= (machine-size "100K")))
+                            ((pred (<= (diredy--machine-size "100K")))
                              (label ">=" "100K"))
-                            ((pred (<= (machine-size "1K")))
+                            ((pred (<= (diredy--machine-size "1K")))
                              (label ">=" "1K"))
                             (_ (label "<" "1K"))))
                 (file-dir? (string) (if (file-directory-p (file-name string))
@@ -126,9 +132,6 @@
       (delete-region (point) (point-max))
       (taxy-magit-section-insert filled-taxy :items 'first
 	:initial-depth 0 :blank-between-depth 1))))
-
-;;;; Functions
-
 
 ;;;; Footer
 
