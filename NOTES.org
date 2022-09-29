@@ -1,9 +1,12 @@
 #+TITLE: taxy.el Notes
 
+* Tasks
+
 * Ideas
 
-** PROJECT Publish taxy-magit-section separately
+** DONE Publish taxy-magit-section separately
 :LOGBOOK:
+- State "DONE"       from "PROJECT"    [2022-09-29 Thu 09:34]
 - State "PROJECT"    from              [2021-09-28 Tue 00:56]
 :END:
 
