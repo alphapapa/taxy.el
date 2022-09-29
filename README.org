@@ -32,7 +32,7 @@ This library renders [[https://github.com/alphapapa/taxy.el][Taxy]] structs with
 :TOC:      :depth 0
 :END:
 
-** 0.11-pre
+** 0.11
 
 *Additions*
 +  Truncated column values receive help-echo tooltips so the full value can be viewed.
