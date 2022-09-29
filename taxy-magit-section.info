@@ -31,6 +31,7 @@ structs with magit-section (https://melpa.org/#/magit-section).
 
 Changelog
 
+* 0.11-pre: 011-pre. 
 * 0.10: 010. 
 * 0.9.1: 091. 
 * 0.9: 09. 
@@ -67,14 +68,25 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: COMMENT Usage,  
 
 * Menu:
 
+* 0.11-pre: 011-pre. 
 * 0.10: 010. 
 * 0.9.1: 091. 
 * 0.9: 09. 
 
 
-File: README.info,  Node: 010,  Next: 091,  Up: Changelog
+File: README.info,  Node: 011-pre,  Next: 010,  Up: Changelog
 
-4.1 0.10
+4.1 0.11-pre
+============
+
+*Additions*
+   • Truncated column values receive help-echo tooltips so the full
+     value can be viewed.
+
+
+File: README.info,  Node: 010,  Next: 091,  Prev: 011-pre,  Up: Changelog
+
+4.2 0.10
 ========
 
 *Fixes*
@@ -83,7 +95,7 @@ File: README.info,  Node: 010,  Next: 091,  Up: Changelog
 
 File: README.info,  Node: 091,  Next: 09,  Prev: 010,  Up: Changelog
 
-4.2 0.9.1
+4.3 0.9.1
 =========
 
 *Fixes*
@@ -96,7 +108,7 @@ File: README.info,  Node: 091,  Next: 09,  Prev: 010,  Up: Changelog
 
 File: README.info,  Node: 09,  Prev: 091,  Up: Changelog
 
-4.3 0.9
+4.4 0.9
 =======
 
    • ‘taxy-magit-section’ moved to separate package.
@@ -132,16 +144,17 @@ GPLv3
 
 Tag Table:
 Node: Top221
-Node: COMMENT Examples788
-Node: Installation916
-Node: COMMENT Usage1287
-Node: Changelog1412
-Node: 0101579
-Node: 0911722
-Node: 092114
-Node: Development2304
-Node: Credits2531
-Node: License2721
+Node: COMMENT Examples810
+Node: Installation938
+Node: COMMENT Usage1309
+Node: Changelog1434
+Node: 011-pre1623
+Node: 0101824
+Node: 0911983
+Node: 092375
+Node: Development2565
+Node: Credits2792
+Node: License2982
 
 End Tag Table
 

@@ -276,8 +276,17 @@ PLIST may be a plist setting the following options:
                     (progn
                       ,(when max-width
                          `(when ,max-width-variable
-                            (setf string (truncate-string-to-width
-                                          string ,max-width-variable nil nil "…"))))
+                            ;; I don't like having to save a copy of the old string for
+                            ;; comparison, but given the way `truncate-string-to-width'
+                            ;; calculates widths, I don't see much alternative.  It would
+                            ;; be nice if it returned nil when no change was made.
+                            (let ((old-string string)
+                                  (new-string (truncate-string-to-width
+                                               string ,max-width-variable nil nil "…")))
+                              (unless (equal old-string new-string)
+                                ;; String was elided: add help-echo.
+                                (put-text-property 0 (length new-string) 'help-echo old-string new-string)
+                                (setf string new-string)))))
                       ,(when face
                          ;; Faces are not defined until load time, while this checks type at expansion
                          ;; time, so we can only test that the argument is a symbol, not a face.
