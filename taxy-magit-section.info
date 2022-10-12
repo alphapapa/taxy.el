@@ -31,7 +31,7 @@ structs with magit-section (https://melpa.org/#/magit-section).
 
 Changelog
 
-* 0.12-pre: 012-pre. 
+* 0.12: 012. 
 * 0.11: 011. 
 * 0.10: 010. 
 * 0.9.1: 091. 
@@ -69,23 +69,23 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: COMMENT Usage,  
 
 * Menu:
 
-* 0.12-pre: 012-pre. 
+* 0.12: 012. 
 * 0.11: 011. 
 * 0.10: 010. 
 * 0.9.1: 091. 
 * 0.9: 09. 
 
 
-File: README.info,  Node: 012-pre,  Next: 011,  Up: Changelog
+File: README.info,  Node: 012,  Next: 011,  Up: Changelog
 
-4.1 0.12-pre
-============
+4.1 0.12
+========
 
 *Fixes*
    • Section visibility caching.
 
 
-File: README.info,  Node: 011,  Next: 010,  Prev: 012-pre,  Up: Changelog
+File: README.info,  Node: 011,  Next: 010,  Prev: 012,  Up: Changelog
 
 4.2 0.11
 ========
@@ -155,18 +155,18 @@ GPLv3
 
 Tag Table:
 Node: Top221
-Node: COMMENT Examples824
-Node: Installation952
-Node: COMMENT Usage1323
-Node: Changelog1448
-Node: 012-pre1651
-Node: 0111787
-Node: 0101992
-Node: 0912147
-Node: 092539
-Node: Development2729
-Node: Credits2956
-Node: License3146
+Node: COMMENT Examples816
+Node: Installation944
+Node: COMMENT Usage1315
+Node: Changelog1440
+Node: 0121635
+Node: 0111759
+Node: 0101960
+Node: 0912115
+Node: 092507
+Node: Development2697
+Node: Credits2924
+Node: License3114
 
 End Tag Table
 
