@@ -85,6 +85,20 @@ this does not disable indentation of section headings.")
   (item-indent 2)
   (format-fn #'prin1-to-string))
 
+(defclass taxy-magit-section-section (magit-section)
+  ;; We define this class so we can use it as the type of section we insert, so we can
+  ;; define a method to return identifiers for our section type, so section visibility can
+  ;; be cached.
+  )
+
+(cl-defmethod magit-section-ident-value ((section taxy-magit-section-section))
+  ;; FIXME: The name of each taxy could be ambiguous.  Best would be to use the
+  ;; hierarchical path, but since the taxys aren't doubly linked, that isn't easily done.
+  ;; Could probably be worked around by binding a special variable around the creation of
+  ;; the taxy hierarchy that would allow the path to be saved into each taxy.
+  (when-let ((taxy (oref section value)))
+    (taxy-name taxy)))
+
 ;;;; Commands
 
 
@@ -138,30 +152,37 @@ which blank lines are inserted between sections at that level."
                       (when (taxy-magit-section-visibility-fn taxy)
                         (push (taxy-magit-section-visibility-fn taxy)
                               magit-section-set-visibility-hook))))
-                   (magit-insert-section (magit-section taxy)
-                     (magit-insert-heading
-                       (make-string (* (if (< depth 0) 0 depth)
-                                       (taxy-magit-section-level-indent taxy))
-                                    ? )
-                       taxy-name
-                       (format " (%s%s)"
-                               (if (taxy-description taxy)
-                                   (concat (taxy-description taxy) " ")
-                                 "")
-                               (taxy-size taxy)))
-                     (magit-insert-section-body
-                       (when (eq 'first items)
-                         (dolist (item (taxy-items taxy))
-                           (insert-item item taxy depth)))
-                       (dolist (taxy (taxy-taxys taxy))
-                         (insert-taxy taxy (1+ depth)))
-                       (when (eq 'last items)
-                         (dolist (item (taxy-items taxy))
-                           (insert-item item taxy depth))))
-                     (when (<= depth blank-between-depth)
-                       (insert "\n"))))))
-      (magit-insert-section (magit-section)
-        (insert-taxy taxy initial-depth)))))
+                   ;; HACK: We set the section's washer to nil to prevent
+                   ;; `magit-section--maybe-wash' from trying to wash the section when its
+                   ;; visibility is toggled back on.  I'm not sure why this is necessary
+                   ;; (maybe an issue in magit-section?).
+                   (oset (magit-insert-section (taxy-magit-section-section taxy)
+                           (magit-insert-heading
+                             (make-string (* (if (< depth 0) 0 depth)
+                                             (taxy-magit-section-level-indent taxy))
+                                          ? )
+                             taxy-name
+                             (format " (%s%s)"
+                                     (if (taxy-description taxy)
+                                         (concat (taxy-description taxy) " ")
+                                       "")
+                                     (taxy-size taxy)))
+                           (magit-insert-section-body
+                             (when (eq 'first items)
+                               (dolist (item (taxy-items taxy))
+                                 (insert-item item taxy depth)))
+                             (dolist (taxy (taxy-taxys taxy))
+                               (insert-taxy taxy (1+ depth)))
+                             (when (eq 'last items)
+                               (dolist (item (taxy-items taxy))
+                                 (insert-item item taxy depth))))
+                           (when (<= depth blank-between-depth)
+                             (insert "\n")))
+                         washer nil))))
+      ;; HACK: See earlier note about washer.
+      (oset (magit-insert-section (taxy-magit-section-section)
+              (insert-taxy taxy initial-depth))
+            washer nil))))
 
 (cl-defun taxy-magit-section-pp (taxy &key (items 'first))
   "Pretty-print TAXY into a buffer with `magit-section' and show it."
@@ -180,7 +201,8 @@ Default visibility function for
     ((and (pred taxy-p) taxy)
      (pcase (taxy-size taxy)
        (0 'hide)
-       (_ 'show)))
+       (_ (or (magit-section-cached-visibility section)
+              'show))))
     (_ nil)))
 
 ;;;; Column-based formatting
