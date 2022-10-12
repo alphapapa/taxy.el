@@ -81,7 +81,8 @@ File: README.info,  Node: 012-pre,  Next: 011,  Up: Changelog
 4.1 0.12-pre
 ============
 
-Nothing new yet.
+*Fixes*
+   • Section visibility caching.
 
 
 File: README.info,  Node: 011,  Next: 010,  Prev: 012-pre,  Up: Changelog
@@ -159,13 +160,13 @@ Node: Installation952
 Node: COMMENT Usage1323
 Node: Changelog1448
 Node: 012-pre1651
-Node: 0111761
-Node: 0101966
-Node: 0912121
-Node: 092513
-Node: Development2703
-Node: Credits2930
-Node: License3120
+Node: 0111787
+Node: 0101992
+Node: 0912147
+Node: 092539
+Node: Development2729
+Node: Credits2956
+Node: License3146
 
 End Tag Table
 
