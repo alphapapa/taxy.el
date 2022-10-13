@@ -5,7 +5,7 @@
 ;; Author: Adam Porter <adam@alphapapa.net>
 ;; Maintainer: Adam Porter <adam@alphapapa.net>
 ;; URL: https://github.com/alphapapa/taxy.el
-;; Version: 0.12
+;; Version: 0.12.1
 ;; Package-Requires: ((emacs "26.3") (magit-section "3.2.1") (taxy "0.10"))
 ;; Keywords: lisp
 
@@ -89,7 +89,7 @@ this does not disable indentation of section headings.")
   ;; We define this class so we can use it as the type of section we insert, so we can
   ;; define a method to return identifiers for our section type, so section visibility can
   ;; be cached.
-  )
+  nil)
 
 (cl-defmethod magit-section-ident-value ((section taxy-magit-section-section))
   ;; FIXME: The name of each taxy could be ambiguous.  Best would be to use the
