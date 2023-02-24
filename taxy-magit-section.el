@@ -5,7 +5,7 @@
 ;; Author: Adam Porter <adam@alphapapa.net>
 ;; Maintainer: Adam Porter <adam@alphapapa.net>
 ;; URL: https://github.com/alphapapa/taxy.el
-;; Version: 0.12.1
+;; Version: 0.12.2
 ;; Package-Requires: ((emacs "26.3") (magit-section "3.2.1") (taxy "0.10"))
 ;; Keywords: lisp
 
@@ -452,7 +452,8 @@ variable passed to that function, which see."
                                ((or `nil 'left) "-")
                                ('right ""))))
     (concat (format (format " %%%s%ss"
-                            first-column-align (cdar column-sizes))
+                            ;; FIXME: Why is this 1+ necessary for proper alignment?
+                            first-column-align (1+ (cdar column-sizes)))
                     (caar column-sizes))
             (cl-loop for (name . size) in (cdr column-sizes)
                      for column-alist = (alist-get name formatters nil nil #'equal)
