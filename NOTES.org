@@ -2,6 +2,15 @@
 
 * Tasks
 
+** TODO Help taxy-magit-section cache section visibility
+:LOGBOOK:
+- State "TODO"       from              [2023-03-14 Tue 14:10]
+:END:
+
++ See:
+  + [[https://github.com/alphapapa/ement.el/commit/6657789e12fff37949ec7e47c249a1b72bab42c4][Add: (ement-room-list-visibility-cache) · alphapapa/ement.el@6657789 · GitHub]]
+  + [[https://github.com/alphapapa/ement.el/commit/fac4b829472a33e137a7b5e430529ae70b8165cd][Fix: (ement-room-list-revert) Save visibility cache · alphapapa/ement.el@fac4b82 · GitHub]]
+
 * Ideas
 
 ** DONE Publish taxy-magit-section separately
