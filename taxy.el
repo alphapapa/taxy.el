@@ -327,6 +327,10 @@ item being tested, bound within the function to `item'."
          `(progn
             (fset ',fn-symbol ,fn)
             ,(when then
+               ;; FIXME: Using a symbol property is probably wrong, because that would
+               ;; hard-code it for that function, so another taxy that uses that function
+               ;; would have to behave the same way.  Probably the taxy should store a map
+               ;; of functions to :then functions, so each taxy could work differently.
                `(put ',fn-symbol :taxy-then ,then))
             (setf (map-elt ,variable ',name) ',fn-symbol))))))
 
