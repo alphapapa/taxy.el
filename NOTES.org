@@ -46,6 +46,10 @@ Could be a useful alternative to =taxy-magit-section= sometimes.
 
 That way, refreshing the buffer will discover new files.
 
+** Incorporate "term" as jargon
+
++ e.g. as mentioned [[https://gohugo.io/content-management/taxonomies/][here]], "term" might be a good word to use, maybe instead of or in addition to "key."
+
 ** Useful functions from [[id:8d9adb33-3f14-4667-a03e-bd5c6656d178][taxonomy Python package]]
 
 It's specifically intended for biological taxonomies, but some of the functions listed there may be useful, e.g. ~lineage~, ~prune~.
