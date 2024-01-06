@@ -380,7 +380,7 @@ the items' values for each column."
                       ;; Text has a display property: check for an image.
                       (pcase (get-text-property pos 'display string)
                         ((and `(image . ,_rest) spec)
-                         ;; An image: try to calcuate the display width.  (See also:
+                         ;; An image: try to calculate the display width.  (See also:
                          ;; `org-string-width'.)
 
                          ;; FIXME: The entire string may not be an image, so the
