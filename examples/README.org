@@ -1,10 +1,10 @@
 #+TITLE: Taxy Examples
 
-Some example applcations using ~taxy~.
+Some example applications using ~taxy~.
 
 * Bookmarky
 
-=bookmarky= shows Emacs bookmarks grouped in a customizeable way:
+=bookmarky= shows Emacs bookmarks grouped in a customizable way:
 
 [[../images/bookmarky.png]]
 

@@ -22,7 +22,7 @@
 ;;; Commentary:
 
 ;; This library provides commands that show bookmarks organized in a
-;; flexible, customizeable hierarchy and table.
+;; flexible, customizable hierarchy and table.
 
 ;;; Code:
 
