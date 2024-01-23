@@ -96,6 +96,16 @@ this does not disable indentation of section headings.")
   ;; hierarchical path, but since the taxys aren't doubly linked, that isn't easily done.
   ;; Could probably be worked around by binding a special variable around the creation of
   ;; the taxy hierarchy that would allow the path to be saved into each taxy.
+
+  ;; NOTE: This method seems to slightly conflate a couple of things: the section class
+  ;; and the value of the section instance.  In the case of `taxy-magit-section', the
+  ;; non-leaf nodes will have a `taxy' as their value, but the leaves will be whatever
+  ;; type of object the `taxy' contains, and we can't account for that in the method
+  ;; specializer (or could we define our own specializer?  I guess we could, but the
+  ;; implications of that aren't obvious).  It's not clear that calling the next method
+  ;; (i.e. probably falling back on just the `magit-section' class) would produce a useful
+  ;; or "correct" value for visibility caching purposes, but at least it works, so it will
+  ;; do for now.
   (let ((value (oref section value)))
     (cl-typecase value
       (taxy (taxy-name value))
