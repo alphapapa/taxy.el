@@ -34,7 +34,9 @@ This library renders [[https://github.com/alphapapa/taxy.el][Taxy]] structs with
 
 ** 0.13-pre
 
-Nothing new yet.
+*Additions*
+
++ Function ~taxy-magit-section-insert~ takes a ~:section-class~ argument, which is passed to ~magit-insert-section~ as its ~class~ argument.  This allows a custom subclass of ~magit-section~ to be passed, which, with a custom method on ~magit-section-ident-value~, allows section visibility to be cached concisely.
 
 ** 0.12.2
 

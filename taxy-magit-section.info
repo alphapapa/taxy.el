@@ -73,7 +73,13 @@ File: README.info,  Node: 013-pre,  Next: 0122,  Up: Changelog
 2.1 0.13-pre
 ============
 
-Nothing new yet.
+*Additions*
+
+   • Function ‘taxy-magit-section-insert’ takes a ‘:section-class’
+     argument, which is passed to ‘magit-insert-section’ as its ‘class’
+     argument.  This allows a custom subclass of ‘magit-section’ to be
+     passed, which, with a custom method on ‘magit-section-ident-value’,
+     allows section visibility to be cached concisely.
 
 
 File: README.info,  Node: 0122,  Next: 0121,  Prev: 013-pre,  Up: Changelog
@@ -176,16 +182,16 @@ Node: Top221
 Node: Installation821
 Node: Changelog1175
 Node: 013-pre1417
-Node: 01221528
-Node: 01211664
-Node: 0121797
-Node: 0111934
-Node: 0102135
-Node: 0912290
-Node: 092682
-Node: Development2872
-Node: Credits3099
-Node: License3289
+Node: 01221888
+Node: 01212024
+Node: 0122157
+Node: 0112294
+Node: 0102495
+Node: 0912650
+Node: 093042
+Node: Development3232
+Node: Credits3459
+Node: License3649
 
 End Tag Table
 

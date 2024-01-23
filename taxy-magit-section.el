@@ -105,18 +105,23 @@ this does not disable indentation of section headings.")
 ;;;; Functions
 
 (cl-defun taxy-magit-section-insert
-    (taxy &key (items 'first) (initial-depth 0) (blank-between-depth 1))
+    (taxy &key (items 'first) (initial-depth 0) (blank-between-depth 1)
+          (section-class 'taxy-magit-section-section))
   "Insert a `magit-section' for TAXY into current buffer.
 If ITEMS is `first', insert a taxy's items before its descendant
 taxys; if `last', insert them after descendants.  INITIAL-DEPTH
 is the initial indentation depth; it may be, e.g. -1 to make the
 second level unindented.  BLANK-BETWEEN-DEPTH is the level up to
-which blank lines are inserted between sections at that level."
+which blank lines are inserted between sections at that level.
+SECTION-CLASS is passed to `magit-insert-section', which
+see (this may be set to a custom subclass of `magit-section' in
+order to define a custom `magit-section-ident-value' method so
+that section visibility may be cached concisely)."
   (declare (indent defun))
   (let* ((magit-section-set-visibility-hook
           (cons #'taxy-magit-section-visibility magit-section-set-visibility-hook)))
     (cl-labels ((insert-item (item taxy depth)
-                  (magit-insert-section (magit-section item)
+                  (magit-insert-section ((eval section-class) item)
                     (magit-insert-section-body
                       ;; This is a tedious way to give the indent
                       ;; string the same text properties as the start
@@ -154,7 +159,7 @@ which blank lines are inserted between sections at that level."
                     ;; `magit-section--maybe-wash' from trying to wash the section when its
                     ;; visibility is toggled back on.  I'm not sure why this is necessary
                     ;; (maybe an issue in magit-section?).
-                    (oset (magit-insert-section (taxy-magit-section-section taxy)
+                    (oset (magit-insert-section ((eval section-class) taxy)
                             (magit-insert-heading
                               (make-string (* (if (< depth 0) 0 depth)
                                               (taxy-magit-section-level-indent taxy))
@@ -178,7 +183,7 @@ which blank lines are inserted between sections at that level."
                               (insert "\n")))
                           washer nil))))
       ;; HACK: See earlier note about washer.
-      (oset (magit-insert-section (taxy-magit-section-section)
+      (oset (magit-insert-section ((eval section-class))
               (insert-taxy taxy initial-depth))
             washer nil))))
 
