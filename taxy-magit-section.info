@@ -1,4 +1,4 @@
-This is README.info, produced by makeinfo version 5.2 from README.texi.
+This is README.info, produced by makeinfo version 6.7 from README.texi.
 
 INFO-DIR-SECTION Emacs
 START-INFO-DIR-ENTRY
@@ -6,7 +6,7 @@ START-INFO-DIR-ENTRY
 END-INFO-DIR-ENTRY
 
 
-File: README.info,  Node: Top,  Next: COMMENT Examples,  Up: (dir)
+File: README.info,  Node: Top,  Next: Installation,  Up: (dir)
 
 taxy-magit-section.el
 *********************
@@ -19,9 +19,7 @@ structs with magit-section (https://melpa.org/#/magit-section).
 
 * Menu:
 
-* COMMENT Examples::
 * Installation::
-* COMMENT Usage::
 * Changelog::
 * Development::
 * Credits::
@@ -31,25 +29,20 @@ structs with magit-section (https://melpa.org/#/magit-section).
 
 Changelog
 
-* 0.12.2: 0122. 
-* 0.12.1: 0121. 
-* 0.12: 012. 
-* 0.11: 011. 
-* 0.10: 010. 
-* 0.9.1: 091. 
-* 0.9: 09. 
+* 0.13-pre: 013-pre.
+* 0.12.2: 0122.
+* 0.12.1: 0121.
+* 0.12: 012.
+* 0.11: 011.
+* 0.10: 010.
+* 0.9.1: 091.
+* 0.9: 09.
 
 
 
-File: README.info,  Node: COMMENT Examples,  Next: Installation,  Prev: Top,  Up: Top
+File: README.info,  Node: Installation,  Next: Changelog,  Prev: Top,  Up: Top
 
-1 COMMENT Examples
-******************
-
-
-File: README.info,  Node: Installation,  Next: COMMENT Usage,  Prev: COMMENT Examples,  Up: Top
-
-2 Installation
+1 Installation
 **************
 
 ‘taxy-magit-section’ is distributed in GNU ELPA (https://elpa.gnu.org/),
@@ -58,31 +51,34 @@ taxy-magit-section RET’, then ‘(require 'taxy-magit-section)’ in your
 Elisp project.
 
 
-File: README.info,  Node: COMMENT Usage,  Next: Changelog,  Prev: Installation,  Up: Top
+File: README.info,  Node: Changelog,  Next: Development,  Prev: Installation,  Up: Top
 
-3 COMMENT Usage
-***************
-
-
-File: README.info,  Node: Changelog,  Next: Development,  Prev: COMMENT Usage,  Up: Top
-
-4 Changelog
+2 Changelog
 ***********
 
 * Menu:
 
-* 0.12.2: 0122. 
-* 0.12.1: 0121. 
-* 0.12: 012. 
-* 0.11: 011. 
-* 0.10: 010. 
-* 0.9.1: 091. 
-* 0.9: 09. 
+* 0.13-pre: 013-pre.
+* 0.12.2: 0122.
+* 0.12.1: 0121.
+* 0.12: 012.
+* 0.11: 011.
+* 0.10: 010.
+* 0.9.1: 091.
+* 0.9: 09.
 
 
-File: README.info,  Node: 0122,  Next: 0121,  Up: Changelog
+File: README.info,  Node: 013-pre,  Next: 0122,  Up: Changelog
 
-4.1 0.12.2
+2.1 0.13-pre
+============
+
+Nothing new yet.
+
+
+File: README.info,  Node: 0122,  Next: 0121,  Prev: 013-pre,  Up: Changelog
+
+2.2 0.12.2
 ==========
 
 *Fixes*
@@ -91,7 +87,7 @@ File: README.info,  Node: 0122,  Next: 0121,  Up: Changelog
 
 File: README.info,  Node: 0121,  Next: 012,  Prev: 0122,  Up: Changelog
 
-4.2 0.12.1
+2.3 0.12.1
 ==========
 
 *Fixes*
@@ -100,7 +96,7 @@ File: README.info,  Node: 0121,  Next: 012,  Prev: 0122,  Up: Changelog
 
 File: README.info,  Node: 012,  Next: 011,  Prev: 0121,  Up: Changelog
 
-4.3 0.12
+2.4 0.12
 ========
 
 *Fixes*
@@ -109,7 +105,7 @@ File: README.info,  Node: 012,  Next: 011,  Prev: 0121,  Up: Changelog
 
 File: README.info,  Node: 011,  Next: 010,  Prev: 012,  Up: Changelog
 
-4.4 0.11
+2.5 0.11
 ========
 
 *Additions*
@@ -119,7 +115,7 @@ File: README.info,  Node: 011,  Next: 010,  Prev: 012,  Up: Changelog
 
 File: README.info,  Node: 010,  Next: 091,  Prev: 011,  Up: Changelog
 
-4.5 0.10
+2.6 0.10
 ========
 
 *Fixes*
@@ -128,7 +124,7 @@ File: README.info,  Node: 010,  Next: 091,  Prev: 011,  Up: Changelog
 
 File: README.info,  Node: 091,  Next: 09,  Prev: 010,  Up: Changelog
 
-4.6 0.9.1
+2.7 0.9.1
 =========
 
 *Fixes*
@@ -141,7 +137,7 @@ File: README.info,  Node: 091,  Next: 09,  Prev: 010,  Up: Changelog
 
 File: README.info,  Node: 09,  Prev: 091,  Up: Changelog
 
-4.7 0.9
+2.8 0.9
 =======
 
    • ‘taxy-magit-section’ moved to separate package.
@@ -150,7 +146,7 @@ File: README.info,  Node: 09,  Prev: 091,  Up: Changelog
 
 File: README.info,  Node: Development,  Next: Credits,  Prev: Changelog,  Up: Top
 
-5 Development
+3 Development
 *************
 
 ‘taxy-magit-section’ is developed in a branch of the main Taxy repo
@@ -159,7 +155,7 @@ File: README.info,  Node: Development,  Next: Credits,  Prev: Changelog,  Up: To
 
 File: README.info,  Node: Credits,  Next: License,  Prev: Development,  Up: Top
 
-6 Credits
+4 Credits
 *********
 
    • Thanks to Stefan Monnier for his feedback, and for maintaining GNU
@@ -168,7 +164,7 @@ File: README.info,  Node: Credits,  Next: License,  Prev: Development,  Up: Top
 
 File: README.info,  Node: License,  Prev: Credits,  Up: Top
 
-7 License
+5 License
 *********
 
 GPLv3
@@ -177,20 +173,19 @@ GPLv3
 
 Tag Table:
 Node: Top221
-Node: COMMENT Examples850
-Node: Installation978
-Node: COMMENT Usage1349
-Node: Changelog1474
-Node: 01221703
-Node: 01211823
-Node: 0121956
-Node: 0112093
-Node: 0102294
-Node: 0912449
-Node: 092841
-Node: Development3031
-Node: Credits3258
-Node: License3448
+Node: Installation821
+Node: Changelog1175
+Node: 013-pre1417
+Node: 01221528
+Node: 01211664
+Node: 0121797
+Node: 0111934
+Node: 0102135
+Node: 0912290
+Node: 092682
+Node: Development2872
+Node: Credits3099
+Node: License3289
 
 End Tag Table
 
