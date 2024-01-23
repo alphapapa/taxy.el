@@ -96,8 +96,10 @@ this does not disable indentation of section headings.")
   ;; hierarchical path, but since the taxys aren't doubly linked, that isn't easily done.
   ;; Could probably be worked around by binding a special variable around the creation of
   ;; the taxy hierarchy that would allow the path to be saved into each taxy.
-  (when-let ((taxy (oref section value)))
-    (taxy-name taxy)))
+  (let ((value (oref section value)))
+    (cl-typecase value
+      (taxy (taxy-name value))
+      (otherwise (cl-call-next-method)))))
 
 ;;;; Commands
 
