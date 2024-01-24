@@ -29,7 +29,7 @@ structs with magit-section (https://melpa.org/#/magit-section).
 
 Changelog
 
-* 0.13-pre: 013-pre.
+* 0.13: 013.
 * 0.12.2: 0122.
 * 0.12.1: 0121.
 * 0.12: 012.
@@ -58,7 +58,7 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Installation,  U
 
 * Menu:
 
-* 0.13-pre: 013-pre.
+* 0.13: 013.
 * 0.12.2: 0122.
 * 0.12.1: 0121.
 * 0.12: 012.
@@ -68,10 +68,10 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Installation,  U
 * 0.9: 09.
 
 
-File: README.info,  Node: 013-pre,  Next: 0122,  Up: Changelog
+File: README.info,  Node: 013,  Next: 0122,  Up: Changelog
 
-2.1 0.13-pre
-============
+2.1 0.13
+========
 
 *Additions*
 
@@ -82,7 +82,7 @@ File: README.info,  Node: 013-pre,  Next: 0122,  Up: Changelog
      allows section visibility to be cached concisely.
 
 
-File: README.info,  Node: 0122,  Next: 0121,  Prev: 013-pre,  Up: Changelog
+File: README.info,  Node: 0122,  Next: 0121,  Prev: 013,  Up: Changelog
 
 2.2 0.12.2
 ==========
@@ -179,19 +179,19 @@ GPLv3
 
 Tag Table:
 Node: Top221
-Node: Installation821
-Node: Changelog1175
-Node: 013-pre1417
-Node: 01221888
-Node: 01212024
-Node: 0122157
-Node: 0112294
-Node: 0102495
-Node: 0912650
-Node: 093042
-Node: Development3232
-Node: Credits3459
-Node: License3649
+Node: Installation813
+Node: Changelog1167
+Node: 0131401
+Node: 01221860
+Node: 01211992
+Node: 0122125
+Node: 0112262
+Node: 0102463
+Node: 0912618
+Node: 093010
+Node: Development3200
+Node: Credits3427
+Node: License3617
 
 End Tag Table
 

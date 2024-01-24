@@ -32,7 +32,7 @@ This library renders [[https://github.com/alphapapa/taxy.el][Taxy]] structs with
 :TOC:      :depth 0
 :END:
 
-** 0.13-pre
+** 0.13
 
 *Additions*
 
