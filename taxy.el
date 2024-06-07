@@ -162,7 +162,7 @@ outside of that chain.
 
 For example, if KEY-FNS were:
 
-  '(((lambda (n) (< n 10)) oddp)
+  \\='(((lambda (n) (< n 10)) oddp)
     ((lambda (n) (>= n 10)) evenp))
 
 Then a list of numbers from 0-19 would be classified
