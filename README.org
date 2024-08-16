@@ -34,7 +34,8 @@ This library renders [[https://github.com/alphapapa/taxy.el][Taxy]] structs with
 
 ** 0.14-pre
 
-Nothing new yet.
+*Fixes*
++ Reduce the potential width of macro-expanded docstrings to prevent byte-compiler warnings.
 
 ** 0.13
 

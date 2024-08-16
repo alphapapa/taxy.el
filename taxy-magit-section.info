@@ -75,7 +75,9 @@ File: README.info,  Node: 014-pre,  Next: 013,  Up: Changelog
 2.1 0.14-pre
 ============
 
-Nothing new yet.
+*Fixes*
+   • Reduce the potential width of macro-expanded docstrings to prevent
+     byte-compiler warnings.
 
 
 File: README.info,  Node: 013,  Next: 0122,  Prev: 014-pre,  Up: Changelog
@@ -192,17 +194,17 @@ Node: Top221
 Node: Installation834
 Node: Changelog1188
 Node: 014-pre1443
-Node: 0131553
-Node: 01222028
-Node: 01212160
-Node: 0122293
-Node: 0112430
-Node: 0102631
-Node: 0912786
-Node: 093178
-Node: Development3368
-Node: Credits3595
-Node: License3785
+Node: 0131647
+Node: 01222122
+Node: 01212254
+Node: 0122387
+Node: 0112524
+Node: 0102725
+Node: 0912880
+Node: 093272
+Node: Development3462
+Node: Credits3689
+Node: License3879
 
 End Tag Table
 
