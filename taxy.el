@@ -298,7 +298,11 @@ item being tested, bound within the function to `item'."
   ;; breaks the second expansion, and this works around that.
   `(let ((variable ',variable))
      (defvar ,variable nil
-       ,(format "Alist mapping key aliases to key functions defined with `%s'."
+       ;; For the best chance for this docstring to not exceed 80 characters in width, the
+       ;; macro's name goes on its own line.
+       ,(format "Alist mapping key aliases to key functions.
+This instance is defined with the macro:
+`%s'."
                 name))
      (defmacro ,name (name args &rest body)
        ,docstring
