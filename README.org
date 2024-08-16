@@ -933,6 +933,10 @@ In Emacs 28+, see also =M-x shortdoc-display-group RET taxy RET=.
 :TOC:      :depth 0
 :END:
 
+** 0.10.2-pre
+
+Nothing new yet.
+
 ** 0.10.1
 
 *Examples*
