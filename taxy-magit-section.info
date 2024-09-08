@@ -29,7 +29,7 @@ structs with magit-section (https://melpa.org/#/magit-section).
 
 Changelog
 
-* 0.14.1-pre: 0141-pre.
+* 0.14.1: 0141.
 * 0.14: 014.
 * 0.13: 013.
 * 0.12.2: 0122.
@@ -60,7 +60,7 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Installation,  U
 
 * Menu:
 
-* 0.14.1-pre: 0141-pre.
+* 0.14.1: 0141.
 * 0.14: 014.
 * 0.13: 013.
 * 0.12.2: 0122.
@@ -72,10 +72,10 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Installation,  U
 * 0.9: 09.
 
 
-File: README.info,  Node: 0141-pre,  Next: 014,  Up: Changelog
+File: README.info,  Node: 0141,  Next: 014,  Up: Changelog
 
-2.1 0.14.1-pre
-==============
+2.1 0.14.1
+==========
 
 *Fixes*
    • Don’t pass string as ‘ELLIPSIS’ argument to
@@ -94,7 +94,7 @@ File: README.info,  Node: 0141-pre,  Next: 014,  Up: Changelog
      width, rather than just signaling an error.)
 
 
-File: README.info,  Node: 014,  Next: 013,  Prev: 0141-pre,  Up: Changelog
+File: README.info,  Node: 014,  Next: 013,  Prev: 0141,  Up: Changelog
 
 2.2 0.14
 ========
@@ -215,21 +215,21 @@ GPLv3
 
 Tag Table:
 Node: Top221
-Node: Installation850
-Node: Changelog1204
-Node: 0141-pre1475
-Node: 0142529
-Node: 0132738
-Node: 01223209
-Node: 01213341
-Node: 0123474
-Node: 0113611
-Node: 0103812
-Node: 0913967
-Node: 094359
-Node: Development4551
-Node: Credits4778
-Node: License4968
+Node: Installation842
+Node: Changelog1196
+Node: 01411459
+Node: 0142501
+Node: 0132706
+Node: 01223177
+Node: 01213309
+Node: 0123442
+Node: 0113579
+Node: 0103780
+Node: 0913935
+Node: 094327
+Node: Development4519
+Node: Credits4746
+Node: License4936
 
 End Tag Table
 
