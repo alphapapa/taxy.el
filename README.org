@@ -36,6 +36,7 @@ This library renders [[https://github.com/alphapapa/taxy.el][Taxy]] structs with
 
 *Fixes*
 + Don't pass string as ~ELLIPSIS~ argument to ~truncate-string-to-width~; pass t, which defaults to value of variable ~truncate-string-ellipsis~.  (The width of the string passed before, the U+2026 HORIZONTAL ELLIPSIS character, varies by font, and fonts which display it with a width different than that of a single space cause misalignment of columns.  Now users may specify the ellipsis string according to their needs.)
++ Try to find a graphical frame when calculating image widths for column widths (or signal an error if none are available, rather than leaving ~image-size~ to signal an error).  (For example, if both graphical and text frames are available, and a column's values contain an image, and the buffer is being redisplayed on a text frame, try to use a graphical frame for calculating the image width, rather than just signaling an error.)
 
 ** 0.14
 

@@ -382,7 +382,7 @@ and values are the column width.  Each string is formatted
 according to `columns' and takes into account the width of all
 the items' values for each column."
   (let ((table (make-hash-table))
-        column-aligns column-sizes image-p)
+        column-aligns column-sizes image-p window-system-frame)
     (cl-labels ((string-width* (string)
                   (if-let (pos (text-property-not-all 0 (length string)
                                                       'display nil string))
@@ -399,7 +399,14 @@ the items' values for each column."
                          ;; TODO: Do we need to specify the frame?  What if the
                          ;; buffer isn't currently displayed?
                          (setf image-p t)
-                         (floor (car (image-size spec))))
+                         (floor (car (image-size
+                                      spec nil
+                                      (or window-system-frame
+                                          (setf window-system-frame
+                                                (cl-loop for frame in (frame-list)
+                                                         when (member (framep frame) '(x w32 ns pgtk))
+                                                         return frame))
+                                          (error "taxy-magit-section-format-items: No graphical frame to calculate image size"))))))
                         (_
                          ;; No image: just use `string-width'.
                          (setf image-p nil)
