@@ -322,8 +322,13 @@ PLIST may be a plist setting the following options:
                             ;; calculates widths, I don't see much alternative.  It would
                             ;; be nice if it returned nil when no change was made.
                             (let ((old-string string)
-                                  (new-string (truncate-string-to-width
-                                               string ,max-width-variable nil nil "…")))
+                                  ;; NOTE: We do not specify an ELLIPSIS argument to
+                                  ;; `truncate-string-to-width', because some fonts display
+                                  ;; e.g. U+2026 "HORIZONTAL ELLIPSIS" with a width greater
+                                  ;; than that of the space character, which breaks
+                                  ;; alignment.  The ellipsis used can be controlled with
+                                  ;; the variable `truncate-string-ellipsis', which see.
+                                  (new-string (truncate-string-to-width string ,max-width-variable nil nil t)))
                               (unless (equal old-string new-string)
                                 ;; String was elided: add help-echo.
                                 (put-text-property 0 (length new-string) 'help-echo old-string new-string)

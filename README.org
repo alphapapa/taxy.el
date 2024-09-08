@@ -34,7 +34,8 @@ This library renders [[https://github.com/alphapapa/taxy.el][Taxy]] structs with
 
 ** 0.14.1-pre
 
-Nothing new yet.
+*Fixes*
++ Don't pass string as ~ELLIPSIS~ argument to ~truncate-string-to-width~; pass t, which defaults to value of variable ~truncate-string-ellipsis~.  (The width of the string passed before, the U+2026 HORIZONTAL ELLIPSIS character, varies by font, and fonts which display it with a width different than that of a single space cause misalignment of columns.  Now users may specify the ellipsis string according to their needs.)
 
 ** 0.14
 
