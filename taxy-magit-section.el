@@ -57,6 +57,8 @@ May be disabled when `taxy-magit-section-insert' should not
 indent items itself, e.g. if items are pre-indented.  Note that
 this does not disable indentation of section headings.")
 
+(defvar-local taxy-magit-section-item-cache nil)
+
 ;;;; Customization
 
 
@@ -232,7 +234,7 @@ Default visibility function for
 ;;;;; Macros
 
 (cl-defmacro taxy-magit-section-define-column-definer
-    (prefix &key columns-variable-docstring)
+    (prefix &key columns-variable-docstring (hash-test ''eq))
   "Define a column-defining macro.
 The macro is named \"PREFIX-define-column\".
 
@@ -313,39 +315,43 @@ PLIST may be a plist setting the following options:
                     :type '(choice (integer :tag "Maximum width")
                                    (const :tag "Unlimited width" nil))))
               (defun ,fn-name (item depth)
-                (if-let ((string (progn ,@body)))
-                    (progn
-                      ,(when max-width
-                         `(when ,max-width-variable
-                            ;; I don't like having to save a copy of the old string for
-                            ;; comparison, but given the way `truncate-string-to-width'
-                            ;; calculates widths, I don't see much alternative.  It would
-                            ;; be nice if it returned nil when no change was made.
-                            (let ((old-string string)
-                                  ;; NOTE: We do not specify an ELLIPSIS argument to
-                                  ;; `truncate-string-to-width', because some fonts display
-                                  ;; e.g. U+2026 "HORIZONTAL ELLIPSIS" with a width greater
-                                  ;; than that of the space character, which breaks
-                                  ;; alignment.  The ellipsis used can be controlled with
-                                  ;; the variable `truncate-string-ellipsis', which see.
-                                  (new-string (truncate-string-to-width string ,max-width-variable nil nil t)))
-                              (unless (equal old-string new-string)
-                                ;; String was elided: add help-echo.
-                                (put-text-property 0 (length new-string) 'help-echo old-string new-string)
-                                (setf string new-string)))))
-                      ,(when face
-                         ;; Faces are not defined until load time, while this checks type at expansion
-                         ;; time, so we can only test that the argument is a symbol, not a face.
-                         (cl-check-type face symbol ":face must be a face symbol")
-                         `(setf string (propertize string 'face ',face)))
-                      (when (equal ,name (car ,columns-variable-name))
-                        ;; First column: apply indentation.
-                        (let ((indentation (make-string (+ (* depth ,level-indent-variable-name)
-                                                           ,item-indent-variable-name)
-                                                        ? )))
-                          (setf string (concat indentation string))))
-                      string)
-                  ""))
+                (pcase (taxy-magit-section--cached-value ',fn-name item ',,hash-test)
+                  (:not-found
+                   (setf (taxy-magit-section--cached-value ',fn-name item ',,hash-test)
+                         (if-let ((string (progn ,@body)))
+                             (progn
+                               ,(when max-width
+                                  `(when ,max-width-variable
+                                     ;; I don't like having to save a copy of the old string for
+                                     ;; comparison, but given the way `truncate-string-to-width'
+                                     ;; calculates widths, I don't see much alternative.  It would
+                                     ;; be nice if it returned nil when no change was made.
+                                     (let ((old-string string)
+                                           ;; NOTE: We do not specify an ELLIPSIS argument to
+                                           ;; `truncate-string-to-width', because some fonts display
+                                           ;; e.g. U+2026 "HORIZONTAL ELLIPSIS" with a width greater
+                                           ;; than that of the space character, which breaks
+                                           ;; alignment.  The ellipsis used can be controlled with
+                                           ;; the variable `truncate-string-ellipsis', which see.
+                                           (new-string (truncate-string-to-width string ,max-width-variable nil nil t)))
+                                       (unless (equal old-string new-string)
+                                         ;; String was elided: add help-echo.
+                                         (put-text-property 0 (length new-string) 'help-echo old-string new-string)
+                                         (setf string new-string)))))
+                               ,(when face
+                                  ;; Faces are not defined until load time, while this checks type at expansion
+                                  ;; time, so we can only test that the argument is a symbol, not a face.
+                                  (cl-check-type face symbol ":face must be a face symbol")
+                                  `(setf string (propertize string 'face ',face)))
+                               (when (equal ,name (car ,columns-variable-name))
+                                 ;; First column: apply indentation.
+                                 (let ((indentation (make-string (+ (* depth ,level-indent-variable-name)
+                                                                    ,item-indent-variable-name)
+                                                                 ? )))
+                                   (setf string (concat indentation string))))
+                               string)
+                           "")))
+                  (else else)))
               (setf (alist-get 'formatter
                                (alist-get ,name ,column-formatters-variable nil nil #'equal))
                     #',fn-name)
@@ -370,6 +376,15 @@ PLIST may be a plist setting the following options:
 ;; take longer to use the display properties for alignment than just having pre-aligned
 ;; lines of text.
 
+(define-inline taxy-magit-section--cached-value (fn item test)
+  (inline-letevals (fn item)
+    (inline-quote
+     (gethash ,item (pcase (gethash ,fn taxy-magit-section-item-cache :no-fn)
+                      (:no-fn (puthash ,fn (make-hash-table :test ,test)
+                                       taxy-magit-section-item-cache))
+                      (table table))
+              :not-found))))
+
 (defun taxy-magit-section-format-items (columns formatters taxy)
   ;; TODO: Document this.
   "Return a cons (table . column-sizes) for COLUMNS, FORMATTERS, and TAXY.
@@ -381,6 +396,8 @@ strings.  Column-sizes is an alist whose keys are column names
 and values are the column width.  Each string is formatted
 according to `columns' and takes into account the width of all
 the items' values for each column."
+  (unless (hash-table-p taxy-magit-section-item-cache)
+    (setf taxy-magit-section-item-cache (make-hash-table :test #'equal)))
   (let ((table (make-hash-table))
         column-aligns column-sizes image-p window-system-frame)
     (cl-labels ((string-width* (string)
