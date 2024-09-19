@@ -32,7 +32,7 @@ This library renders [[https://github.com/alphapapa/taxy.el][Taxy]] structs with
 :TOC:      :depth 0
 :END:
 
-** 0.14.2-pre
+** 0.14.2
 
 *Changes*
 + Avoid redundant calculations of the width of strings containing images (a minor performance improvement).
