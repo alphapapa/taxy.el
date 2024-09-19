@@ -79,7 +79,9 @@ File: README.info,  Node: 0142-pre,  Next: 0141,  Up: Changelog
 2.1 0.14.2-pre
 ==============
 
-Nothing new yet.
+*Changes*
+   • Avoid redundant calculations of the width of strings containing
+     images (a minor performance improvement).
 
 
 File: README.info,  Node: 0141,  Next: 014,  Prev: 0142-pre,  Up: Changelog
@@ -228,19 +230,19 @@ Node: Top221
 Node: Installation866
 Node: Changelog1220
 Node: 0142-pre1507
-Node: 01411623
-Node: 0142682
-Node: 0132887
-Node: 01223358
-Node: 01213490
-Node: 0123623
-Node: 0113760
-Node: 0103961
-Node: 0914116
-Node: 094510
-Node: Development4702
-Node: Credits4929
-Node: License5119
+Node: 01411734
+Node: 0142793
+Node: 0132998
+Node: 01223469
+Node: 01213601
+Node: 0123734
+Node: 0113871
+Node: 0104072
+Node: 0914227
+Node: 094621
+Node: Development4813
+Node: Credits5040
+Node: License5230
 
 End Tag Table
 

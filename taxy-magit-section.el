@@ -414,24 +414,24 @@ the items' values for each column."
                     ;; No display property.
                     (setf image-p nil)
                     (string-width string)))
-                (resize-image-string (string width)
+                (resized-image-string (string width)
                   (let ((image
                          (get-text-property
                           (text-property-not-all 0 (length string)
                                                  'display nil string)
                           'display string)))
                     (propertize (make-string width ? ) 'display image)))
-
                 (format-column (item depth column-name)
                   (let* ((column-alist (alist-get column-name formatters nil nil #'equal))
                          (fn (alist-get 'formatter column-alist))
                          (value (funcall fn item depth))
-                         (current-column-size (or (map-elt column-sizes column-name) (string-width column-name))))
+                         (current-column-size (or (map-elt column-sizes column-name)
+                                                  (string-width column-name)))
+                         (string-width* (string-width* value)))
                     (setf (map-elt column-sizes column-name)
-                          (max current-column-size (string-width* value)))
+                          (max current-column-size string-width*))
                     (setf (map-elt column-aligns column-name)
-                          (or (alist-get 'align column-alist)
-                              'left))
+                          (or (alist-get 'align column-alist) 'left))
                     (when image-p
                       ;; String probably is an image: set its non-image string value to a
                       ;; number of matching spaces.  It's not always pixel-perfect, but
@@ -441,7 +441,7 @@ the items' values for each column."
 
                       ;; FIXME: This only works properly if the entire string has an image
                       ;; display property (but this is good enough for now).
-                      (setf value (resize-image-string value (string-width* value))))
+                      (setf value (resized-image-string value string-width*)))
                     value))
                 (format-item (depth item)
                   (puthash item
