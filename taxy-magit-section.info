@@ -29,6 +29,7 @@ structs with magit-section (https://melpa.org/#/magit-section).
 
 Changelog
 
+* 0.14.3-pre: 0143-pre.
 * 0.14.2: 0142.
 * 0.14.1: 0141.
 * 0.14: 014.
@@ -61,6 +62,7 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Installation,  U
 
 * Menu:
 
+* 0.14.3-pre: 0143-pre.
 * 0.14.2: 0142.
 * 0.14.1: 0141.
 * 0.14: 014.
@@ -74,9 +76,17 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Installation,  U
 * 0.9: 09.
 
 
-File: README.info,  Node: 0142,  Next: 0141,  Up: Changelog
+File: README.info,  Node: 0143-pre,  Next: 0142,  Up: Changelog
 
-2.1 0.14.2
+2.1 0.14.3-pre
+==============
+
+Nothing new yet.
+
+
+File: README.info,  Node: 0142,  Next: 0141,  Prev: 0143-pre,  Up: Changelog
+
+2.2 0.14.2
 ==========
 
 *Changes*
@@ -86,7 +96,7 @@ File: README.info,  Node: 0142,  Next: 0141,  Up: Changelog
 
 File: README.info,  Node: 0141,  Next: 014,  Prev: 0142,  Up: Changelog
 
-2.2 0.14.1
+2.3 0.14.1
 ==========
 
 *Fixes*
@@ -108,7 +118,7 @@ File: README.info,  Node: 0141,  Next: 014,  Prev: 0142,  Up: Changelog
 
 File: README.info,  Node: 014,  Next: 013,  Prev: 0141,  Up: Changelog
 
-2.3 0.14
+2.4 0.14
 ========
 
 *Fixes*
@@ -118,7 +128,7 @@ File: README.info,  Node: 014,  Next: 013,  Prev: 0141,  Up: Changelog
 
 File: README.info,  Node: 013,  Next: 0122,  Prev: 014,  Up: Changelog
 
-2.4 0.13
+2.5 0.13
 ========
 
 *Additions*
@@ -132,7 +142,7 @@ File: README.info,  Node: 013,  Next: 0122,  Prev: 014,  Up: Changelog
 
 File: README.info,  Node: 0122,  Next: 0121,  Prev: 013,  Up: Changelog
 
-2.5 0.12.2
+2.6 0.12.2
 ==========
 
 *Fixes*
@@ -141,7 +151,7 @@ File: README.info,  Node: 0122,  Next: 0121,  Prev: 013,  Up: Changelog
 
 File: README.info,  Node: 0121,  Next: 012,  Prev: 0122,  Up: Changelog
 
-2.6 0.12.1
+2.7 0.12.1
 ==========
 
 *Fixes*
@@ -150,7 +160,7 @@ File: README.info,  Node: 0121,  Next: 012,  Prev: 0122,  Up: Changelog
 
 File: README.info,  Node: 012,  Next: 011,  Prev: 0121,  Up: Changelog
 
-2.7 0.12
+2.8 0.12
 ========
 
 *Fixes*
@@ -159,7 +169,7 @@ File: README.info,  Node: 012,  Next: 011,  Prev: 0121,  Up: Changelog
 
 File: README.info,  Node: 011,  Next: 010,  Prev: 012,  Up: Changelog
 
-2.8 0.11
+2.9 0.11
 ========
 
 *Additions*
@@ -169,8 +179,8 @@ File: README.info,  Node: 011,  Next: 010,  Prev: 012,  Up: Changelog
 
 File: README.info,  Node: 010,  Next: 091,  Prev: 011,  Up: Changelog
 
-2.9 0.10
-========
+2.10 0.10
+=========
 
 *Fixes*
    • Require package ‘taxy’ in package headers.
@@ -178,7 +188,7 @@ File: README.info,  Node: 010,  Next: 091,  Prev: 011,  Up: Changelog
 
 File: README.info,  Node: 091,  Next: 09,  Prev: 010,  Up: Changelog
 
-2.10 0.9.1
+2.11 0.9.1
 ==========
 
 *Fixes*
@@ -191,7 +201,7 @@ File: README.info,  Node: 091,  Next: 09,  Prev: 010,  Up: Changelog
 
 File: README.info,  Node: 09,  Prev: 091,  Up: Changelog
 
-2.11 0.9
+2.12 0.9
 ========
 
    • ‘taxy-magit-section’ moved to separate package.
@@ -227,22 +237,23 @@ GPLv3
 
 Tag Table:
 Node: Top221
-Node: Installation858
-Node: Changelog1212
-Node: 01421491
-Node: 01411706
-Node: 0142761
-Node: 0132966
-Node: 01223437
-Node: 01213569
-Node: 0123702
-Node: 0113839
-Node: 0104040
-Node: 0914195
-Node: 094589
-Node: Development4781
-Node: Credits5008
-Node: License5198
+Node: Installation882
+Node: Changelog1236
+Node: 0143-pre1539
+Node: 01421655
+Node: 01411887
+Node: 0142942
+Node: 0133147
+Node: 01223618
+Node: 01213750
+Node: 0123883
+Node: 0114020
+Node: 0104221
+Node: 0914378
+Node: 094772
+Node: Development4964
+Node: Credits5191
+Node: License5381
 
 End Tag Table
 
