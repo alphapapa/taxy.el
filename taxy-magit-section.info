@@ -81,7 +81,10 @@ File: README.info,  Node: 0143-pre,  Next: 0142,  Up: Changelog
 2.1 0.14.3-pre
 ==============
 
-Nothing new yet.
+*Fixes*
+   • Only use visible frames when checking image sizes.  (See Ement.el
+     #298
+     (https://github.com/alphapapa/ement.el/issues/298#issuecomment-2369652629).)
 
 
 File: README.info,  Node: 0142,  Next: 0141,  Prev: 0143-pre,  Up: Changelog
@@ -240,20 +243,20 @@ Node: Top221
 Node: Installation882
 Node: Changelog1236
 Node: 0143-pre1539
-Node: 01421655
-Node: 01411887
-Node: 0142942
-Node: 0133147
-Node: 01223618
-Node: 01213750
-Node: 0123883
-Node: 0114020
-Node: 0104221
-Node: 0914378
-Node: 094772
-Node: Development4964
-Node: Credits5191
-Node: License5381
+Node: 01421811
+Node: 01412043
+Node: 0143098
+Node: 0133303
+Node: 01223774
+Node: 01213906
+Node: 0124039
+Node: 0114176
+Node: 0104377
+Node: 0914534
+Node: 094928
+Node: Development5120
+Node: Credits5347
+Node: License5537
 
 End Tag Table
 
