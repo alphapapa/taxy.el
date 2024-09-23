@@ -32,7 +32,7 @@ This library renders [[https://github.com/alphapapa/taxy.el][Taxy]] structs with
 :TOC:      :depth 0
 :END:
 
-** 0.14.3-pre
+** 0.14.3
 
 *Fixes*
 + Only use visible frames when checking image sizes.  (See [[https://github.com/alphapapa/ement.el/issues/298#issuecomment-2369652629][Ement.el #298]].)

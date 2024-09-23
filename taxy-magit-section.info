@@ -29,7 +29,7 @@ structs with magit-section (https://melpa.org/#/magit-section).
 
 Changelog
 
-* 0.14.3-pre: 0143-pre.
+* 0.14.3: 0143.
 * 0.14.2: 0142.
 * 0.14.1: 0141.
 * 0.14: 014.
@@ -62,7 +62,7 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Installation,  U
 
 * Menu:
 
-* 0.14.3-pre: 0143-pre.
+* 0.14.3: 0143.
 * 0.14.2: 0142.
 * 0.14.1: 0141.
 * 0.14: 014.
@@ -76,10 +76,10 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Installation,  U
 * 0.9: 09.
 
 
-File: README.info,  Node: 0143-pre,  Next: 0142,  Up: Changelog
+File: README.info,  Node: 0143,  Next: 0142,  Up: Changelog
 
-2.1 0.14.3-pre
-==============
+2.1 0.14.3
+==========
 
 *Fixes*
    • Only use visible frames when checking image sizes.  (See Ement.el
@@ -87,7 +87,7 @@ File: README.info,  Node: 0143-pre,  Next: 0142,  Up: Changelog
      (https://github.com/alphapapa/ement.el/issues/298#issuecomment-2369652629).)
 
 
-File: README.info,  Node: 0142,  Next: 0141,  Prev: 0143-pre,  Up: Changelog
+File: README.info,  Node: 0142,  Next: 0141,  Prev: 0143,  Up: Changelog
 
 2.2 0.14.2
 ==========
@@ -240,23 +240,23 @@ GPLv3
 
 Tag Table:
 Node: Top221
-Node: Installation882
-Node: Changelog1236
-Node: 0143-pre1539
-Node: 01421811
-Node: 01412043
-Node: 0143098
-Node: 0133303
-Node: 01223774
-Node: 01213906
-Node: 0124039
-Node: 0114176
-Node: 0104377
-Node: 0914534
-Node: 094928
-Node: Development5120
-Node: Credits5347
-Node: License5537
+Node: Installation874
+Node: Changelog1228
+Node: 01431523
+Node: 01421783
+Node: 01412011
+Node: 0143066
+Node: 0133271
+Node: 01223742
+Node: 01213874
+Node: 0124007
+Node: 0114144
+Node: 0104345
+Node: 0914502
+Node: 094896
+Node: Development5088
+Node: Credits5315
+Node: License5505
 
 End Tag Table
 
