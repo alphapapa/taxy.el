@@ -154,6 +154,8 @@ that section visibility may be cached concisely)."
                                              indent-string)
                         (insert indent-string formatted "\n")))))
                 (insert-taxy (taxy depth)
+                  (when (and (taxy-p taxy) (not (taxy-magit-section-p taxy)))
+                    (setf taxy (taxy-magit-section-from-taxy taxy)))
                   (let ((magit-section-set-visibility-hook magit-section-set-visibility-hook)
                         (taxy-magit-section-level-indent (taxy-magit-section-level-indent taxy))
                         (taxy-magit-section-item-indent (taxy-magit-section-item-indent taxy))
@@ -198,6 +200,14 @@ that section visibility may be cached concisely)."
       (oset (magit-insert-section ((eval section-class))
               (insert-taxy taxy initial-depth))
             washer nil))))
+
+(defun taxy-magit-section-from-taxy (taxy)
+  "Return `taxy-magit-section' struct based on TAXY `taxy' struct."
+  (let ((taxy-magit-section (make-taxy-magit-section)))
+    (dolist (slot (mapcar #'car (cdr (cl-struct-slot-info 'taxy))))
+      (setf (cl-struct-slot-value 'taxy slot taxy-magit-section)
+            (cl-struct-slot-value 'taxy slot taxy)))
+    taxy-magit-section))
 
 (cl-defun taxy-magit-section-pp (taxy &key (items 'first))
   "Pretty-print TAXY into a buffer with `magit-section' and show it."
