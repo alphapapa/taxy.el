@@ -201,10 +201,10 @@ functional manner:
                               ;; doesn't, leaving them to reappear in the parent taxy's items.
                               (make-taxy :name "Odd"
                                          :description "(consuming)"
-                                         :predicate #'oddp)
+                                         :predicate #'cl-oddp)
                               (make-taxy :name "Even"
                                          :description "(non-consuming)"
-                                         :predicate #'evenp
+                                         :predicate #'cl-evenp
                                          :then #'identity)))
                      (make-taxy
                       :name ">= 10"
