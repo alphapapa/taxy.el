@@ -162,25 +162,25 @@ outside of that chain.
 
 For example, if KEY-FNS were:
 
-  '(((lambda (n) (< n 10)) oddp)
-    ((lambda (n) (>= n 10)) evenp))
+  '(((lambda (n) (< n 10)) cl-oddp)
+    ((lambda (n) (>= n 10)) cl-evenp))
 
 Then a list of numbers from 0-19 would be classified
 like (listing numbers on a single line for the sake of example):
 
   - <10:
     - 0, 2, 4, 6, 8
-    - oddp:
+    - cl-oddp:
       - 1, 3, 5, 7, 9
   - >=10:
     - 11, 13, 15, 17, 19
-    - evenp:
+    - cl-evenp:
       - 10, 12, 14, 16, 18
 
-So only numbers below 10 are tested against `oddp', and only
+So only numbers below 10 are tested against `cl-oddp', and only
 numbers greater-than-or-equal-to 10 are tested against
-`evenp'.  (A contrived example, of course, since testing against
-`evenp' or `oddp' is just the inverse.)"
+`cl-evenp'.  (A contrived example, of course, since testing against
+`cl-evenp' or `cl-oddp' is just the inverse.)"
   (declare (indent defun))
   (cl-macrolet ((offer-or-push
                  () `(if (cdr key-fns)
