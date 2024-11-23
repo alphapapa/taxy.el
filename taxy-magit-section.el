@@ -483,9 +483,7 @@ variable passed to that function, which see."
          (first-column-align (pcase-exhaustive (alist-get 'align first-column-alist)
                                ((or `nil 'left) "-")
                                ('right ""))))
-    (concat (format (format " %%%s%ss"
-                            ;; FIXME: Why is this 1+ necessary for proper alignment?
-                            first-column-align (1+ (cdar column-sizes)))
+    (concat (format (format " %%%s%ss" first-column-align (cdar column-sizes))
                     (caar column-sizes))
             (cl-loop for (name . size) in (cdr column-sizes)
                      for column-alist = (alist-get name formatters nil nil #'equal)
