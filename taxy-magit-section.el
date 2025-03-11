@@ -405,8 +405,7 @@ the items' values for each column."
                                           (setf window-system-frame
                                                 (cl-loop for frame in (frame-list)
                                                          when (and (frame-visible-p frame)
-                                                                   (memq (framep frame)
-                                                                         '(x w32 ns pgtk)))
+                                                                   (not (eq (framep frame) t)))
                                                          return frame))
                                           (error "taxy-magit-section-format-items: No graphical frame to calculate image size"))))))
                         (_
