@@ -1076,6 +1076,13 @@ taxy-emptied (taxy)
 taxy-fill (items taxy)
      Fill ‘taxy’ with ‘items’ according to its definition.
 
+taxy-lift (taxy)
+     Return ‘taxy’ having "lifted" its sub-taxys.  That is, a sub-taxy
+     which has fewer items than ‘taxy-lift-min-items’ will have its
+     items \"lifted\" into its parent taxy's items, and the sub-taxy
+     itself will be removed from its parent taxy's taxys.  This operates
+     recursively within ‘taxy’'s sub-taxys.
+
 taxy-make-take-function (keys aliases)
      Return a taxy "take" function for ‘keys’.  Each of ‘keys’ should be
      a function alias defined in ‘aliases’, or a list of such ‘key-fns’
@@ -1159,7 +1166,11 @@ File: README.info,  Node: v011-pre,  Next: 0102,  Up: Changelog
 4.1 v0.11-pre
 =============
 
-Nothing new yet.
+*Additions*
+   • Function ‘taxy-lift’, which "lifts" the items in sub-taxys which
+     have fewer than a certain number of items into parent taxys
+     (helping to reduce the number of taxys with only a few items in
+     them).
 
 
 File: README.info,  Node: 0102,  Next: 0101,  Prev: v011-pre,  Up: Changelog
@@ -1508,37 +1519,37 @@ Node: Defining a classification domain-specific language33075
 Node: Magit section37230
 Node: Reference37898
 Node: Functions38106
-Node: Macros40084
-Node: Changelog40734
-Node: v011-pre41019
-Node: 010241133
-Node: 010141368
-Node: 01041528
-Node: 0941744
-Node: Changes41854
-Node: 0842226
-Node: Additions42347
-Node: Fixes42491
-Node: 0742629
-Node: Additions (1)42754
-Node: 0643073
-Node: Additions (2)43198
-Node: 0544546
-Node: Additions (3)44691
-Node: Fixes (1)45799
-Node: 0445957
-Node: 0346179
-Node: Changes (1)46322
-Node: Fixes (2)46691
-Node: 0247130
-Node: Changes (2)47301
-Node: Additions (4)47591
-Node: Fixes (3)48514
-Node: 0148768
-Node: Development48869
-Node: Copyright assignment49075
-Node: Credits49670
-Node: License49860
+Node: Macros40439
+Node: Changelog41089
+Node: v011-pre41374
+Node: 010241705
+Node: 010141940
+Node: 01042100
+Node: 0942316
+Node: Changes42426
+Node: 0842798
+Node: Additions42919
+Node: Fixes43063
+Node: 0743201
+Node: Additions (1)43326
+Node: 0643645
+Node: Additions (2)43770
+Node: 0545118
+Node: Additions (3)45263
+Node: Fixes (1)46371
+Node: 0446529
+Node: 0346751
+Node: Changes (1)46894
+Node: Fixes (2)47263
+Node: 0247702
+Node: Changes (2)47873
+Node: Additions (4)48163
+Node: Fixes (3)49086
+Node: 0149340
+Node: Development49441
+Node: Copyright assignment49647
+Node: Credits50242
+Node: License50432
 
 End Tag Table
 

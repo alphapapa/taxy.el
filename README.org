@@ -894,6 +894,8 @@ In Emacs 28+, see also =M-x shortdoc-display-group RET taxy RET=.
 - taxy-fill (items taxy) ::
   Fill =taxy= with =items= according to its definition.
 
+- taxy-lift (taxy) :: Return =taxy= having "lifted" its sub-taxys.  That is, a sub-taxy which has fewer items than ~taxy-lift-min-items~ will have its items \"lifted\" into its parent taxy's items, and the sub-taxy itself will be removed from its parent taxy's taxys.  This operates recursively within =taxy='s sub-taxys.
+
 - taxy-make-take-function (keys aliases) ::
   Return a taxy "take" function for =keys=.  Each of =keys= should be a function alias defined in =aliases=, or a list of such =key-fns= (recursively, ad infinitum, approximately).  =aliases= should be an alist mapping aliases to functions (such as defined with a definer defined by ~taxy-define-key-definer~).
 
@@ -935,7 +937,8 @@ In Emacs 28+, see also =M-x shortdoc-display-group RET taxy RET=.
 
 ** v0.11-pre
 
-Nothing new yet.
+*Additions*
++ Function ~taxy-lift~, which "lifts" the items in sub-taxys which have fewer than a certain number of items into parent taxys (helping to reduce the number of taxys with only a few items in them).
 
 ** 0.10.2
 
