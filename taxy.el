@@ -137,10 +137,10 @@ operates recursively within TAXY's sub-taxys."
   (cl-labels ((rec (taxy)
                 (mapc #'rec (taxy-taxys taxy))
                 (dolist (sub-taxy (taxy-taxys taxy))
-                  (when (< 0 (length (taxy-items sub-taxy)) taxy-lift-min-items)
+                  (when (and (not (taxy-taxys sub-taxy))
+                             (< 0 (length (taxy-items sub-taxy)) taxy-lift-min-items))
                     (cl-callf2 append (taxy-items sub-taxy) (taxy-items taxy))
-                    (cl-callf2 remq sub-taxy (taxy-taxys taxy))
-                    (setf (taxy-items sub-taxy) nil)))))
+                    (cl-callf2 remq sub-taxy (taxy-taxys taxy))))))
     (rec taxy))
   taxy)
 
