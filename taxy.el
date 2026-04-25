@@ -396,7 +396,7 @@ defined with a definer defined by `taxy-define-key-definer')."
 (with-eval-after-load 'shortdoc
   (declare-function shortdoc-add-function "shortdoc" (group section elem))
   (mapc (lambda (elem)
-	  (shortdoc-add-function 'taxy nil elem))
+	  (shortdoc-add-function 'taxy "Taxy" elem))
         '((taxy-flatten
            :eval (taxy-flatten
                   (make-taxy
